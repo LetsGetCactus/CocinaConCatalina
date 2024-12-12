@@ -39,7 +39,7 @@
 
 > *TODO*: Simplemente indexa ordenadamente o teu proxecto. Deixa só o índice do tipo de proxecto que realizas.
 
-**Índice para proxectos de implantación**
+**Índice para proxectos de desenvolvemento**
 
 1. Anteproyecto
     * 1.1. [Idea](doc/templates/1_idea.md)
@@ -50,7 +50,7 @@
 5. [Implantación](doc/templates/6_implantacion.md)
 
 
-**Índice para proxectos de documentación**
+**Índice para proxectos documental**
 
 1. Anteproyecto
     * 1.1. [Idea](doc/templates/1_idea.md)
