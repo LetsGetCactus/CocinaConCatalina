@@ -59,7 +59,7 @@ Analizar as opcións hardware existentes e xustificar a idoneidade dos compoñen
 
 Analizar as opcións software existentes e xustificar a idoneidade dos compoñentes seleccionados.
 
-## 3.5.3. Interfaces externos
+### 3.5.3. Interfaces externos
 
 En caso dun proxecto orientado ao desenvolvemento de software, indicar (se procede) como se comunicará o noso software co exterior. É posible que só teña interfaces de usuario, que normalmente son as pantallas. Un exemplo de interface hardware sería un lector de código de barras.
 
