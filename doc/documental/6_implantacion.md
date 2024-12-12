@@ -47,3 +47,24 @@ Poden ser incidencias de dous tipos: de sistema (accesos non autorizados á BD, 
 * Indicar se será necesario formar ós usuarios. En caso afirmativo planificar.
 
 * Manual de usuario, FAQ ou outro xeito que sexa o máis adecuado para que os usuarios saiban usar a nosa aplicación informática.
+
+
+## 6.5. Ideas para a súa comercialización.
+
+
+1.	Promoción.
+
+    1.1.	Técnicas elixidas (redes sociais, plataformas multimedia, páxina web, posicionamento web SEO, patrocinios, participación en eventos, prácticas de responsabilidade social corporativa, outras).
+    
+    1.2.	Xustifica a elección.
+    
+2.	Modelo de negocio.
+
+    2.1.Modelo elixido (Modelo de pago / Freemium (é de balde pero as funcionalidades extras son de pago) / In house (desenvolvementos a medida para contornos empresariais / De subscrición / Por publicidade / Outros)
+    
+    2.2. Xustifica a elección.
+
+
+## 6.6. Melloras futuras
+
+É posible que o noso proxecto se centre en resolver un problema concreto que se poderá ampliar no futuro con novas funcionalidades, novas interfaces, etc.

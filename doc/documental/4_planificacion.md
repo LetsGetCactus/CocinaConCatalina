@@ -44,9 +44,15 @@ Duración:
 
 ### 4.2.3. Diagrama de Gantt
 
-Un diagrama de Gantt é unha representación gráfica da secuenciación que tes que seguir para realizar as tarefas planificadas. Pódese usar o software "Gantt project" ou calquera outro que permita representar nun cronograma a información relativa á planificación de tarefas. 
+Un diagrama de Gantt é unha representación gráfica da secuenciación que tes que seguir para realizar as tarefas planificadas. Pódese usar o software "Gantt project" ou calquera outro que permita representar nun cronograma a información relativa á planificación de tarefas.
 
-## 4.3. Orzamento
+
+## 4.3. Análise de riscos e interesados
+
+Determinar todas aquelas persoas, entidades ou cousas que poden ter un impacto (positivo ou negativo) no proxecto ou na idea de negocio, e indicar as medidas a levar a cabo para tratar de potenciar os impactos positivos e evitar ou mitigar os posibles impactos negativos.
+
+
+## 4.4. Orzamento
 
 O orzamento do proxecto será a suma do importe dos materiais que necesites para realizar o proxecto máis o importe que corresponde ao traballo realizado. 
 O importe relacionado co traballo no proxecto é relativamente fácil de obter se se elaboraron ben as etapas anteriores: definir as actividades necesarias e os recursos propios de cada actividade. Neste caso disporase dun custo por cada actividade e a suma do custo de todas as actividades será o custo total do traballo do proxecto. 
@@ -71,7 +77,7 @@ O maior custo no proxecto case sempre corresponde ás persoas, polo que é impor
 
 A continuación preséntanse dúas opción de táboa para facilitar a creación do orzamento do proxecto:
 
-### 4.3.1. Orzamento por actividade
+### 4.4.1. Orzamento por actividade
 
 | ACTIVIDADE | DURACIÓN | CUSTO (EUROS) | | CUSTO TOTAL ACTIVIDADE |
 |--|--|--|--|--|
@@ -84,7 +90,7 @@ A continuación preséntanse dúas opción de táboa para facilitar a creación 
 | TOTAL | PROXECTO | 
 | -- | -- |
 
-### 4.3.2. Orzamento por partidas de inversión / gasto:
+### 4.4.2. Orzamento por partidas de inversión / gasto:
 
 | CONCEPTO | IMPORTE|
 |--|--|

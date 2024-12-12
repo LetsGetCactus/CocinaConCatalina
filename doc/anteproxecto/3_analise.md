@@ -6,7 +6,6 @@ Este documento describe os requirimentos para \[nome do proxecto\] especificando
 
 Descrición Xeral do proxecto
 
-
 ## 3.2. Tipos de usuarios
 
 Tipos de usuario que poderán acceder ó noso sistema. Poderán diferenciarse polos permisos sobre os datos, pantallas que se lles amosan, operacións que poden levar a cabo, etc.
@@ -15,7 +14,7 @@ Exemplo:
 
 - Usuario xerente, que terá acceso a ...
 
-- Usuario técnico, que poderá...
+- Usuario técnico, que poderá ...
 
 ## 3.3. Requirementos Funcionais
 
@@ -31,7 +30,9 @@ Exemplo:
 
   - **RF1.2.**. Eliminar unha conta de cliente
 
- - **RF2**. Autenticación de usuarios
+  - ...
+
+- **RF2**. Autenticación de usuarios
 
   - **RF2.1.**. Autenticar un usuario mediante OAuth.
 
@@ -44,9 +45,8 @@ Requerimentos relativos a rendemento, seguridade, etc. se procede
 Exemplo:
 
 - **RNF1.** A Aplicación web debe ser *responsive*.
+
 ...
-
-
 
 
 ## 3.5. Avaliación da viabilidade técnica do proxecto
