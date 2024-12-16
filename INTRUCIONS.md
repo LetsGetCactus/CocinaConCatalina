@@ -2,7 +2,7 @@
 
 ## Introdución
 
-Para o desenvolvemento e seguimento do proxecto usaremos a plataforma gitlab. Gitlab é unha plataforma que facilita o proceso de planificación, deseño, desenvolvemento e mantemento de calquera solución software de tipo libre. Mediante o seu uso preténdese promove a autoorganización, as boas prácticas e o espíritu colaborativo e de traballo en equipo. Ademáis, disporedes dun marco de traballo estándar que a día de hoxe está implantado na maioría de empresas que desenvolven software de alta calidade.
+Para o desenvolvemento e seguimento do proxecto usaremos a plataforma Gitlab. Gitlab é unha plataforma que facilita o proceso de planificación, deseño, desenvolvemento e mantemento de calquera solución software de tipo libre. Mediante o seu uso preténdese promove a autoorganización, as boas prácticas e o espíritu colaborativo e de traballo en equipo. Ademáis, disporedes dun marco de traballo estándar que a día de hoxe está implantado na maioría de empresas que desenvolven software de alta calidade.
 
 ## Os elementos principais cos que ides traballar no proxecto son os seguintes:
 
