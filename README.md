@@ -35,7 +35,6 @@ IMPORTANTE: [Información e documentos de axuda para a elaboración do proxecto 
 
 > *TODO*: Neste apartado describe con toda precisión e a poder ser coa maior simplicidade/facilidade posible, cómo poñer en marcha a túa aplicación para probala (nun contexto local). Valorarase moi positivamente que este proceso sexa o máis doado posible, como unha simple instrución (por exemplo un *script* de instalación).
 
-> Se o teu proxecto é documental, realiza unha especificación de cómo vai a ser este proceso. Noutras palabras, realiza este apartado independientemente que non haxa implantación.
 
 ## Licenza
 
