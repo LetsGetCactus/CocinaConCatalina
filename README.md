@@ -5,11 +5,15 @@ IMPORTANTE: [Información e documentos de axuda para a elaboración do proxecto 
 ## Sobre o autor
 
 > Son **Catarina Otero**, actríz e futura developer. Cursei o FP de DAM a distancia onde descubrín unha gran curiosidade polo desenvolvemento de apps Android e a ciberseguridade.
+>
 >Neste proxecto quixen reflectir principalmente o meu interese por Android, combinándolo con outra das miñas paixóns: a cociña. É así como nace **'Cocina con Catarina'**, unha app de receitas asiáticas. Trátase dun espazo onde a tecnoloxía mestúrase coa gastronomía para achegar sabores inspirados na cultura asiática tan en auxe na actualidade.
+>
 >Os meus puntos fortes son a contínua búsqueda de novos retos e coñecementos. Aínda que son principiante neste sector, a miña proactividade, capacidade de aprendizaxe e constancia no traballo, impúlsanme a tentar medrar día a día co obxectivo de conseguir crear apps máis robustas que axuden á organización e simplificación da vida dos usuarios.
 >
 >Para contactar comigo:
+>
 > 📩 Correo:  a21catarinaotero@iessanclemente.net 
+>
 > 🌐 LinkedIn: https://www.linkedin.com/in/catarina-otero-sieiro-swdev2025/  
 
 ## Uso
