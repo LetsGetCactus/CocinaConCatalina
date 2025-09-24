@@ -4,13 +4,17 @@ IMPORTANTE: [Información e documentos de axuda para a elaboración do proxecto 
 
 ## Sobre o autor
 
-> *TODO*: Realiza unha breve descrición de quen eres (perfil profesional), os teus puntos fortes, as tecnoloxías que máis dominas... e o porqué te decantaches por este proxecto. **Non máis de 200 palabras**. Indica unha forma fiable de contactar contigo no presente e no futuro.
+> Son *Catarina Otero*, actríz e futura developer. Cursei o FP de DAM a distancia onde descubrín unha gran curiosidade polo desenvolvemento de apps Android e a ciberseguridade.
+Neste proxecto quixen reflectir principalmente o meu interese por Android, combinándolo con outra das miñas paixóns: a cociña. É así como nace *'Cocina con Catarina'*, unha app de receitas asiáticas. Trátase dun espazo onde a tecnoloxía mestúrase coa gastronomía para achegar sabores inspirados na cultura asiática tan en auxe na actualidade.
+Os meus puntos fortes son a contínua búsqueda de novos retos e coñecementos. Aínda que son principiante neste sector, a miña proactividade, capacidade de aprendizaxe e constancia no traballo, impúlsanme a tentar medrar día a día co obxectivo de conseguir crear apps máis robustas que axuden á organización e simplificación da vida dos usuarios.
+
+Para contactar comigo:
+ 📩 Correo:  a21catarinaotero@iessanclemente.net 
+ 🌐 LinkedIn: https://www.linkedin.com/in/catarina-otero-sieiro-swdev2025/  
 
 ## Uso
 
-> *TODO*: Nste apartado describe brevemente cómo se usará o software que proxectas. Si tin unha interface de terminal, describe aquí a súa sintaxe. Se ten unha interface gráfica de usuario, describe aquí **sólo o uso** (a modo de sumario) **dos aspectos máis relevantes do seu funcionamento** (máxima brevidade, como se fose un anuncio ou reclamo comercial).
-
-> Se o teu proxecto é documental, realiza unha especificación de cómo formulas estas interfaces, con exemplos incluso ou esquemas de deseño. Noutras palabras, realiza este apartado independientemente que non haxa implantación.
+> Esta app de interface sinxela e amigable permíteche acceder a receitas asiáticas con ingredientes e pasos explicados de forma clara. Mentres cociñas podes desfrutar da túa música favorita en Spotify, gardar en favoritos as receitas que máis che gusten e mesmo modificar ingredientes para crear variantes ao teu gusto. Todo o sabor de Asia, ao teu gusto!.
 
 
 ## Índice: Estrutura do proxecto (plantillas de apoio)
