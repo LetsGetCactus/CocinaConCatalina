@@ -13,7 +13,6 @@ Os meus puntos fortes son a contínua búsqueda de novos retos e coñecementos. 
 Para contactar comigo:
 
  📩 Correo:  a21catarinaotero@iessanclemente.net 
-
  🌐 LinkedIn: https://www.linkedin.com/in/catarina-otero-sieiro-swdev2025/  
 
 ## Uso
@@ -37,6 +36,10 @@ Para contactar comigo:
 
 2. [Proxecto](/)
 > *TODO*: Simplemente indexa ordenadamente, e cunha estrutura de directorios lóxica, os ficheiros do teu proxecto no directorio raíz.
+
+### Vistas da Aplicación (Screenshots/Mockups)
+Podes atopar as imaxes das pantallas e prototipos no seguinte enlace de **Figma**:
+[Ligazón ao proxecto en Figma](https://www.figma.com/files/team/1553447237179614976/project/459741179/Proyecto-en-equipo?fuid=1552264572451519741)
 
 
 ## Instalación/Posta en marcha
