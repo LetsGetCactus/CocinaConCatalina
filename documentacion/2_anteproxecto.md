@@ -155,4 +155,3 @@ Outros.
 Incluír deseños das diferentes interfaces da aplicación, así como información da navegación entre vistas (se procede).
 
 O anteproxecto entregado polo alumnado deberá ser aprobado polo Equipo Docente do Ciclo.
-
