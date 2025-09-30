@@ -153,14 +153,14 @@ Outros.
     4.3. Deseño da interface de usuario
 
 Pantallas:
-![HomeScreen](documentacion/img/HomeScreen.png)
-![LoginScreen](documentacion/img/LoginScreen.png)
-![RegisterScreen](documentacion/img/RegisterScreen.png)
-![ListHostRecipeScreen](documentacion/img/ListHostRecipeScreen.png)
-![ItemRecipeScreen](documentacion/img/ItemRecipeScreen.png)
-![ModifyrecipeScreen](documentacion/img/ModifyRecipeScreen.png)
-![FavouritesScreen](documentacion/img/FavouritesScreen.png)
-![AddRecipeScreen](documentacion/img/AddRecipeScreen.png)
+![HomeScreen](documentacion/img/HomeScreen.png){width=300}
+![LoginScreen](documentacion/img/LoginScreen.png){width=300}
+![RegisterScreen](documentacion/img/RegisterScreen.png){width=300}
+![ListHostRecipeScreen](documentacion/img/ListHostRecipeScreen.png){width=300}
+![ItemRecipeScreen](documentacion/img/ItemRecipeScreen.png){width=300}
+![ModifyrecipeScreen](documentacion/img/ModifyRecipeScreen.png){width=300}
+![FavouritesScreen](documentacion/img/FavouritesScreen.png){width=300}
+![AddRecipeScreen](documentacion/img/AddRecipeScreen.png){width=300}
 
 ![Navegación](documentacion/img/CocinaConcatalina_Nav.drawio.png)
 Pódense consultar todas as funcionalidades da navegación no seguinte enlace a ![Figma - Cocina con Catalina](https://www.figma.com/design/8qsePYT8JKnqSSCSa2tkNm/Cocina-con-Catalina?node-id=0-1&m=dev&t=3Km70Lbld7n7X4mr-1)
