@@ -153,6 +153,7 @@ Outros.
     4.3. Deseño da interface de usuario
 
 Pantallas:
+- Modo claro
 ![HomeScreen](documentacion/img/HomeScreen.png){width=250}
 ![LoginScreen](documentacion/img/LoginScreen.png){width=250}
 ![RegisterScreen](documentacion/img/RegisterScreen.png){width=250}
@@ -162,7 +163,18 @@ Pantallas:
 ![FavouritesScreen](documentacion/img/FavouritesScreen.png){width=250}
 ![AddRecipeScreen](documentacion/img/AddRecipeScreen.png){width=250}
 
+- Modo escuro:
+![HomeScreen](documentacion/img/HomeScreenDark.png){width=250}
+![LoginScreen](documentacion/img/LoginScreenDark.png){width=250}
+![RegisterScreen](documentacion/img/RegisterScreenDark.png){width=250}
+![ListHostRecipeScreen](documentacion/img/ListHostRecipeScreenDark.png){width=250}
+![ItemRecipeScreen](documentacion/img/ItemRecipeScreenDark.png){width=250}
+![ModifyrecipeScreen](documentacion/img/ModifyRecipeScreenDark.png){width=250}
+![FavouritesScreen](documentacion/img/FavouritesScreenDark.png){width=250}
+![AddRecipeScreen](documentacion/img/AddRecipeScreenDark.png){width=250}
+
 ![Navegación](documentacion/img/CocinaConcatalina_Nav.drawio.png)
+
 Pódense consultar todas as funcionalidades da navegación no seguinte enlace a ![Figma - Cocina con Catalina](https://www.figma.com/design/8qsePYT8JKnqSSCSa2tkNm/Cocina-con-Catalina?node-id=0-1&m=dev&t=3Km70Lbld7n7X4mr-1)
 
 
