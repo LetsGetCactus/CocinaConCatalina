@@ -100,7 +100,7 @@
 
 
     >TODO
-     3.3. Normativa
+    3.3. Normativa
         Investigarase que normativa vixente afecta ao desenvolvemento do proxecto e de que maneira.
         O proxecto debe adaptarse ás esixencias legais dos territorios onde vai operar.
 
@@ -127,9 +127,9 @@
 
 4. Deseño
         A app traballa con unha base de datos NoSQL (Google Cloud Firestore) xa que ofrece a flexibilidade que precisan os datos da app. 
-        4.1. Deseño da arquitectura do sistema
-            Ao traballar con **Firestore** (NoSQL) traballamos con dúas coleccións principais: receitas e usuarios, onde cada usuario, dentro da súa colección, poderá almacenar e xerar tantas subcoleccións "receitas favoritas" (seleccionadas polo usuario) e "receitas modificadas"(aquelas cuxas cantidades dos ingredientes fosen modificadas) como goste e totalmente personales de cada usuario.
-            Quedando a estrututra da app da seguinte forma:
+    4.1. Deseño da arquitectura do sistema
+        Ao traballar con **Firestore** (NoSQL) traballamos con dúas coleccións principais: receitas e usuarios, onde cada usuario, dentro da súa colección, poderá almacenar e xerar tantas subcoleccións "receitas favoritas" (seleccionadas polo usuario) e "receitas modificadas"(aquelas cuxas cantidades dos ingredientes fosen modificadas) como goste e totalmente personales de cada usuario.
+        Quedando a estrututra da app da seguinte forma:
 
 | COLECCION | TIPO | USO | ACCESO |
 | :--- | :--- | :--- | :--- |
@@ -138,28 +138,29 @@
 | receitasFavoritas | Subcolección de usuario | Privado, só para o usuario | Colección de receitas seleccionadas como favoritas do usuario |
 | receitasModificadas | Subcolección de usuario|Privado, só para o usuario|Colección de receitas nas que as cantidades dos ingredientes foron modificadas para adpatar a receita aos gustos do usuario en cuestión |
 
-        Desta forma podemos tamén priorizar na búsqueda de consultas para que comezen polas que xeralmente o usuario consultará máis a miúdo, que seran as favoritas ou modificadas polo mesmo. No caso de non atopar coincidencias, entón pasaríase a buscar na colección principal de receitas 
-
-        Mediante as **regras de seguridade** de Firebase poderemos xogar coa diferencia na lectura e escritura da colección de receitas, sendo a lectura pública, pero a escritura soamente para o usuario admin. Ademáis dentro das subcoleccións de cada usuario, o mesmo usuario poderá  tanto ler como escribir as que teña almacenadas, non sendo así coas do resto de usuarios,cando menos na versión gratuíta.
+        Desta forma podemos tamén priorizar na búsqueda de consultas para que comezen polas que xeralmente o usuario consultará máis a miúdo, que seran as favoritas ou modificadas polo mesmo. 
+        No caso de non atopar coincidencias, entón pasaríase a buscar na colección principal de receitas 
+        Mediante as **regras de seguridade** de Firebase poderemos xogar coa diferencia na lectura e escritura da colección de receitas,
+        sendo a lectura pública, pero a escritura soamente para o usuario admin. Ademáis dentro das subcoleccións de cada usuario, o mesmo usuario poderá  tanto ler como escribir as que teña almacenadas, non sendo así coas do resto de usuarios,cando menos na versión gratuíta.
     
    
 ![Diagrama de compoñentes](documentacion/img/Componentes.png)
 ![Diagrama de secuencia](documentacion/img/secuecnia.png)
 ![Diagrama de despliegue](documentacion/img/despliefe.png)
 
-        4.2. Deseño da persistencia de datos
-            Para a persistencia dos datos traballaremos en totalidade co gardado dos mesmos na nube, así o usuario sempre poderá acceder ás súas receitas favoritas e modificadas sempre que teña un dispositivo Android dispoñible (e a súa conta de usuario), pero garantizando a independencia do dispositivo físico e o acceso aos seus datos .
-            Ademáis aproveitamos que Firestore evítanos que teñamos que xestionar servidores, encargándose el mesmo desa dispoñinilidade dos datos.
+    4.2. Deseño da persistencia de datos
+        Para a persistencia dos datos traballaremos en totalidade co gardado dos mesmos na nube, así o usuario sempre poderá acceder ás súas receitas favoritas e modificadas sempre que teña un dispositivo Android dispoñible (e a súa conta de usuario), pero garantizando a independencia do dispositivo físico e o acceso aos seus datos .
+        Ademáis aproveitamos que Firestore evítanos que teñamos que xestionar servidores, encargándose el mesmo desa dispoñinilidade dos datos.
 
-            **Firebase Authentication** encargaráse da xestión segura dos contrasinais en formato hash. O usuario poderá autenticarse por medio de correo e contrasinal ou ben con credenciais de Google.
+        **Firebase Authentication** encargaráse da xestión segura dos contrasinais en formato hash. O usuario poderá autenticarse por medio de correo e contrasinal ou ben con credenciais de Google.
 
-            E con **Storage** Poderemos almacenar e xestionar as URL públicas para as diferentes imaxes ou vídeo das receitas.
+        E con **Storage** Poderemos almacenar e xestionar as URL públicas para as diferentes imaxes ou vídeo das receitas.
 ![Modelo lóxico](documentacion/img/logico.png)
 ![Diagrama de casos de uso](documentacion/img/casosuso.png)
 
-        4.3. Deseño da interface de usuario
-            Pantallas:
-                - Modo claro:
+    4.3. Deseño da interface de usuario
+        Pantallas:
+            - Modo claro:
 
 ![HomeScreen](documentacion/img/HomeScreen.png){width=250}
 ![LoginScreen](documentacion/img/LoginScreen.png){width=250}
@@ -170,7 +171,7 @@
 ![FavouritesScreen](documentacion/img/FavouritesScreen.png){width=250}
 ![AddRecipeScreen](documentacion/img/AddRecipeScreen.png){width=250}
 
-                - Modo escuro:
+            - Modo escuro:
 
 ![HomeScreen](documentacion/img/HomeScreenDark.png){width=250}
 ![LoginScreen](documentacion/img/LoginScreenDark.png){width=250}
