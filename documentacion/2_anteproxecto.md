@@ -20,7 +20,7 @@ O modelo de negocio elixido é o Freemiun xunto con publicidade, para albergar a
 
 Se se quere quitar a publicidade, ofrécese tamén un servicio de pago.
 
-    1.5. Funcionalidades do proxecto (obxectivos e alcance)
+   1.5. Funcionalidades do proxecto (obxectivos e alcance)
  - Xestión de usuarios mediante conta de usuario para garantir a persistencia dos seus favoritos e modificacións de receitas
  - Repositorio de receitas en servidor para que esté sempre disponible
  - Xestión de favoritos de cada usuario, que poderá gardar ou borrar dentro desta listaxe
@@ -131,21 +131,22 @@ A app traballa con unha base de datos NoSQL (Google Cloud Firestore) xa que ofre
     4.1. Deseño da arquitectura do sistema
     Ao traballar con **Firestore** (NoSQL) traballamos con dúas coleccións principais: receitas e usuarios, onde cada usuario, dentro da súa colección, poderá almacenar e xerar tantas subcoleccións "receitas favoritas" (seleccionadas polo usuario) e "receitas modificadas"(aquelas cuxas cantidades dos ingredientes fosen modificadas) como goste e totalmente personales de cada usuario.
     Quedando a estrututra da app da seguinte forma:
-   
-    |COLECCION|TIPO|USO|ACCESO|
-    |receitas|Colección principal|Colección de receitas orixinais que engaden únicamente os usuarios que son admin|Público: lectura (salvo admin, que tamén posúe escritura)|
-    |usuarios|Colección principal|Almacena os diferentes perfís de usuario| Privado|
-    |receitasFavoritas|Subcolección de usuario|Privado, só para o usuario|Colección de receitas seleccionadas como favoritas do usuario|
-    |receitasModificadas|Subcolección de usuario|Privado, só para o usuario|Colección de receitas nas que as cantidades dos ingredientes foron modificadas para adpatar a receita aos gustos do usuario en cuestión|
 
-    Desta forma podemos tamén priorizar na búsqueda de consultas para que comezen polas que xeralmente o usuario consultará máis a miúdo, que seran as favoritas ou modificadas polo mesmo. No caso de non atopar coincidencias, entón pasaríase a buscar na colección principal de receitas 
+| COLECCION | TIPO | USO | ACCESO |
+| :--- | :--- | :--- | :--- |
+| receitas | Colección principal | Colección de receitas orixinais que engaden únicamente os usuarios que son admin | Público: lectura (salvo admin, que tamén posúe escritura) |
+| usuarios | Colección principal | Almacena os diferentes perfís de usuario | Privado |
+| receitasFavoritas | Subcolección de usuario | Privado, só para o usuario | Colección de receitas seleccionadas como favoritas do usuario |
+| receitasModificadas | Subcolección de usuario|Privado, só para o usuario|Colección de receitas nas que as cantidades dos ingredientes foron modificadas para adpatar a receita aos gustos do usuario en cuestión |
 
-    Mediante al **reglas de seguridade** de Firebase poderemos xogar coa diferencia na lectura e escritura da colección de receitas, sendo a lectura pública, pero a escritura soamente para o usuario admin. Ademáis dentro das subcoleccións de cada usuario, o mesmo usuario poderá  tanto ler como escribir as que teña almacenadas, non sendo así coas do resto de usuarios,cando menos na versión gratuíta.
+Desta forma podemos tamén priorizar na búsqueda de consultas para que comezen polas que xeralmente o usuario consultará máis a miúdo, que seran as favoritas ou modificadas polo mesmo. No caso de non atopar coincidencias, entón pasaríase a buscar na colección principal de receitas 
+
+    Mediante as **regras de seguridade** de Firebase poderemos xogar coa diferencia na lectura e escritura da colección de receitas, sendo a lectura pública, pero a escritura soamente para o usuario admin. Ademáis dentro das subcoleccións de cada usuario, o mesmo usuario poderá  tanto ler como escribir as que teña almacenadas, non sendo así coas do resto de usuarios,cando menos na versión gratuíta.
     
    
 ![Diagrama de compoñentes](documentacion/img/Componentes.png)
-![Diagrama de secuencia](documentacion/img/secuecnia.png)
-![Diagrama de despliegue](documentacion/img/despliefe.png)
+    ![Diagrama de secuencia](documentacion/img/secuecnia.png)
+    ![Diagrama de despliegue](documentacion/img/despliefe.png)
 
     4.2. Deseño da persistencia de datos
     Para a persistencia dos datos traballaremos en totalidade co gardado dos mesmos na nube, así o usuario sempre poderá acceder ás súas receitas favoritas e modificadas sempre que teña un dispositivo Android dispoñible (e a súa conta de usuario), pero garantizando a independencia do dispositivo físico e o acceso aos seus datos .
