@@ -16,9 +16,9 @@
 
 
     1.4. Modelo de negocio
-        O modelo de negocio elixido é o Freemiun xunto con publicidade, para albergar a maior cantidade de usuarios posibles.
+        O modelo de negocio elixido é o Freemiun , para albergar a maior cantidade de usuarios posibles.
+        Máis adiante desploquearánse funcionalidades só para usuarios de pago: compartir receitas, engadir as súas propias, entre outros
 
-        Se se quere quitar a publicidade, ofrécese tamén un servicio de pago.
 
     1.5. Funcionalidades do proxecto (obxectivos e alcance)
  - Xestión de usuarios mediante conta de usuario para garantir a persistencia dos seus favoritos e modificacións de receitas
@@ -115,15 +115,14 @@
 
         Apartados obrigatorios para cumprir a lexislación, que se atoparán dentro dos Términos e condición que os usuarios deberán aceptar para poder rexistrarse:
 
-
-
         Mecanismos de cumplimento:
             - Requeriránse o mínimo de datos sensibles para o rexistro do usuario
             - O usuario debe aceptar os Términos e condicións para o rexitro (necesario para o uso da app) que recolle: 
-            - Aviso legal.
-            - Política de privacidade.
-            - Política de cookies.
-            - A xestión de datos realízase íntegramente mediante Firebase Authentication e Firestore, xunto cos mecanismos de seguridade de Google (ver diagrama de despliegue, punto 4.1)
+                - Aviso legal.
+                - Política de privacidade.
+                - Política de cookies.
+            
+            -A xestión de datos realízase íntegramente mediante Firebase Authentication e Firestore, xunto cos mecanismos de seguridade de Google (ver diagrama de despliegue, punto 4.1)
 
 4. Deseño
         A app traballa con unha base de datos NoSQL (Google Cloud Firestore) xa que ofrece a flexibilidade que precisan os datos da app. 
@@ -143,9 +142,11 @@
         Mediante as **regras de seguridade** de Firebase poderemos xogar coa diferencia na lectura e escritura da colección de receitas,
         sendo a lectura pública, pero a escritura soamente para o usuario admin. Ademáis dentro das subcoleccións de cada usuario, o mesmo usuario poderá  tanto ler como escribir as que teña almacenadas, non sendo así coas do resto de usuarios,cando menos na versión gratuíta.
     
-   
+        Diagrama de compoñentes:
 ![Diagrama de compoñentes](documentacion/img/Componentes.png)
+        Diagrama de secuencia:
 ![Diagrama de secuencia](documentacion/img/secuecnia.png)
+        Diagrama de despliegue:
 ![Diagrama de despliegue](documentacion/img/despliefe.png)
 
     4.2. Deseño da persistencia de datos
@@ -155,7 +156,10 @@
         **Firebase Authentication** encargaráse da xestión segura dos contrasinais en formato hash. O usuario poderá autenticarse por medio de correo e contrasinal ou ben con credenciais de Google.
 
         E con **Storage** Poderemos almacenar e xestionar as URL públicas para as diferentes imaxes ou vídeo das receitas.
+
+        Modelo lóxico:
 ![Modelo lóxico](documentacion/img/logico.png)
+        Diagrama de casos de uso:
 ![Diagrama de casos de uso](documentacion/img/casosuso.png)
 
     4.3. Deseño da interface de usuario
