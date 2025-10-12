@@ -46,10 +46,9 @@ Authentication:
 |Inicio de sesión con Google |tamén 10.000/mes aprox.	| logo depende do proveedor |
 Namentres non se teña máis de 10.000 inicios de sesión únicos ao mes, non se pagará nada nesta parte
 
-Firestore Database :
-
-| :--- | :--- | :--- | 
+Firestore Database:
 |Concepto | Gratuito (/diario, Spark) | De pago (/diario, Blaze) |
+|:---|:---|:---| 
 |Lecturas de documentos	| 50.000 lecturas/día	| $0.06 por 100.000 lecturas adicionais |
 |Escrituras de documentos |	20.000 escrituras/día |	$0.18 por 100.000 escrituras adicionais |
 |Almacenamento |	1 GiB total	| $0.18 USD por GB adicional/mes | 
@@ -57,8 +56,8 @@ Firestore Database :
 Se un usuario medio pode abrir unhas 10 receitas ao día, poderíamos ter uns 5.000 usuarios diarios no formato grtauito (50.000 lecturas/ 10 lecturas por usuario = 5.000 usuarios activos gratis)
 
 Cloud Storage :
-| :--- | :--- | :--- | 
 |Almacenamento	| 1 GB total |	$0.026 USD por GB/mes |
+|:---|:---|:---| 
 |Descargas |	1 GB de descarga/mes	| $0.12 USD por GB extra |
 |Subidas	| Gratis	| Gratis |
 Se partimos de que una imaxen para una app móvil, podería pesar uns 500KB, poderíamos ter unhas 2.000 imaxes almacenadas no plan gratuito.
@@ -68,9 +67,9 @@ De todas formas activaránse as alertas de facturación en Google Cloud Platform
 Empregaremos regas de seguridade e cache na app para reducir as lecturas innecesarias
 
 
-EN RESUMO: 
-| :--- | :--- | :--- | 
+EN RESUMO:
 | Concepto	| Custo mensual estimado	| Comentarios |
+|:---|:---|:---| 
 | Authentication |	$0	| Dentro deos 10.000 inicios gratuitos |
 | Firestore Database |	$0 – $10 USD	| So se se superan as lecturas gratuitas |
 | Cloud Storage |	$0 – $5 USD	| Dependendo do tamaño e número de imaxes
