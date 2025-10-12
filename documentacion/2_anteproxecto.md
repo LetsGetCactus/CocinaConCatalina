@@ -39,8 +39,7 @@ O modelo de negocio elixido é o **Freemium** con anuncios (ver mockups das pant
 TÁBOAS DE CUSTOS SERVIZOS FIREBASE:
 
 Authentication: 
-
-| :--- | :--- | :--- | 
+|:---|:---|:---| 
 |Concepto | Gratuito (/mes, Spark) | De pago (/mes, Blaze) |
 |Inicio de sesión con email/contraseña	| 10.000 usuarios/mes	| +0,01 USD por cada verificación extra |
 |Inicio de sesión con Google |tamén 10.000/mes aprox.	| logo depende do proveedor |
