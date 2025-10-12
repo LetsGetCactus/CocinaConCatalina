@@ -38,14 +38,16 @@ O modelo de negocio elixido é o **Freemium** con anuncios (ver mockups das pant
 
 TÁBOAS DE CUSTOS SERVIZOS FIREBASE:
 
-|Authentication|
+Authentication: 
+
 | :--- | :--- | :--- | 
 |Concepto | Gratuito (/mes, Spark) | De pago (/mes, Blaze) |
 |Inicio de sesión con email/contraseña	| 10.000 usuarios/mes	| +0,01 USD por cada verificación extra |
 |Inicio de sesión con Google |tamén 10.000/mes aprox.	| logo depende do proveedor |
 Namentres non se teña máis de 10.000 inicios de sesión únicos ao mes, non se pagará nada nesta parte
 
-| Firestore Database |
+Firestore Database :
+
 | :--- | :--- | :--- | 
 |Concepto | Gratuito (/diario, Spark) | De pago (/diario, Blaze) |
 |Lecturas de documentos	| 50.000 lecturas/día	| $0.06 por 100.000 lecturas adicionais |
@@ -54,7 +56,7 @@ Namentres non se teña máis de 10.000 inicios de sesión únicos ao mes, non se
 |Descarga de datos	| Incluido dentro de lecturas	| — |
 Se un usuario medio pode abrir unhas 10 receitas ao día, poderíamos ter uns 5.000 usuarios diarios no formato grtauito (50.000 lecturas/ 10 lecturas por usuario = 5.000 usuarios activos gratis)
 
-| Cloud Storage|
+Cloud Storage :
 | :--- | :--- | :--- | 
 |Almacenamento	| 1 GB total |	$0.026 USD por GB/mes |
 |Descargas |	1 GB de descarga/mes	| $0.12 USD por GB extra |
@@ -65,7 +67,8 @@ Se partimos de que una imaxen para una app móvil, podería pesar uns 500KB, pod
 De todas formas activaránse as alertas de facturación en Google Cloud Platform para ter o gasto mensual vixiado.
 Empregaremos regas de seguridade e cache na app para reducir as lecturas innecesarias
 
-|EN RESUMO: |
+
+EN RESUMO: 
 | :--- | :--- | :--- | 
 | Concepto	| Custo mensual estimado	| Comentarios |
 | Authentication |	$0	| Dentro deos 10.000 inicios gratuitos |
