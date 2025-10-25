@@ -34,82 +34,141 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.letsgetcactus.cocinaconcatalina.R
-import com.letsgetcactus.cocinaconcatalina.model.Allergen
+import com.letsgetcactus.cocinaconcatalina.model.enum.Allergen
 import com.letsgetcactus.cocinaconcatalina.model.Ingredient
+import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
 import com.letsgetcactus.cocinaconcatalina.model.enum.UnitsType
 import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
 
 @Composable
 fun ModifyRecipeScreen(
-    //Examples
+
+    onNavigate: (String) -> Unit,
+
+    //TODO: Examples
     ingredientList: List<Ingredient> = listOf(
         Ingredient("Harina", "100", UnitsType.GRAM),
         Ingredient("Leche", "200", UnitsType.MILLILITER)
     ),
     onIngredientChange: (Ingredient) -> Unit = {},
+    stepList: List<String> = listOf(
+        "1. Cocer el huevo 10 minutos",
+        "2. Pelar tomates y cortarlos en trozos del tamaño de un guisante",
+        "3. Coger todo y hacer algo que simule que cocinas mientras pides comida a just eat"
+    )
 ) {
 
     val scrollState = rememberScrollState()
     val selectedAllergens = remember { mutableStateMapOf<Allergen, Boolean>() }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .verticalScroll(scrollState)
-            .padding(32.dp)
-    ) {
-        Text(
-            text = "Modificar receta",
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.primary
-        )
-
-
-        // Image
-        Box(
+    Box {
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(min = 200.dp)
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .verticalScroll(scrollState)
+                .padding(32.dp)
         ) {
-            Image(
-                painter = painterResource(R.drawable.recipe),
-                contentDescription = stringResource(R.string.recipe_not_found),
-                contentScale = ContentScale.Fit,
-                modifier = Modifier.fillMaxWidth()
+            Text(
+                text = "Modificar receta",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.primary
             )
+
+
+            // Image
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 200.dp)
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.recipe),
+                    contentDescription = stringResource(R.string.recipe_not_found),
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
+            Spacer(modifier = Modifier.size(24.dp))
+
+            // Alergens . Horizontal scroll
+            Text(
+                text = stringResource(R.string.allergens),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                ModifyAlergensList(selectedAllergens)
+            }
+
+            Spacer(modifier = Modifier.size(24.dp))
+
+            // Ingredients
+            Text(
+                text = stringResource(R.string.ingredients),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.primary
+            )
+            ModifyItemIngredients(
+                ingredientList = ingredientList,
+                onIngredientChange = onIngredientChange
+            )
+
+            Spacer(Modifier.size(24.dp))
+
+            //Steps
+            Text(
+                text = stringResource(R.string.steps),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.primary
+            )
+
+            Column() {
+                stepList.forEach { step ->
+                    Row(
+
+                    ) {
+                        Text(
+                            text = step,
+                            color = MaterialTheme.colorScheme.onBackground
+
+                        )
+                    }
+                }
+            }
         }
-
-        Spacer(modifier = Modifier.size(24.dp))
-
-        // Alergens . Horizontal scroll
-        Text(
-            text = stringResource(R.string.allergens),
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .horizontalScroll(rememberScrollState()),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        //FAB
+        Column(
+            Modifier.fillMaxSize()
+                .padding(horizontal= 24.dp, vertical =48.dp),
+            horizontalAlignment = Alignment.End,
+            verticalArrangement = Arrangement.Bottom
         ) {
-            ModifyAlergensList(selectedAllergens)
+            FloatingActionButton(
+                onClick = { //TODO: Guardar cambios
+                    onNavigate(NavigationRoutes.ITEM_RECIPE_SCREEN) },
+                containerColor = MaterialTheme.colorScheme.secondary,
+                contentColor = MaterialTheme.colorScheme.onSecondary,
+                modifier = Modifier
+                    .padding(16.dp)
+                    .size(72.dp),
+                shape = MaterialTheme.shapes.large,
+
+                ) {
+                Icon(
+                    painter = painterResource(R.drawable.save),
+                    contentDescription = stringResource(R.string.save),
+                    modifier = Modifier.size(32.dp)
+                )
+            }
         }
-
-        Spacer(modifier = Modifier.size(24.dp))
-
-        // Ingredients
-        Text(
-            text = stringResource(R.string.ingredients),
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-        ModifyItemIngredients(
-            ingredientList = ingredientList,
-            onIngredientChange = onIngredientChange
-        )
     }
+
 }
 
 @Composable
@@ -117,13 +176,16 @@ fun ModifyItemIngredients(
     ingredientList: List<Ingredient>,
     onIngredientChange: (Ingredient) -> Unit
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
         ingredientList.forEach { ingredient ->
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth()
-            ) {
+                modifier = Modifier.fillMaxWidth(),
+
+                ) {
                 //Edit quantity
                 TextField(
                     value = ingredient.quantity,
@@ -164,25 +226,7 @@ fun ModifyItemIngredients(
             }
         }
     }
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.BottomEnd
-    ) {
-        FloatingActionButton(
-            onClick = { /* Guardar cambios */ },
-            containerColor = MaterialTheme.colorScheme.secondary,
-            contentColor = MaterialTheme.colorScheme.onSecondary,
-            modifier = Modifier.padding(16.dp)
-                .size(72.dp),
-            shape = MaterialTheme.shapes.large
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.save),
-                contentDescription = stringResource(R.string.save),
-                modifier = Modifier.size(32.dp)
-            )
-        }
-    }
+
 }
 
 @Composable
@@ -207,8 +251,9 @@ fun ModifyAlergensList(selectedAllergens: MutableMap<Allergen, Boolean>) {
 fun UnitSelector(
     selectedUnit: UnitsType,
     onUnitSelected: (UnitsType) -> Unit,
-    modifier: Modifier = Modifier
-) {
+    modifier: Modifier = Modifier,
+
+    ) {
     var expanded = remember { false }
 
     Box(modifier = modifier) {
@@ -216,7 +261,14 @@ fun UnitSelector(
             value = stringResource(selectedUnit.unitToDisplay),
             onValueChange = {},
             readOnly = true,
-            modifier = Modifier.clickable { expanded = !expanded }
+            modifier = Modifier.clickable { expanded = !expanded },
+            shape = MaterialTheme.shapes.small,
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.surface,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+            ),
         )
         androidx.compose.material3.DropdownMenu(
             expanded = expanded,
@@ -239,6 +291,6 @@ fun UnitSelector(
 @Composable
 fun PreviewModifyRecipeScreen() {
     CocinaConCatalinaTheme(darkTheme = false) {
-        ModifyRecipeScreen()
+        ModifyRecipeScreen(onNavigate = {})
     }
 }

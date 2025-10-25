@@ -87,4 +87,6 @@
     <string name="image">Imaxen</string>
     <string name="filters">Filtros</string>
     <string name="insert_filter">Inserta filtros separados por comas</string>
+    <string name="save">Gardar</string>
+    <string name="tasty">Mmmm, soa delicioso!</string>
 </resources>

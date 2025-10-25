@@ -2,6 +2,7 @@ package com.letsgetcactus.cocinaconcatalina.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,29 +25,34 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.letsgetcactus.cocinaconcatalina.R
+import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
 import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
 
 @Composable
 fun ListRecipeHostScreen(
+    onNavigate: (String) -> Unit
 ){
-    ListRecipeContent()
+    ListRecipeContent(onNavigate)
 }
 
 @Composable
 fun ListRecipeContent(
+    onNavigate: (String) -> Unit
 ){
     LazyColumn(
         modifier = Modifier.fillMaxWidth()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        item { RecipeCard() }
+        item { RecipeCard(onNavigate) }
     }
 
 
 }
 
 @Composable
-private fun RecipeCard(){
+private fun RecipeCard(
+    onNavigate: (String) -> Unit
+){
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -58,7 +64,11 @@ private fun RecipeCard(){
         Box(
             modifier = Modifier.fillMaxWidth()
                 .height(250.dp)
-        ) {
+                .clickable(
+                    true,
+                    onClick = {onNavigate(NavigationRoutes.ITEM_RECIPE_SCREEN)})
+                )
+        {
             //TODO: change recipe data for ddbb
             Image(
                 painter = painterResource(R.drawable.recipe),
@@ -81,7 +91,7 @@ private fun RecipeCard(){
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSecondary
                 )
-                Text(
+                Text(//TODO: cambiar a puntuacion
                     text = "Esta receta es maravillosa",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSecondary
@@ -90,6 +100,7 @@ private fun RecipeCard(){
         }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable
@@ -101,7 +112,7 @@ fun PreviewListRecipeHost() {
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(5) { // Simulamos 5 tarjetas
-                RecipeCard()
+                RecipeCard(onNavigate = {})
             }
         }
     }

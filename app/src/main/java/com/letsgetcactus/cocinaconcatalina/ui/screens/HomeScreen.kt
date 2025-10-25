@@ -4,13 +4,10 @@ import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
@@ -20,21 +17,21 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.autofill.ContentType
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.letsgetcactus.cocinaconcatalina.R
-import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
+import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    onNavigate: (String) -> Unit
+) {
 
-    var orientation = LocalConfiguration.current
-    var isLight = !isSystemInDarkTheme()
+    val orientation = LocalConfiguration.current
+    val isLight = !isSystemInDarkTheme()
 
     Column(
         modifier = Modifier
@@ -56,7 +53,7 @@ fun HomeScreen() {
         Spacer(modifier = Modifier.size(64.dp))
 
         Button(
-            onClick = {},
+            onClick = {onNavigate(NavigationRoutes.LIST_RECIPES_HOST_SCREEN)},
             modifier = Modifier.fillMaxWidth()
                 .padding(horizontal = 64.dp),
             shape = MaterialTheme.shapes.large,
@@ -73,7 +70,7 @@ fun HomeScreen() {
         Spacer(modifier = Modifier.size(32.dp))
 
         Button(
-            onClick = {},
+            onClick = {onNavigate(NavigationRoutes.LIST_RECIPES_HOST_SCREEN)},
             modifier = Modifier.fillMaxWidth()
                 .padding(horizontal = 64.dp),
             shape = MaterialTheme.shapes.large,
@@ -90,7 +87,7 @@ fun HomeScreen() {
         Spacer(modifier = Modifier.size(32.dp))
 
         Button(
-            onClick = {},
+            onClick = {onNavigate(NavigationRoutes.LIST_RECIPES_HOST_SCREEN)},
             modifier = Modifier.fillMaxWidth()
                 .padding(horizontal = 64.dp),
             shape = MaterialTheme.shapes.large,
@@ -108,11 +105,11 @@ fun HomeScreen() {
     }
 }
 
-
+/*
 @Composable
 @Preview
 fun PreviewHomeScreen() {
     CocinaConCatalinaTheme(darkTheme = false) {
         HomeScreen()
     }
-}
+}*/

@@ -2,6 +2,7 @@ package com.letsgetcactus.cocinaconcatalina.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,12 +35,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.letsgetcactus.cocinaconcatalina.R
-import com.letsgetcactus.cocinaconcatalina.ui.theme.Beis
+import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
 import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
-import com.letsgetcactus.cocinaconcatalina.ui.theme.Red
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(
+    onNavigate: (String) -> Unit
+) {
 
     //States for the Text fields (email and password)
     var email by remember { mutableStateOf("") }
@@ -159,7 +161,7 @@ fun LoginScreen() {
             modifier = Modifier
                 .fillMaxWidth()
                 .shadow(8.dp),
-            onClick = { },
+            onClick = {onNavigate(NavigationRoutes.HOME_SCREEN) },
             shape = MaterialTheme.shapes.small,
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.primary,
@@ -183,7 +185,7 @@ fun LoginScreen() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .shadow(8.dp),
-                onClick = {},
+                onClick = {onNavigate(NavigationRoutes.HOME_SCREEN)},
                 shape = MaterialTheme.shapes.small,
                 colors = ButtonDefaults.buttonColors(
                     MaterialTheme.colorScheme.secondary,
@@ -212,7 +214,7 @@ fun LoginScreen() {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.End
-        ) {
+        ) {//TODO: Implementar que hacer si se ha olvidado la pass
             Text(
                 text = stringResource(R.string.forgot_pass),
                 textAlign = TextAlign.End,
@@ -238,7 +240,7 @@ fun LoginScreen() {
             modifier = Modifier
                 .fillMaxWidth()
                 .shadow(8.dp),
-            onClick = { },
+            onClick = {onNavigate(NavigationRoutes.REGISTER_SCREEN) },
             shape = MaterialTheme.shapes.small,
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.primary,
@@ -258,7 +260,11 @@ fun LoginScreen() {
         Text(
             text = stringResource(R.string.terms),
             color = MaterialTheme.colorScheme.tertiary,
-            style = MaterialTheme.typography.labelSmall
+            style = MaterialTheme.typography.labelSmall,
+            modifier = Modifier.clickable(
+                true,
+                onClick = {onNavigate(NavigationRoutes.LIST_RECIPES_HOST_SCREEN)}
+            )
         )
 
     }
@@ -268,6 +274,6 @@ fun LoginScreen() {
 @Preview
 fun PreviewLogin() {
     CocinaConCatalinaTheme(darkTheme = false) {
-        LoginScreen()
+        LoginScreen(onNavigate = {})
     }
 }

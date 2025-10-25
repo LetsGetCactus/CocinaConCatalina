@@ -2,6 +2,7 @@ package com.letsgetcactus.cocinaconcatalina.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,10 +27,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.letsgetcactus.cocinaconcatalina.R
+import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
 import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
 
 @Composable
-fun ItemRecipeScreen() {
+fun ItemRecipeScreen(
+    onNavigate:(String) -> Unit
+) {
 
     Column(
         modifier = Modifier
@@ -78,7 +82,11 @@ fun ItemRecipeScreen() {
                             .offset(x = (8).dp, y = 16.dp)
                     ) {
                         // Edit
-                        Box {
+                        Box(
+                            Modifier.clickable(
+                                true,
+                                onClick = {onNavigate(NavigationRoutes.LIST_RECIPES_HOST_SCREEN)})
+                        ) {
                             Image(
                                 painter = painterResource(R.drawable.circle),
                                 contentDescription = null,
@@ -178,16 +186,19 @@ fun ModifyItemIngredients() {
         Text(
             text = "cantidad",
             modifier = Modifier.weight(1f),
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onBackground
         )
         Text(
             text = "unidad",
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            color = MaterialTheme.colorScheme.onBackground
         )
         Spacer(modifier = Modifier.size(20.dp))
         Text(
             text = "ingrediente",
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            color = MaterialTheme.colorScheme.onBackground
         )
     }
 }
@@ -195,7 +206,8 @@ fun ModifyItemIngredients() {
 @Composable
 fun ModifyItemSteps() {
     Row {
-        Text(text = "pasos")
+        Text(text = "pasos",
+            color = MaterialTheme.colorScheme.onBackground)
     }
 }
 
@@ -223,7 +235,7 @@ fun ModifyAlergensList() {
 @Composable
 @Preview
 fun PreviewItemRecipe() {
-    CocinaConCatalinaTheme(darkTheme = false) {
-        ItemRecipeScreen()
+    CocinaConCatalinaTheme(darkTheme = true) {
+        ItemRecipeScreen(onNavigate = {})
     }
 }

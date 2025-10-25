@@ -13,10 +13,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,12 +27,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.min
 import com.letsgetcactus.cocinaconcatalina.R
+import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
 import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
 
 @Composable
-fun FavouritesScreen() {
+fun FavouritesScreen(
+    onNavigate: (String) -> Unit
+) {
 
 
     Column(
@@ -53,7 +53,7 @@ fun FavouritesScreen() {
         )
         LazyColumn {
             item {
-                FavCard()
+                FavCard(onNavigate)
             }
         }
 
@@ -62,7 +62,9 @@ fun FavouritesScreen() {
 }
 
 @Composable
-fun FavCard() {
+fun FavCard(
+    onNavigate: (String) -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -77,6 +79,8 @@ fun FavCard() {
             )
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
+            onNavigate(NavigationRoutes.ITEM_RECIPE_SCREEN)
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -132,6 +136,6 @@ fun FavCard() {
 @Preview
 fun PreviewFavourites() {
     CocinaConCatalinaTheme(darkTheme = false) {
-        FavouritesScreen()
+        FavouritesScreen(onNavigate = {})
     }
 }

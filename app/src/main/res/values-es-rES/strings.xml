@@ -8,7 +8,7 @@
     <string name="back">volver</string>
     <string name="confirm_pass">Por favor, confirma tu contraseña</string>
     <string name="image_description">Cocina con Catarina banner</string>
-    <string name="music">musica</string>
+    <string name="music">música</string>
     <string name="home">Inicio</string>
     <string name="favs">Favoritos</string>
     <string name="search_bar">Busque por ingrediente o título</string>
@@ -33,7 +33,7 @@
     <string name="upload_step">Cargar paso</string>
     <string name="recipe_not_found">Receta no encontrada</string>
     <string name="add_recipe">Añadir nueva receta (solo admin)</string>
-    <string name="termsAndConditions">He leido y acepto los términos y condiciones</string>
+    <string name="termsAndConditions">He leído y acepto los términos y condiciones</string>
     <string name="googleRegister">Registrarse con Google</string>
     <string name="googleImg">Google</string>
     <string name="ccc_icon">icono deCocina con Catalina</string>
@@ -88,4 +88,6 @@
     <string name="image">Imagen</string>
     <string name="filters">Filtros</string>
     <string name="insert_filter">Inserta filtros separados por comas</string>
+    <string name="save">Guardar</string>
+    <string name="tasty">Mmmm, soa delicioso!</string>
 </resources>
