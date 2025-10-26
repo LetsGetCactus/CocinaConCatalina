@@ -21,57 +21,60 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.letsgetcactus.cocinaconcatalina.R
 import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
+import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
 
 @Composable
 fun HomeScreen(
+    modifier: Modifier = Modifier,
     onNavigate: (String) -> Unit
 ) {
-
     val orientation = LocalConfiguration.current
     val isLight = !isSystemInDarkTheme()
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-
         if (orientation.orientation == Configuration.ORIENTATION_PORTRAIT) {
             Image(
                 painter = painterResource(if (isLight) R.drawable.banner_blanco else R.drawable.banner_gris),
                 contentDescription = stringResource(R.string.image_description),
                 contentScale = ContentScale.FillWidth,
-                modifier = Modifier.fillMaxWidth()
-
+                modifier = Modifier.fillMaxWidth() // 👈 aquí usamos Modifier, no modifier
             )
         }
 
-        Spacer(modifier = Modifier.size(64.dp))
+        Spacer(modifier = Modifier.size(64.dp)) // 👈 igual aquí
 
         Button(
-            onClick = {onNavigate(NavigationRoutes.LIST_RECIPES_HOST_SCREEN)},
-            modifier = Modifier.fillMaxWidth()
+            onClick = { onNavigate(NavigationRoutes.LIST_RECIPES_HOST_SCREEN) },
+            modifier = Modifier
+                .fillMaxWidth()
                 .padding(horizontal = 64.dp),
             shape = MaterialTheme.shapes.large,
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary
             )
-            ) {
+        ) {
             Text(
                 text = stringResource(R.string.allRecipes),
                 style = MaterialTheme.typography.bodyLarge
             )
         }
+
         Spacer(modifier = Modifier.size(32.dp))
 
         Button(
-            onClick = {onNavigate(NavigationRoutes.LIST_RECIPES_HOST_SCREEN)},
-            modifier = Modifier.fillMaxWidth()
+            onClick = { onNavigate(NavigationRoutes.LIST_RECIPES_HOST_SCREEN) },
+            modifier = Modifier
+                .fillMaxWidth()
                 .padding(horizontal = 64.dp),
             shape = MaterialTheme.shapes.large,
             colors = ButtonDefaults.buttonColors(
@@ -84,11 +87,13 @@ fun HomeScreen(
                 style = MaterialTheme.typography.bodyLarge
             )
         }
+
         Spacer(modifier = Modifier.size(32.dp))
 
         Button(
-            onClick = {onNavigate(NavigationRoutes.LIST_RECIPES_HOST_SCREEN)},
-            modifier = Modifier.fillMaxWidth()
+            onClick = { onNavigate(NavigationRoutes.LIST_RECIPES_HOST_SCREEN) },
+            modifier = Modifier
+                .fillMaxWidth()
                 .padding(horizontal = 64.dp),
             shape = MaterialTheme.shapes.large,
             colors = ButtonDefaults.buttonColors(
@@ -101,15 +106,13 @@ fun HomeScreen(
                 style = MaterialTheme.typography.bodyLarge
             )
         }
-
     }
 }
 
-/*
 @Composable
 @Preview
 fun PreviewHomeScreen() {
     CocinaConCatalinaTheme(darkTheme = false) {
-        HomeScreen()
+        HomeScreen(onNavigate = {})
     }
-}*/
+}

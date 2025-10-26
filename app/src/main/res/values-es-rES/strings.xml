@@ -12,7 +12,7 @@
     <string name="home">Inicio</string>
     <string name="favs">Favoritos</string>
     <string name="search_bar">Busque por ingrediente o título</string>
-    <string name="loading">Cargando...</string>
+    <string name="loading">Cargando…</string>
     <string name="error">Ha ocurrido un error</string>
     <string name="ingredients">Ingredientes</string>
     <string name="steps">Pasos.</string>
@@ -90,4 +90,8 @@
     <string name="insert_filter">Inserta filtros separados por comas</string>
     <string name="save">Guardar</string>
     <string name="tasty">Mmmm, soa delicioso!</string>
+    <string name="spotify">Spotify</string>
+    <string name="menu_drawer">Menú lateral</string>
+    <string name="search">Buscar</string>
+    <string name="close">Cerrar</string>
 </resources>

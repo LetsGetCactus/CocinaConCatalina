@@ -89,4 +89,8 @@
     <string name="insert_filter">Inserta filtros separados por comas</string>
     <string name="save">Gardar</string>
     <string name="tasty">Mmmm, soa delicioso!</string>
+    <string name="spotify">Spotify</string>
+    <string name="menu_drawer">Menú lateral</string>
+    <string name="search">Buscar</string>
+    <string name="close">Pechar</string>
 </resources>

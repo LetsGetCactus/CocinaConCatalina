@@ -20,6 +20,7 @@ class MainActivity : ComponentActivity() {
                     navController=navController,
                     startDestination= NavigationRoutes.LOGIN_SCREEN
                 )
+
             }
         }
     }

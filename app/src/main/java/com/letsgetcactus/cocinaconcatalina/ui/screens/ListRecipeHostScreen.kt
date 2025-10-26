@@ -6,7 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -30,46 +29,47 @@ import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
 
 @Composable
 fun ListRecipeHostScreen(
+    modifier: Modifier = Modifier,
     onNavigate: (String) -> Unit
-){
-    ListRecipeContent(onNavigate)
+) {
+    ListRecipeContent(
+        modifier = modifier,
+        onNavigate = onNavigate
+    )
 }
 
 @Composable
 fun ListRecipeContent(
+    modifier: Modifier = Modifier,
     onNavigate: (String) -> Unit
-){
+) {
     LazyColumn(
-        modifier = Modifier.fillMaxWidth()
+        modifier = modifier
+            .fillMaxWidth()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        item { RecipeCard(onNavigate) }
+        items(5) { // simulamos 5 recetas
+            RecipeCard(onNavigate = onNavigate)
+        }
     }
-
-
 }
 
 @Composable
 private fun RecipeCard(
     onNavigate: (String) -> Unit
-){
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(4.dp),
         shape = MaterialTheme.shapes.small
-
-
-    ){
+    ) {
         Box(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .height(250.dp)
-                .clickable(
-                    true,
-                    onClick = {onNavigate(NavigationRoutes.ITEM_RECIPE_SCREEN)})
-                )
-        {
-            //TODO: change recipe data for ddbb
+                .clickable { onNavigate(NavigationRoutes.ITEM_RECIPE_SCREEN) }
+        ) {
             Image(
                 painter = painterResource(R.drawable.recipe),
                 contentDescription = stringResource(R.string.image_description),
@@ -82,7 +82,7 @@ private fun RecipeCard(
                     .fillMaxWidth()
                     .align(Alignment.BottomEnd)
                     .background(Color.Black.copy(alpha = 0.4f))
-                    .padding(top = 8.dp),
+                    .padding(8.dp),
                 horizontalAlignment = Alignment.End,
                 verticalArrangement = Arrangement.Bottom
             ) {
@@ -91,7 +91,7 @@ private fun RecipeCard(
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSecondary
                 )
-                Text(//TODO: cambiar a puntuacion
+                Text(
                     text = "Esta receta es maravillosa",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSecondary
@@ -101,19 +101,15 @@ private fun RecipeCard(
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
 fun PreviewListRecipeHost() {
     CocinaConCatalinaTheme(darkTheme = false) {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(5) { // Simulamos 5 tarjetas
-                RecipeCard(onNavigate = {})
-            }
-        }
+        ListRecipeContent(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            onNavigate = {}
+        )
     }
 }

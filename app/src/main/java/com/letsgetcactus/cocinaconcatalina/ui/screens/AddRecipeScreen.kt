@@ -43,8 +43,7 @@ import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
 
 @Composable
 fun AddRecipescreen(
-
-    onNavigate: (String) -> Unit
+       onNavigate: (String) -> Unit
 ) {
 
     var title: String by remember { mutableStateOf("") }

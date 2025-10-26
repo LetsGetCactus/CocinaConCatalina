@@ -2,6 +2,7 @@ package com.letsgetcactus.cocinaconcatalina.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,32 +34,36 @@ import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
 
 @Composable
 fun FavouritesScreen(
+    modifier: Modifier = Modifier,
     onNavigate: (String) -> Unit
 ) {
-
-
     Column(
-        Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .padding(24.dp)
+            .padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(Modifier.size(96.dp))
+        Spacer(modifier = Modifier.size(96.dp))
 
         Text(
             text = stringResource(R.string.favs),
-            modifier = Modifier.padding(horizontal = 32.dp),
+            modifier = Modifier.padding(horizontal = 40.dp)
+                .align(Alignment.Start),
             style = MaterialTheme.typography.displayLarge,
             color = MaterialTheme.colorScheme.tertiary
         )
-        LazyColumn {
-            item {
-                FavCard(onNavigate)
+
+        LazyColumn(
+            modifier = Modifier.fillMaxWidth(),
+            contentPadding = androidx.compose.foundation.layout.PaddingValues(vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(2) {
+                FavCard(onNavigate = onNavigate)
             }
         }
-
     }
-
 }
 
 @Composable
@@ -69,24 +74,17 @@ fun FavCard(
         modifier = Modifier
             .fillMaxWidth()
             .widthIn(min = 400.dp, max = 800.dp)
-            .heightIn(min= 160.dp, 200.dp)
-            .shadow(8.dp,
-                shape = MaterialTheme.shapes.small,
-                )
-            .background(
-                color = MaterialTheme.colorScheme.primary,
-                shape = MaterialTheme.shapes.small
-            )
+            .heightIn(min = 160.dp, max = 200.dp)
+            .shadow(8.dp, shape = MaterialTheme.shapes.small)
+            .background(color = MaterialTheme.colorScheme.primary, shape = MaterialTheme.shapes.small)
             .padding(horizontal = 16.dp, vertical = 8.dp)
+            .clickable { onNavigate(NavigationRoutes.ITEM_RECIPE_SCREEN) }
     ) {
-            onNavigate(NavigationRoutes.ITEM_RECIPE_SCREEN)
-
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp, bottom = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
                 painter = painterResource(R.drawable.recipe),
@@ -95,16 +93,14 @@ fun FavCard(
                 modifier = Modifier
                     .widthIn(min = 120.dp, max = 220.dp)
                     .heightIn(min = 100.dp, max = 160.dp)
-                    .padding(vertical = 8.dp)
-                    .clip(      shape = MaterialTheme.shapes.small,)
+                    .clip(MaterialTheme.shapes.small)
                     .weight(1f)
-
             )
 
-            Spacer(Modifier.size(8.dp))
+            Spacer(modifier = Modifier.size(8.dp))
 
             Column(
-                modifier= Modifier.weight(1f),
+                modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
@@ -112,7 +108,7 @@ fun FavCard(
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onPrimary
                 )
-                Spacer(Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = stringResource(R.string.insert_description),
                     style = MaterialTheme.typography.bodyMedium,
@@ -131,9 +127,8 @@ fun FavCard(
     }
 }
 
-
 @Composable
-@Preview
+@Preview(showBackground = true)
 fun PreviewFavourites() {
     CocinaConCatalinaTheme(darkTheme = false) {
         FavouritesScreen(onNavigate = {})

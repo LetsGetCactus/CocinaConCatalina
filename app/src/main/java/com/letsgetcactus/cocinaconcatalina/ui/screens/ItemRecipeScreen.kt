@@ -32,22 +32,20 @@ import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
 
 @Composable
 fun ItemRecipeScreen(
-    onNavigate:(String) -> Unit
+    modifier: Modifier = Modifier,
+    onNavigate: (String) -> Unit
 ) {
-
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .padding(24.dp, 40.dp),
+            .padding(24.dp, 40.dp), // padding interno propio
         horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Spacer(modifier = Modifier.size(56.dp))
 
-        ) {
-        Spacer(modifier = Modifier.size(56.dp)) //TODO: Adds
-
-        //TODO: put recipes info
         LazyColumn(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize() // usamos Modifier normal, no modifier
         ) {
             item {
                 Text(
@@ -55,13 +53,12 @@ fun ItemRecipeScreen(
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.fillMaxWidth()
-
                 )
             }
+
             item {
                 Box(
-                    modifier = Modifier.fillMaxWidth()
-
+                    modifier = Modifier.fillMaxWidth() // Modifier, no modifier
                 ) {
                     Image(
                         painter = painterResource(R.drawable.recipe),
@@ -70,22 +67,21 @@ fun ItemRecipeScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .heightIn(min = 250.dp)
-
                     )
 
-                    //Buttons
+                    // Buttons
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
                         verticalAlignment = Alignment.Bottom,
                         modifier = Modifier
                             .align(Alignment.BottomEnd)
-                            .offset(x = (8).dp, y = 16.dp)
+                            .offset(x = 8.dp, y = 16.dp)
                     ) {
                         // Edit
                         Box(
-                            Modifier.clickable(
-                                true,
-                                onClick = {onNavigate(NavigationRoutes.LIST_RECIPES_HOST_SCREEN)})
+                            Modifier.clickable(true) {
+                                onNavigate(NavigationRoutes.MODIFIED_SCREEN)
+                            }
                         ) {
                             Image(
                                 painter = painterResource(R.drawable.circle),
@@ -116,7 +112,7 @@ fun ItemRecipeScreen(
                                 contentDescription = stringResource(R.string.favs),
                                 modifier = Modifier
                                     .align(Alignment.Center)
-                                    .offset( y = 16.dp)
+                                    .offset(y = 16.dp)
                                     .size(48.dp)
                             )
                         }
@@ -127,56 +123,48 @@ fun ItemRecipeScreen(
             }
 
             item {
-                Row() {
+                Row {
                     Text(
                         text = stringResource(R.string.ingredients),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.weight(1f)
-
                     )
-                    LazyRow() {
-                        item {
-                            ModifyAlergensList()
-                        }
+                    LazyRow {
+                        item { ModifyAlergensList() }
                     }
                 }
             }
-            //Ingredients
+
             item {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp)
-
                 ) {
                     ModifyItemIngredients()
                 }
             }
 
-            //Steps
             item {
                 Text(
                     text = stringResource(R.string.steps),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.weight(1f)
-
                 )
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp)
-
                 ) {
-                ModifyItemSteps()
+                    ModifyItemSteps()
+                }
             }
-            }
-
         }
     }
-
 }
+
 
 @Composable
 fun ModifyItemIngredients() {
@@ -184,19 +172,19 @@ fun ModifyItemIngredients() {
         modifier = Modifier.fillMaxWidth()
     ) {
         Text(
-            text = "cantidad",
+            text = stringResource(R.string.quantity),
             modifier = Modifier.weight(1f),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onBackground
         )
         Text(
-            text = "unidad",
+            text =stringResource(R.string.unit),
             modifier = Modifier.weight(1f),
             color = MaterialTheme.colorScheme.onBackground
         )
         Spacer(modifier = Modifier.size(20.dp))
         Text(
-            text = "ingrediente",
+            text = stringResource(R.string.ingredient),
             modifier = Modifier.weight(1f),
             color = MaterialTheme.colorScheme.onBackground
         )
