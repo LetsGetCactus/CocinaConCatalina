@@ -94,4 +94,12 @@
     <string name="menu_drawer">Menú lateral</string>
     <string name="search">Buscar</string>
     <string name="close">Cerrar</string>
+    <string name="modified">Mis recetas modificadas</string>
+    <string name="config">Configuración</string>
+    <string name="language">Idioma</string>
+    <string name="close_session">Cerrar sesión de usuario</string>
+    <string name="delete_user_data">Eliminar usuario</string>
+    <string name="contact">Contacto</string>
+    <string name="faq">Preguntas frecuentes</string>
+    <string name="mode">Modo oscuro</string>
 </resources>

@@ -95,4 +95,12 @@
     <string name="menu_drawer">Menu drawer</string>
     <string name="search">Search</string>
     <string name="close">Close\n</string>
+    <string name="modified">My modified recipes</string>
+    <string name="config">Configuration</string>
+    <string name="language">Language</string>
+    <string name="close_session">Close user session</string>
+    <string name="delete_user_data">Delete user</string>
+    <string name="contact">Contact</string>
+    <string name="faq"><![CDATA[F&A]]></string>
+    <string name="mode">Dark mode</string>
 </resources>
