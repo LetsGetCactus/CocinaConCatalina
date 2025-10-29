@@ -36,7 +36,7 @@ O modelo de negocio elixido é o **Freemium** con anuncios (ver mockups das pant
 * **APIs**: SDK de Spotify, servizos Cloud de Google mediante Firebase e API de Youtube Android Player para os vídeos para os premiun.
 * **Presuposto**:  Este orzamento está enfocado en minimizar os custos iniciais, sen comprometer a funcionalidade da aplicación.
 O obxectivo é lanzar a app cun custo reducido e controlado, asumindo únicamente os gastos estrictamente necesarios para poder, nun futuro, asumir maiores investimentos se a demanda ou o uso da aplicación o requiren.
-Todos os recursos gráficos (iconas, imaxes e logos) obtivéronse de recursos gratuítos. O desenvolvemento (frontend e backend) será realizado por unha única persoa, polo que non se prevén custos de personal externo. Os SDKs de Spotify e a API de YouTube tamén son gratuítos. Os custos de servidor e base de datos (Firebase) serán cero inicialmente, xa que o plan gratuíto (Spark) cobre as necesidades básicas de almacenamento e operacións. No futuro, co crecemento dos usuarios ou uso de funcións avanzadas, os servizos de Firebase pasarán ao plan de pago por uso (Blaze), onde o prezo escalarase en función do consumo. Toda a parte gráfica (iconas, imaxes e logos obtíveronse de recursos gratuitos , como eu (Catarina) serei a única que traballe no dsenvolvemento da app (tanto back como front) non haberá custos por esa parte. Os SDK de Spotify e a API de youtube tamén son gratuitas, e en canto a Firebase e Google Analitics o seu rango de gratuicidade é moi amplo para unha app que acaba de lanzarse.
+Todos os recursos gráficos (iconas, imaxes e logos) obtivéronse de recursos gratuítos. O desenvolvemento (frontend e backend) será realizado por unha única persoa, polo que non se prevén custos de personal externo. Os SDKs de Spotify e a API de YouTube tamén son gratuítos. Os custos de servidor e base de datos (Firebase) serán cero inicialmente, xa que o plan gratuíto (Spark) cobre as necesidades básicas de almacenamento e operacións. No futuro, co crecemento dos usuarios ou uso de funcións avanzadas, os servizos de Firebase pasarán ao plan de pago por uso (Blaze), onde o prezo escalarase en función do consumo. Toda a parte gráfica (iconas, imaxes e logos obtíveronse de recursos gratuitos. Os SDK de Spotify e a API de youtube tamén son gratuitas, e en canto a Firebase e Google Analitics o seu rango de gratuicidade é moi amplo para unha app que acaba de lanzarse.
 Para lanzar a app se require dun pago único de 25 $ (uns 22 € actuais) para a tarifa de rexistro de Google Play Console, e precisaranse dun par de dispositivos de proba que non deben exceder os 200€ xa que se trata dunha app sinxela, sen requerimentos de funcionamento excesivos.
 A aplicación contará cunha campaña de publicidade por medio de redes sociais (Instagram e Tik Tok para atraer ao público destas e tentar que chegue á maior cantidade de xente posible dun xeito económico, polo que o custo estimado será duns 100€.
 
@@ -75,6 +75,7 @@ EN RESUMO:
 | Concepto	| Custo mensual estimado	| Comentarios |
 |:---|:---|:---|
 | Man de obra  |	1500€	| Eu serei a única programadora e o desenvolvemento durará 2 meses |
+| Equipo de traballo | 1508,01 | Ordenador portatil Lenovo ThinkPad P16s Gen 4 (16" Intel) mercano na web oficial|
 | Elementos gráficos | 0€ | Sacados de repositorios gratuitos ou realizados por min en Gimp |
 | Google developers | 25€ (pago único) | Publicación na Play Store |
 | Dispositivos de probas | 358€ (pago único) | 2 dispositivos Xiaomi Redmi Note 14 (comprados en PcComponentes) |
@@ -83,7 +84,7 @@ EN RESUMO:
 | Firestore Database |	$0 – $10 USD	| So se se superan as lecturas gratuitas |
 | Cloud Storage |	$0 – $5 USD	| Dependendo do tamaño e número de imaxes
 | Marxe de seguridade |	$5 – $10 USD |	Pra posibles picos de tráfico inesperados |
-|** Total estimado mensual primer mes** |	**1887,50 - 1905,5€** |	Plan realista pra unha app en crecemento |
+|** Total estimado mensual primer mes** |	**3395,51 - 3413,51€** |	Plan realista pra unha app en crecemento |
 |** Total estimado a partires do terceiro mes** |	**104,5 - 118€** |	(Só gastos básicos de mantemento e publicidade)) |
 
 
@@ -226,6 +227,9 @@ Para a persistencia dos datos traballaremos en totalidade co gardado dos mesmos 
 **Firebase Authentication** encargarase da xestión segura dos contrasinais en formato *hash*. O usuario poderá autenticarse por medio de correo e contrasinal ou ben con credenciais de Google.
 
 E con **Storage** Poderemos almacenar e xestionar as URL públicas para as diferentes imaxes ou vídeos das receitas.
+
+**MER**:
+![Modelo entidade-relación](documentacion/img/mer.png)
 
 **Modelo lóxico**:
 ![Modelo lóxico](documentacion/img/logico.png)
