@@ -2,7 +2,9 @@ package com.letsgetcactus.cocinaconcatalina.model.enum
 
 import com.letsgetcactus.cocinaconcatalina.R
 
-enum class UnitsType(val unitToDisplay: Int){
+enum class UnitsTypeEnum(
+    val unitToDisplay: Int
+){
     GRAM(R.string.g),
     KILOGRAM(R.string.kg),
     MILLILITER(R.string.ml),
