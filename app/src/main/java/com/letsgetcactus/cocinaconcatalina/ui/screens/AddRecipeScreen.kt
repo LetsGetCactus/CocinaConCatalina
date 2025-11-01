@@ -38,7 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.letsgetcactus.cocinaconcatalina.R
 import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
-import com.letsgetcactus.cocinaconcatalina.model.enum.UnitsType
+import com.letsgetcactus.cocinaconcatalina.model.enum.UnitsTypeEnum
 import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
 
 @Composable
@@ -51,7 +51,7 @@ fun AddRecipescreen(
     // Ingredients
     var ingredientName by remember { mutableStateOf("") }
     var quantity by remember { mutableStateOf("") }
-    var unit by remember { mutableStateOf(UnitsType.GRAM) }
+    var unit by remember { mutableStateOf(UnitsTypeEnum.GRAM) }
     var listIngredients by remember { (mutableStateOf(listOf<String>())) }
 
     // Steps
@@ -615,8 +615,8 @@ fun AddRecipescreen(
 
 @Composable
 fun UnitSelector(
-    selectedUnit: UnitsType,
-    onUnitSelected: (UnitsType) -> Unit,
+    selectedUnit: UnitsTypeEnum,
+    onUnitSelected: (UnitsTypeEnum) -> Unit,
 
     ) {
     var expanded by remember { mutableStateOf(false) }
@@ -637,7 +637,7 @@ fun UnitSelector(
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
-            UnitsType.entries.forEach { unit ->
+            UnitsTypeEnum.entries.forEach { unit ->
                 DropdownMenuItem(
                     text = { Text(stringResource(id = unit.unitToDisplay)) },
                     onClick = {
