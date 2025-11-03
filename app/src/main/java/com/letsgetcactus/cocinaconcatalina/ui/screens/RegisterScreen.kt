@@ -5,7 +5,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,8 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.MaterialTheme
@@ -31,13 +28,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.letsgetcactus.cocinaconcatalina.R
 import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
+import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonGoogle
+import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonMain
+import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonSecondary
+import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
 
 
 /**
@@ -266,7 +267,7 @@ fun RegisterScreen(
             Text(
                 text = stringResource(R.string.termsAndConditions),
                 modifier = Modifier
-                    .clickable { onNavigate(NavigationRoutes.TERMS_CONDITIONS_SCREEN)}
+                    .clickable { onNavigate(NavigationRoutes.TERMS_CONDITIONS_SCREEN) }
                     .fillMaxWidth()
                     .padding(top = 16.dp),
                 style = MaterialTheme.typography.labelSmall,
@@ -282,93 +283,38 @@ fun RegisterScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .shadow(8.dp),
-                onClick = {onNavigate(NavigationRoutes.LOGIN_SCREEN)},
-                shape = MaterialTheme.shapes.small,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
-                )
+            ButtonMain(
+                buttonText = stringResource(R.string.login),
+                onNavigate = {onNavigate(NavigationRoutes.HOME_SCREEN)},
+                modifier = Modifier.fillMaxWidth()
+            )
 
-            ) {
-                Text(
-                    text = stringResource(R.string.back),
-                    style = MaterialTheme.typography.labelLarge
-                )
-            }
             Spacer(modifier=Modifier.size(8.dp))
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .shadow(8.dp),
-                onClick = {//TODO: save
-                    onNavigate(NavigationRoutes.HOME_SCREEN)
-                },
-                shape = MaterialTheme.shapes.small,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.secondary,
-                    contentColor = MaterialTheme.colorScheme.onSecondary
-                )
 
-
-            ) {
-                Text(
-                    text = stringResource(R.string.register),
-                    style = MaterialTheme.typography.labelLarge
-                )
-            }
+            ButtonSecondary(
+                buttonText = stringResource(R.string.register),
+                modifier = Modifier.fillMaxWidth(),
+                onNavigate = {onNavigate(NavigationRoutes.REGISTER_SCREEN)}
+            )
             Spacer(Modifier.height(36.dp))
 
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-
-            ) {
-
-                Button(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .shadow(8.dp),
-                    onClick = {//TODO: save with Google
-                        onNavigate(NavigationRoutes.HOME_SCREEN) },
-                    shape = MaterialTheme.shapes.small,
-                    colors = ButtonDefaults.buttonColors(
-                        MaterialTheme.colorScheme.surface,
-                        MaterialTheme.colorScheme.onSurface
-                    )
-                ) {
-                    Text(
-                        text = stringResource(R.string.googleRegister),
-                        modifier = Modifier.padding(start = 16.dp),
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                }
-
-
-                Image(
-                    painter = painterResource(R.drawable.google),
-                    contentDescription = stringResource(R.string.googleImg),
-                    modifier = Modifier
-                        .align(Alignment.CenterStart)
-                        .padding(start = 8.dp)
-                        .size(24.dp),
-                    contentScale = ContentScale.Fit
-                )
-            }
+           ButtonGoogle(
+               onNavigate = { },
+               modifier = Modifier.fillMaxWidth()
+           ) 
         }
     }
 
 }
 
-/*
+
 @Preview(showBackground = true)
 @Composable
 fun PreviewRegisterScreen() {
     CocinaConCatalinaTheme(darkTheme = false) {
-    RegisterScreen()
+    RegisterScreen(
+        onNavigate = {}
+    )
     }
 
-}*/
+}

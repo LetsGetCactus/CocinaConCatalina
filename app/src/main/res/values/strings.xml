@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">CocinaConCatalina</string>
+    <string name="app_name" translatable="false">Cocina con Catalina</string>
     <string name="welcome">Welcome to Cocina con Catalina!</string>
     <string name="email">Insert your email</string>
     <string name="pass">Insert your password</string>
@@ -103,4 +103,33 @@
     <string name="contact">Contact</string>
     <string name="faq"><![CDATA[F&A]]></string>
     <string name="mode">Dark mode</string>
+    <string name="advanced_filters">Search filters</string>
+    <string name="clear">clear</string>
+    <string name="clic_select">Click to select</string>
+    <string name="category">Categories</string>
+    <string name="by_plate">by plate:</string>
+    <string name="easy">easy</string>
+    <string name="medium">medium</string>
+    <string name="hard">hard</string>
+    <string name="chef" translatable="false">chef</string>
+    <string name="starter">starter</string>
+    <string name="main">main</string>
+    <string name="dessert">dessert</string>
+    <string name="sauce">sauce</string>
+    <string name="side_dish">side dish</string>
+    <string name="japan">Japan</string>
+    <string name="korea">Korea</string>
+    <string name="china">China</string>
+    <string name="thai">Thailand</string>
+    <string name="vietnam">Vietnam</string>
+    <string name="chef_made">Chef\'s creation</string>
+    <string name="rating">rating</string>
+    <string name="max_ingredients">max ingredients</string>
+    <string name="prep_time">Preparation time</string>
+    <string name="origin">Origin</string>
+    <string name="dish_type">Dish type</string>
+    <string name="level_dif">Level</string>
+    <string name="rating_ramen">Give this recipe some ramen!</string>
+    <string name="allergens_not">Without</string>
+
 </resources>

@@ -13,8 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -36,6 +34,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.letsgetcactus.cocinaconcatalina.R
 import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
+import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonGoogle
+import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonMain
+import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonSecondary
 import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
 
 @Composable
@@ -157,48 +158,24 @@ fun LoginScreen(
             modifier = Modifier.size(16.dp)
         )
 
-        Button(
-            modifier = Modifier
-                .fillMaxWidth()
-                .shadow(8.dp),
-            onClick = {onNavigate(NavigationRoutes.HOME_SCREEN) },
-            shape = MaterialTheme.shapes.small,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary
-            )
+        ButtonMain(
+            buttonText = stringResource(R.string.login),
+            onNavigate = {onNavigate(NavigationRoutes.HOME_SCREEN)},
+            modifier = Modifier.fillMaxWidth()
+        )
 
-        ) {
-            Text(
-                text = stringResource(R.string.login),
-                style = MaterialTheme.typography.labelLarge
-            )
-        }
         Spacer(modifier = Modifier.size(8.dp))
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
 
         ) {
 
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .shadow(8.dp),
-                onClick = {onNavigate(NavigationRoutes.HOME_SCREEN)},
-                shape = MaterialTheme.shapes.small,
-                colors = ButtonDefaults.buttonColors(
-                    MaterialTheme.colorScheme.secondary,
-                    MaterialTheme.colorScheme.onSecondary
-                )
-            ) {
-                Text(
-                    text = stringResource(R.string.googleRegister),
-                    modifier = Modifier.padding(start = 16.dp),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSecondary
-                )
-            }
+            ButtonGoogle(
+                onNavigate = {onNavigate(NavigationRoutes.HOME_SCREEN)},
+                modifier = Modifier.fillMaxWidth()
+            )
 
 
             Image(
@@ -236,24 +213,11 @@ fun LoginScreen(
                 textAlign = TextAlign.Start
             )
         }
-        Button(
-            modifier = Modifier
-                .fillMaxWidth()
-                .shadow(8.dp),
-            onClick = {onNavigate(NavigationRoutes.REGISTER_SCREEN) },
-            shape = MaterialTheme.shapes.small,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onSecondary
-            )
-
-
-        ) {
-            Text(
-                text = stringResource(R.string.register),
-                style = MaterialTheme.typography.labelLarge
-            )
-        }
+        ButtonSecondary(
+            buttonText = stringResource(R.string.register),
+            onNavigate = {onNavigate(NavigationRoutes.REGISTER_SCREEN)},
+            modifier = Modifier.fillMaxWidth()
+        )
 
         Spacer(modifier = Modifier.size(40.dp))
 
@@ -263,7 +227,7 @@ fun LoginScreen(
             style = MaterialTheme.typography.labelSmall,
             modifier = Modifier.clickable(
                 true,
-                onClick = {onNavigate(NavigationRoutes.LIST_RECIPES_HOST_SCREEN)}
+                onClick = {onNavigate(NavigationRoutes.TERMS_CONDITIONS_SCREEN)}
             )
         )
 

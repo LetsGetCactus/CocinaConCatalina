@@ -9,6 +9,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -19,10 +21,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.savedstate.savedState
 import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
 import com.letsgetcactus.cocinaconcatalina.ui.components.bars.BottomBarComposable
-import com.letsgetcactus.cocinaconcatalina.ui.screens.AddRecipescreen
+import com.letsgetcactus.cocinaconcatalina.ui.screens.AddRecipeScreen
 import com.letsgetcactus.cocinaconcatalina.ui.screens.FavouritesScreen
+import com.letsgetcactus.cocinaconcatalina.ui.screens.FilterScreen
 import com.letsgetcactus.cocinaconcatalina.ui.screens.HomeScreen
 import com.letsgetcactus.cocinaconcatalina.ui.screens.ItemRecipeScreen
 import com.letsgetcactus.cocinaconcatalina.ui.screens.ListRecipeHostScreen
@@ -50,12 +54,14 @@ fun AppNavigation(
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
 
+
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
             MenuDrawerComponent(
                 modifier = Modifier.width(LocalConfiguration.current.screenWidthDp.dp * 0.7f),
-                onNavigate = { route ->
+                onNavigate = {
+                    route ->
                     navController.navigate(route)
                     coroutineScope.launch {
                         drawerState.close()
@@ -72,15 +78,19 @@ fun AppNavigation(
                     currentRoute != NavigationRoutes.REGISTER_SCREEN &&
                     currentRoute != NavigationRoutes.TERMS_CONDITIONS_SCREEN &&
                     currentRoute != NavigationRoutes.ADD_RECIPE_SCREEN &&
-                    currentRoute != NavigationRoutes.MODIFIED_SCREEN
+                    currentRoute != NavigationRoutes.MODIFIED_SCREEN &&
+                    currentRoute != NavigationRoutes.FILTER_SCREEN
                 ) {
                     TopBarComposable(
+                        navController =  navController ,
                         onMenu = {
                             coroutineScope.launch {
                                 drawerState.open()
                             }
                         },
-                        onSearchChanged = {}
+                        onSearchChanged = {},
+
+
                     )
                 }
             },
@@ -91,14 +101,27 @@ fun AppNavigation(
                     currentRoute != NavigationRoutes.REGISTER_SCREEN &&
                     currentRoute != NavigationRoutes.MODIFIED_SCREEN
                 ) {
-                    BottomBarComposable { }
+                    BottomBarComposable {
+                        route ->
+                            if(route != currentRoute){
+                                navController.navigate(route){
+                                    popUpTo(NavigationRoutes.HOME_SCREEN) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop =true//Not to recharge the current screen
+                                    restoreState=true
+                                }
+                            }
+                    }
+
                 }
             }
         ) { innerPadding ->
 
             NavHost(
                 navController = navController,
-                startDestination = startDestination
+                startDestination = startDestination,
+
             ) {
                 composable(NavigationRoutes.LOGIN_SCREEN) {
                     LoginScreen(
@@ -116,7 +139,7 @@ fun AppNavigation(
                         })
                 }
                 composable(NavigationRoutes.ADD_RECIPE_SCREEN) {
-                    AddRecipescreen(
+                    AddRecipeScreen(
                         onNavigate = { route ->
                             navController.navigate(route)
 
@@ -174,6 +197,12 @@ fun AppNavigation(
 
                         )
                 }
+                
+                composable(NavigationRoutes.FILTER_SCREEN) {
+                    FilterScreen(
+                        onSearchClick = {  }
+                    )
+                }
 
             }
         }
@@ -186,7 +215,7 @@ fun PreviewMainScreen() {
     CocinaConCatalinaTheme(darkTheme = false) {
         AppNavigation(
             navController = rememberNavController(),
-            startDestination = NavigationRoutes.LOGIN_SCREEN
+            startDestination = NavigationRoutes.HOME_SCREEN
         )
     }
 }

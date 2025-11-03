@@ -1,21 +1,22 @@
 package com.letsgetcactus.cocinaconcatalina.model.enum
 
 import androidx.compose.ui.graphics.Color
+import com.letsgetcactus.cocinaconcatalina.R
 
-enum class DificultyEnum(
-    val label: String,
+enum class DificultyEnum (
+  override  val enumId: Int,
     val color: Color
-) {
+): TranslatableEnum {
     EASY (
-        "easy",
+     R.string.easy,
         Color.Green),
     MEDIUM (
-        "medium",
+        R.string.medium,
         Color.Yellow),
     HARD (
-        "hard",
+        R.string.hard,
         Color.Red),
     CHEF (
-        "chef",
+        R.string.chef,
         Color.Black)
 }

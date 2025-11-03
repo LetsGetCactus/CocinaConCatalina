@@ -10,4 +10,5 @@ object NavigationRoutes{
     const val ADD_RECIPE_SCREEN = "AddRecipeScreen"
     const val MODIFIED_SCREEN= "ModifiedScreen"
     const val TERMS_CONDITIONS_SCREEN= "TermsAndConditionsScreen"
+    const val FILTER_SCREEN= "FilterScreen"
 }

@@ -1,15 +1,11 @@
 package com.letsgetcactus.cocinaconcatalina.ui.screens
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
@@ -21,40 +17,42 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.letsgetcactus.cocinaconcatalina.R
+import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
+import com.letsgetcactus.cocinaconcatalina.ui.components.SearchBarComponent
 import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBarComposable(
+    navController: NavController,
     onMenu: () -> Unit,
-    onSearchChanged: (String) -> Unit
-) {
+    onSearchChanged: (String) -> Unit,
 
+) {
     var isSearchActive by remember { mutableStateOf(false) }
-    var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
+    var searchQuery by remember { mutableStateOf("") }
 
     TopAppBar(
         colors = topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primary,
-            titleContentColor = MaterialTheme.colorScheme.onPrimary,
-
-            ),
+            titleContentColor = MaterialTheme.colorScheme.onPrimary
+        ),
         navigationIcon = {
             Icon(
                 painter = painterResource(R.drawable.menu_drawer),
                 contentDescription = stringResource(R.string.menu_drawer),
                 modifier = Modifier
-                    .padding(16.dp)
+                    .padding(horizontal = 8.dp, vertical = 16.dp)
+                    .size(32.dp)
                     .clickable { onMenu() }
-                    .size(48.dp)
-
             )
         },
-
         title = {
             if (!isSearchActive) {
                 Text(
@@ -62,43 +60,17 @@ fun TopBarComposable(
                     style = MaterialTheme.typography.titleLarge
                 )
             } else {
-                OutlinedTextField(
-                    value = searchQuery,
-                    onValueChange = {
-                        searchQuery = it
-                        onSearchChanged(it.text)
+                SearchBarComponent(
+                    searchQuery = searchQuery,
+                    onSearchQueryChange = { query ->
+                        searchQuery = query
+                        onSearchChanged(query)
                     },
-
-                    placeholder = {
-                        Text(
-                            text = stringResource(R.string.search_bar),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                        .background(
-                            color = MaterialTheme.colorScheme.surface,
-                            shape = MaterialTheme.shapes.large
-                        ),
-                    shape = MaterialTheme.shapes.large,
-                    singleLine = true,
-                    textStyle = MaterialTheme.typography.bodyMedium,
-                    trailingIcon = {
-                        IconButton(onClick = {
-                            if (searchQuery != null) {
-                                searchQuery = TextFieldValue("")
-                            } else {
-                                isSearchActive = false
-                            }
-                        }) {
-                            Icon(
-                                painter = painterResource(R.drawable.search),
-                                contentDescription = stringResource(R.string.close)
-                            )
-                        }
+                    onFilterClick = { navController.navigate(NavigationRoutes.FILTER_SCREEN) },
+                    onCloseClick = {
+                        searchQuery = ""
+                        isSearchActive = false
+                        onSearchChanged("")
                     }
                 )
             }
@@ -109,35 +81,25 @@ fun TopBarComposable(
                     painter = painterResource(R.drawable.search),
                     contentDescription = stringResource(R.string.search),
                     modifier = Modifier
-                        .padding(end = 16.dp)
                         .size(40.dp)
+                        .padding(end = 16.dp)
                         .clickable { isSearchActive = true }
-                )
-            } else {
-                Icon(
-                    painter = painterResource(R.drawable.search),
-                    contentDescription = stringResource(R.string.close),
-                    modifier = Modifier
-                        .size(40.dp)
-                        .padding(end = 16.dp)
-                        .clickable {
-                            isSearchActive = false
-                            searchQuery = TextFieldValue("")
-                        }
                 )
             }
         }
     )
 }
 
-
 @Preview
 @Composable
 fun PreviewTopAppBarComponent() {
     CocinaConCatalinaTheme(darkTheme = false) {
+        var navController= rememberNavController()
+
         TopBarComposable(
             onMenu = {},
-            onSearchChanged = {}
+            onSearchChanged = {},
+            navController =navController
         )
     }
 }

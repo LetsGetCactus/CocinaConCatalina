@@ -3,7 +3,7 @@ package com.letsgetcactus.cocinaconcatalina.ui.components.bars
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.BottomAppBar
@@ -30,12 +30,15 @@ fun BottomBarComposable(
         containerColor = MaterialTheme.colorScheme.primary,
         contentColor = MaterialTheme.colorScheme.onPrimary,
     ) {
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ){
         //Spotify
         Column(
             //TODO: Añadir Spoty = .clickable
             modifier = Modifier
-                .fillMaxHeight()
-                .weight(0.3f)
+                .weight(1f)
                 .padding(8.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -44,11 +47,11 @@ fun BottomBarComposable(
             Icon(
                 painter = painterResource(R.drawable.spotify),
                 contentDescription = stringResource(R.string.spotify),
-                modifier = Modifier.weight(0.7f)
+                modifier = Modifier.weight(1f)
 
             )
             Text(
-                modifier = Modifier.weight(0.3f),
+                modifier = Modifier.weight(1f),
                 text = stringResource(R.string.spotify),
                 style = MaterialTheme.typography.labelSmall,
             )
@@ -58,8 +61,7 @@ fun BottomBarComposable(
         Column(
             modifier = Modifier
                 .clickable { onNavigate(NavigationRoutes.FAVS_SCREEN) }
-                .fillMaxHeight()
-                .weight(0.3f)
+                .weight(1f)
                 .padding(8.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -67,10 +69,10 @@ fun BottomBarComposable(
             Icon(
                 painter = painterResource(R.drawable.favs),
                 contentDescription = stringResource(R.string.favs),
-                modifier = Modifier.weight(0.7f)
+                modifier = Modifier.weight(1f)
             )
             Text(
-                modifier = Modifier.weight(0.3f),
+                modifier = Modifier.weight(1f),
                 text = stringResource(R.string.favs),
                 style = MaterialTheme.typography.labelSmall
             )
@@ -80,8 +82,7 @@ fun BottomBarComposable(
         Column(
             modifier = Modifier
                 .clickable { onNavigate(NavigationRoutes.HOME_SCREEN) }
-                .fillMaxHeight()
-                .weight(0.3f)
+                .weight(1f)
                 .padding(8.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -89,16 +90,16 @@ fun BottomBarComposable(
             Icon(
                 painter = painterResource(R.drawable.tori_gate),
                 contentDescription = stringResource(R.string.home),
-                modifier = Modifier.weight(0.7f)
+                modifier = Modifier.weight(1f)
             )
             Text(
-                modifier = Modifier.weight(0.3f),
+                modifier = Modifier.weight(1f),
                 text = stringResource(R.string.home),
                 style = MaterialTheme.typography.labelSmall
             )
         }
     }
-}
+}}
 
 @Preview
 @Composable

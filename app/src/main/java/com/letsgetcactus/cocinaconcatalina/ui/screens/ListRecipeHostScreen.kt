@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.letsgetcactus.cocinaconcatalina.R
 import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
+import com.letsgetcactus.cocinaconcatalina.ui.components.RecipeRating
 import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
 
 @Composable
@@ -91,11 +92,7 @@ private fun RecipeCard(
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSecondary
                 )
-                Text(
-                    text = "Esta receta es maravillosa",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSecondary
-                )
+                RecipeRating(4)//TODO:obtener puntuacion receta
             }
         }
     }
@@ -105,11 +102,9 @@ private fun RecipeCard(
 @Composable
 fun PreviewListRecipeHost() {
     CocinaConCatalinaTheme(darkTheme = false) {
-        ListRecipeContent(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp),
-            onNavigate = {}
-        )
+      ListRecipeHostScreen(
+          onNavigate = {},
+          modifier = Modifier
+      )
     }
 }

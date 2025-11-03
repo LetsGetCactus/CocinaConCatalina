@@ -28,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.letsgetcactus.cocinaconcatalina.R
 import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
+import com.letsgetcactus.cocinaconcatalina.ui.components.RecipeRating
 import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
 
 @Composable
@@ -40,7 +41,7 @@ fun ItemRecipeScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .padding(24.dp, 40.dp), // padding interno propio
-        horizontalAlignment = Alignment.CenterHorizontally,
+
     ) {
         Spacer(modifier = Modifier.size(56.dp))
 
@@ -161,6 +162,23 @@ fun ItemRecipeScreen(
                     ModifyItemSteps()
                 }
             }
+
+            item { //TODO puntuacion seleccionable
+                Spacer(modifier = Modifier.size(24.dp))
+                Column (
+                    modifier= Modifier.fillMaxWidth() ,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+
+                    Text(
+                        stringResource(R.string.rating_ramen),
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                    RecipeRating(3)
+                }
+            }
         }
     }
 }
@@ -169,23 +187,22 @@ fun ItemRecipeScreen(
 @Composable
 fun ModifyItemIngredients() {
     Row(
-        modifier = Modifier.fillMaxWidth()
+
     ) {
         Text(
             text = stringResource(R.string.quantity),
-            modifier = Modifier.weight(1f),
-            style = MaterialTheme.typography.bodyLarge,
+            style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onBackground
         )
         Text(
-            text =stringResource(R.string.unit),
-            modifier = Modifier.weight(1f),
+            text = stringResource(R.string.unit),
+            style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onBackground
         )
         Spacer(modifier = Modifier.size(20.dp))
         Text(
             text = stringResource(R.string.ingredient),
-            modifier = Modifier.weight(1f),
+            style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onBackground
         )
     }
@@ -194,8 +211,11 @@ fun ModifyItemIngredients() {
 @Composable
 fun ModifyItemSteps() {
     Row {
-        Text(text = "pasos",
-            color = MaterialTheme.colorScheme.onBackground)
+        Text(
+            text = "pasos",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onBackground
+        )
     }
 }
 

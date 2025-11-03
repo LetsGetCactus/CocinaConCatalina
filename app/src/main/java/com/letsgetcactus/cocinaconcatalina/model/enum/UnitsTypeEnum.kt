@@ -3,8 +3,8 @@ package com.letsgetcactus.cocinaconcatalina.model.enum
 import com.letsgetcactus.cocinaconcatalina.R
 
 enum class UnitsTypeEnum(
-    val unitToDisplay: Int
-){
+    override val enumId: Int
+): TranslatableEnum{
     GRAM(R.string.g),
     KILOGRAM(R.string.kg),
     MILLILITER(R.string.ml),

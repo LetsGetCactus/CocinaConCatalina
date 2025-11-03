@@ -23,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.letsgetcactus.cocinaconcatalina.R
 import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
+import com.letsgetcactus.cocinaconcatalina.ui.components.FAB
 import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
 
 @Composable
@@ -60,23 +61,9 @@ fun TermsAndConditionsScreen(
             horizontalAlignment = Alignment.End,
             verticalArrangement = Arrangement.Bottom
         ) {
-            FloatingActionButton(
-                onClick = { /*TODO: Guardar cambios */
-                    onNavigate(NavigationRoutes.REGISTER_SCREEN)},
-                containerColor = MaterialTheme.colorScheme.secondary,
-                contentColor = MaterialTheme.colorScheme.onSecondary,
-                modifier = Modifier
-                    .padding(16.dp)
-                    .size(72.dp),
-                shape = MaterialTheme.shapes.large,
-
-                ) {
-                Icon(
-                    painter = painterResource(R.drawable.tori_gate),
-                    contentDescription = stringResource(R.string.termsAndConditions),
-                    modifier = Modifier.size(32.dp)
-                )
-            }
+            FAB(
+                onNavigate = {onNavigate(NavigationRoutes.LOGIN_SCREEN)}
+            )
         }
     }
 }

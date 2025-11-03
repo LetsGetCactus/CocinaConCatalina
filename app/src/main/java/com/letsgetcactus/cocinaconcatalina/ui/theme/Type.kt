@@ -34,9 +34,9 @@ val Typography = Typography(
     ),
     // Rocksalt text for subtitle in recipes
     bodyMedium = TextStyle( //
-        fontFamily = RockSalt,
+        fontFamily = JotiOne,
         fontWeight = FontWeight.Normal,
-        fontSize = 12.sp
+        fontSize = 20.sp
     ),
     // text
     labelLarge = TextStyle(

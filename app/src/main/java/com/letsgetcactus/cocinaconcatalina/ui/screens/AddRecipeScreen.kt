@@ -1,8 +1,8 @@
 package com.letsgetcactus.cocinaconcatalina.ui.screens
 
+import DropDownMenuSelector
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,10 +17,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -38,12 +34,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.letsgetcactus.cocinaconcatalina.R
 import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
+import com.letsgetcactus.cocinaconcatalina.model.enum.AllergenEnum
 import com.letsgetcactus.cocinaconcatalina.model.enum.UnitsTypeEnum
+import com.letsgetcactus.cocinaconcatalina.ui.components.FAB
+import com.letsgetcactus.cocinaconcatalina.ui.components.filters.AllergenIconsSelector
 import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
 
 @Composable
-fun AddRecipescreen(
-       onNavigate: (String) -> Unit
+fun AddRecipeScreen(
+    onNavigate: (String) -> Unit
 ) {
 
     var title: String by remember { mutableStateOf("") }
@@ -58,20 +57,8 @@ fun AddRecipescreen(
     var steps by remember { mutableStateOf("") }
     var listSteps by remember { (mutableStateOf(listOf<String>())) }
 
-    // Allergens clickable
-    var mustard by remember { mutableStateOf(false) }
-    var peanut by remember { mutableStateOf(false) }
-    var crab by remember { mutableStateOf(false) }
-    var celery by remember { mutableStateOf(false) }
-    var sulfite by remember { mutableStateOf(false) }
-    var egg by remember { mutableStateOf(false) }
-    var altramuz by remember { mutableStateOf(false) }
-    var dairy by remember { mutableStateOf(false) }
-    var fish by remember { mutableStateOf(false) }
-    var mollusk by remember { mutableStateOf(false) }
-    var nuts by remember { mutableStateOf(false) }
-    var gluten by remember { mutableStateOf(false) }
-    var sesame by remember { mutableStateOf(false) }
+    // Allergens
+    var selectedAllergens by remember { mutableStateOf(AllergenEnum.entries.associateWith { false }) }
 
     val scrollState = rememberScrollState()
     Box() {
@@ -87,8 +74,8 @@ fun AddRecipescreen(
             Image(
                 painter = painterResource(R.drawable.icon),
                 contentDescription = stringResource(R.string.ccc_icon),
-                modifier =Modifier.align(Alignment.End)
-                )
+                modifier = Modifier.align(Alignment.End)
+            )
 
             // Title
             Text(
@@ -176,136 +163,12 @@ fun AddRecipescreen(
                 color = MaterialTheme.colorScheme.onBackground,
                 style = MaterialTheme.typography.bodyLarge
             )
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceAround
-            ) {
-                Image(
-                    painter = painterResource(
-                        id = if (mustard) R.drawable.mustard else R.drawable.mustard_grey
-                    ),
-                    contentDescription = stringResource(R.string.mustard),
-                    modifier = Modifier
-                        .size(48.dp)
-                        .clickable { mustard = !mustard }
-                )
-                Image(
-                    painter = painterResource(
-                        id = if (peanut) R.drawable.peanut else R.drawable.peanut_grey
-                    ),
-                    contentDescription = stringResource(R.string.peanut),
-                    modifier = Modifier
-                        .size(48.dp)
-                        .clickable { peanut = !peanut }
-                )
-                Image(
-                    painter = painterResource(
-                        id = if (crab) R.drawable.crab else R.drawable.crab_grey
-                    ),
-                    contentDescription = stringResource(R.string.crab),
-                    modifier = Modifier
-                        .size(48.dp)
-                        .clickable { crab = !crab }
-                )
-                Image(
-                    painter = painterResource(
-                        id = if (celery) R.drawable.celery else R.drawable.celery_grey
-                    ),
-                    contentDescription = stringResource(R.string.celery),
-                    modifier = Modifier
-                        .size(48.dp)
-                        .clickable { celery = !celery }
-                )
-                Image(
-                    painter = painterResource(
-                        id = if (sulfite) R.drawable.sulfite else R.drawable.sulfite_grey
-                    ),
-                    contentDescription = stringResource(R.string.sulfite),
-                    modifier = Modifier
-                        .size(48.dp)
-                        .clickable { sulfite = !sulfite }
-                )
-                Image(
-                    painter = painterResource(
-                        id = if (egg) R.drawable.egg else R.drawable.egg_grey
-                    ),
-                    contentDescription = stringResource(R.string.egg),
-                    modifier = Modifier
-                        .size(48.dp)
-                        .clickable { egg = !egg }
-                )
-            }
+            AllergenIconsSelector(
+                selectedAllergens = selectedAllergens,
+                onSelectionChanged = { selectedAllergens = it },
+                modifier = Modifier.fillMaxWidth()
+            )
 
-            Spacer(Modifier.size(8.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Image(
-                    painter = painterResource(
-                        id = if (altramuz) R.drawable.altramuz else R.drawable.altramuz
-                    ),
-                    contentDescription = stringResource(R.string.altramuz),
-                    modifier = Modifier
-                        .size(48.dp)
-                        .clickable { altramuz = !altramuz }
-                )
-                Image(
-                    painter = painterResource(
-                        id = if (dairy) R.drawable.dairy else R.drawable.dairy
-                    ),
-                    contentDescription = stringResource(R.string.dairy),
-                    modifier = Modifier
-                        .size(48.dp)
-                        .clickable { dairy = !dairy }
-                )
-                Image(
-                    painter = painterResource(
-                        id = if (fish) R.drawable.fish else R.drawable.fish_grey
-                    ),
-                    contentDescription = stringResource(R.string.fish),
-                    modifier = Modifier
-                        .size(48.dp)
-                        .clickable { fish = !fish }
-                )
-                Image(
-                    painter = painterResource(
-                        id = if (mollusk) R.drawable.mollusk else R.drawable.mollusk_grey
-                    ),
-                    contentDescription = stringResource(R.string.mollusk),
-                    modifier = Modifier
-                        .size(48.dp)
-                        .clickable { mollusk = !mollusk }
-                )
-                Image(
-                    painter = painterResource(
-                        id = if (nuts) R.drawable.nuts else R.drawable.nuts_grey
-                    ),
-                    contentDescription = stringResource(R.string.nuts),
-                    modifier = Modifier
-                        .size(48.dp)
-                        .clickable { nuts = !nuts }
-                )
-                Image(
-                    painter = painterResource(
-                        id = if (gluten) R.drawable.gluten else R.drawable.gluten_grey
-                    ),
-                    contentDescription = stringResource(R.string.gluten),
-                    modifier = Modifier
-                        .size(48.dp)
-                        .clickable { gluten = !gluten }
-                )
-                Image(
-                    painter = painterResource(
-                        id = if (mollusk) R.drawable.sesame else R.drawable.sesame_grey
-                    ),
-                    contentDescription = stringResource(R.string.sesame),
-                    modifier = Modifier
-                        .size(48.dp)
-                        .clickable { sesame = !sesame }
-                )
-            }
 
             Spacer(Modifier.size(32.dp))
 
@@ -323,6 +186,7 @@ fun AddRecipescreen(
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
+
 
                     ) {
                     TextField(
@@ -346,9 +210,11 @@ fun AddRecipescreen(
                         )
                     Spacer(Modifier.width(8.dp))
 
-                    UnitSelector(
-                        selectedUnit = unit,
-                        onUnitSelected = { unit = it }
+                    DropDownMenuSelector(
+                        options = UnitsTypeEnum.values(),
+                        selected = unit,
+                        onSelect = { unit = it },
+                        placeholder = UnitsTypeEnum.GRAM.toString()
                     )
                 }
                 Row() {
@@ -380,7 +246,7 @@ fun AddRecipescreen(
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     Button(
-                        onClick = {onNavigate(NavigationRoutes.HOME_SCREEN)},
+                        onClick = { onNavigate(NavigationRoutes.HOME_SCREEN) },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primary,
                             contentColor = MaterialTheme.colorScheme.onPrimary
@@ -465,7 +331,7 @@ fun AddRecipescreen(
 
                 Row(horizontalArrangement = Arrangement.SpaceBetween) {
                     Button(
-                        onClick = {},
+                        onClick = { onNavigate(NavigationRoutes.HOME_SCREEN) },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primary,
                             contentColor = MaterialTheme.colorScheme.onPrimary
@@ -479,6 +345,7 @@ fun AddRecipescreen(
                             color = MaterialTheme.colorScheme.onPrimary
                         )
                     }
+
                     Spacer(Modifier.size(24.dp))
                     Button(
                         onClick = {},
@@ -487,7 +354,7 @@ fun AddRecipescreen(
                             contentColor = MaterialTheme.colorScheme.onSecondary
                         ),
                         shape = MaterialTheme.shapes.small,
-                        modifier = Modifier.weight(0.25f)
+                        modifier = Modifier.weight(1f)
                     ) {
                         Text(
                             text = stringResource(R.string.delete_last),
@@ -584,76 +451,28 @@ fun AddRecipescreen(
         }
 
 
-    }
-    //FAB
-    Column(
-        Modifier
-            .fillMaxSize()
-            .padding(horizontal = 24.dp, vertical= 48.dp),
-        horizontalAlignment = Alignment.End,
-        verticalArrangement = Arrangement.Bottom
-    ) {
-        FloatingActionButton(
-            onClick = { /* Guardar cambios */ },
-            containerColor = MaterialTheme.colorScheme.secondary,
-            contentColor = MaterialTheme.colorScheme.onSecondary,
-            modifier = Modifier
-                .padding(16.dp)
-                .size(72.dp),
-            shape = MaterialTheme.shapes.large,
-
-            ) {
-            Icon(
-                painter = painterResource(R.drawable.save),
-                contentDescription = stringResource(R.string.save),
-                modifier = Modifier.size(32.dp)
+        //FAB
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(horizontal = 24.dp, vertical = 48.dp),
+            horizontalAlignment = Alignment.End,
+            verticalArrangement = Arrangement.Bottom
+        ) {
+            FAB(
+                onNavigate = { onNavigate(NavigationRoutes.HOME_SCREEN) }
             )
         }
     }
+
+
 }
 
-
-@Composable
-fun UnitSelector(
-    selectedUnit: UnitsTypeEnum,
-    onUnitSelected: (UnitsTypeEnum) -> Unit,
-
-    ) {
-    var expanded by remember { mutableStateOf(false) }
-
-    Box {
-        TextField(
-            value = stringResource(id = selectedUnit.unitToDisplay),
-            onValueChange = {},
-            readOnly = true,
-            modifier = Modifier
-                .clickable { expanded = true }
-                .background(MaterialTheme.colorScheme.background),
-
-
-            )
-
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false }
-        ) {
-            UnitsTypeEnum.entries.forEach { unit ->
-                DropdownMenuItem(
-                    text = { Text(stringResource(id = unit.unitToDisplay)) },
-                    onClick = {
-                        onUnitSelected(unit)
-                        expanded = false
-                    }
-                )
-            }
-        } //TODO: Add FAB!
-    }
-}
 
 @Preview
 @Composable
 fun PreviewAddRecipe() {
     CocinaConCatalinaTheme(darkTheme = false) {
-        AddRecipescreen(onNavigate = {})
+        AddRecipeScreen(onNavigate = {})
     }
 }
