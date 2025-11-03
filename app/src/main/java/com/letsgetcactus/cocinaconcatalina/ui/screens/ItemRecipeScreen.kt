@@ -239,6 +239,14 @@ fun ModifyAlergensList() {
     )
 }
 
+@Composable
+fun InfoRecipeForFilters(){
+    //Category List . dont need to be shown
+    //Origin : Image -->Box on toprightcorner
+    //Preparation Time -->minutes bottom main image
+    //Portions --> besides preparation
+    //Difficulty -->Shown by the color of preparation and portions. Better on List Item? ramen colors?
+}
 
 @Composable
 @Preview

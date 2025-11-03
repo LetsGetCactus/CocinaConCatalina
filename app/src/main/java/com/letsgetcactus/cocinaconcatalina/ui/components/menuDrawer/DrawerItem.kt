@@ -2,6 +2,7 @@ package com.letsgetcactus.cocinaconcatalina.ui.components.menuDrawer
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
@@ -24,6 +25,7 @@ fun DrawerItem(
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
+            .fillMaxWidth()
             .padding(8.dp)
             .clickable(onClick = onClick)
     ) {
@@ -52,7 +54,8 @@ fun DrawerSwitchItem(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(8.dp)
+        modifier = Modifier.fillMaxWidth()
+            .padding(8.dp)
     ) {
         Icon(
             painter = painterResource(icon),
