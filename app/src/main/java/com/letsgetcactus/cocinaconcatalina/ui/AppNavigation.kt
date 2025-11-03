@@ -9,8 +9,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -21,7 +19,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.savedstate.savedState
 import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
 import com.letsgetcactus.cocinaconcatalina.ui.components.bars.BottomBarComposable
 import com.letsgetcactus.cocinaconcatalina.ui.screens.AddRecipeScreen
@@ -105,9 +102,6 @@ fun AppNavigation(
                         route ->
                             if(route != currentRoute){
                                 navController.navigate(route){
-                                    popUpTo(NavigationRoutes.HOME_SCREEN) {
-                                        saveState = true
-                                    }
                                     launchSingleTop =true//Not to recharge the current screen
                                     restoreState=true
                                 }
