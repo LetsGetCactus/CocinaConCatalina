@@ -39,7 +39,6 @@ import com.letsgetcactus.cocinaconcatalina.model.enum.UnitsTypeEnum
 import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonMain
 import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonPair
 import com.letsgetcactus.cocinaconcatalina.ui.components.FAB
-import com.letsgetcactus.cocinaconcatalina.ui.components.RecipeRatingSelector
 import com.letsgetcactus.cocinaconcatalina.ui.components.filters.AllergenIconsSelector
 import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
 
