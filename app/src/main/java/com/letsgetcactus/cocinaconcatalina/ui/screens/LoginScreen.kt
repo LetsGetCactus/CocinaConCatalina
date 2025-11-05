@@ -2,6 +2,7 @@ package com.letsgetcactus.cocinaconcatalina.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,8 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -34,12 +33,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.letsgetcactus.cocinaconcatalina.R
-import com.letsgetcactus.cocinaconcatalina.ui.theme.Beis
+import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
+import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonGoogle
+import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonMain
+import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonSecondary
 import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
-import com.letsgetcactus.cocinaconcatalina.ui.theme.Red
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(
+    onNavigate: (String) -> Unit
+) {
 
     //States for the Text fields (email and password)
     var email by remember { mutableStateOf("") }
@@ -155,48 +158,24 @@ fun LoginScreen() {
             modifier = Modifier.size(16.dp)
         )
 
-        Button(
-            modifier = Modifier
-                .fillMaxWidth()
-                .shadow(8.dp),
-            onClick = { },
-            shape = MaterialTheme.shapes.small,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary
-            )
+        ButtonMain(
+            buttonText = stringResource(R.string.login),
+            onNavigate = {onNavigate(NavigationRoutes.HOME_SCREEN)},
+            modifier = Modifier.fillMaxWidth()
+        )
 
-        ) {
-            Text(
-                text = stringResource(R.string.login),
-                style = MaterialTheme.typography.labelLarge
-            )
-        }
         Spacer(modifier = Modifier.size(8.dp))
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
 
         ) {
 
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .shadow(8.dp),
-                onClick = {},
-                shape = MaterialTheme.shapes.small,
-                colors = ButtonDefaults.buttonColors(
-                    MaterialTheme.colorScheme.secondary,
-                    MaterialTheme.colorScheme.onSecondary
-                )
-            ) {
-                Text(
-                    text = stringResource(R.string.googleRegister),
-                    modifier = Modifier.padding(start = 16.dp),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSecondary
-                )
-            }
+            ButtonGoogle(
+                onNavigate = {onNavigate(NavigationRoutes.HOME_SCREEN)},
+                modifier = Modifier.fillMaxWidth()
+            )
 
 
             Image(
@@ -212,7 +191,7 @@ fun LoginScreen() {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.End
-        ) {
+        ) {//TODO: Implementar que hacer si se ha olvidado la pass
             Text(
                 text = stringResource(R.string.forgot_pass),
                 textAlign = TextAlign.End,
@@ -234,31 +213,22 @@ fun LoginScreen() {
                 textAlign = TextAlign.Start
             )
         }
-        Button(
-            modifier = Modifier
-                .fillMaxWidth()
-                .shadow(8.dp),
-            onClick = { },
-            shape = MaterialTheme.shapes.small,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onSecondary
-            )
-
-
-        ) {
-            Text(
-                text = stringResource(R.string.register),
-                style = MaterialTheme.typography.labelLarge
-            )
-        }
+        ButtonSecondary(
+            buttonText = stringResource(R.string.register),
+            onNavigate = {onNavigate(NavigationRoutes.REGISTER_SCREEN)},
+            modifier = Modifier.fillMaxWidth()
+        )
 
         Spacer(modifier = Modifier.size(40.dp))
 
         Text(
             text = stringResource(R.string.terms),
             color = MaterialTheme.colorScheme.tertiary,
-            style = MaterialTheme.typography.labelSmall
+            style = MaterialTheme.typography.labelSmall,
+            modifier = Modifier.clickable(
+                true,
+                onClick = {onNavigate(NavigationRoutes.TERMS_CONDITIONS_SCREEN)}
+            )
         )
 
     }
@@ -268,6 +238,6 @@ fun LoginScreen() {
 @Preview
 fun PreviewLogin() {
     CocinaConCatalinaTheme(darkTheme = false) {
-        LoginScreen()
+        LoginScreen(onNavigate = {})
     }
 }

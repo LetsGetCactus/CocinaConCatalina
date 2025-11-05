@@ -2,6 +2,7 @@ package com.letsgetcactus.cocinaconcatalina.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,30 +21,33 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.letsgetcactus.cocinaconcatalina.R
+import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
+import com.letsgetcactus.cocinaconcatalina.ui.components.RecipeRatingSelector
 import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
 
 @Composable
-fun ItemRecipeScreen() {
-
+fun ItemRecipeScreen(
+    modifier: Modifier = Modifier,
+    onNavigate: (String) -> Unit
+) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .padding(24.dp, 40.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
+            .padding(24.dp, 40.dp), // padding interno propio
 
-        ) {
-        Spacer(modifier = Modifier.size(56.dp)) //TODO: Adds
+    ) {
+        Spacer(modifier = Modifier.size(56.dp))
 
-        //TODO: put recipes info
         LazyColumn(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize() // usamos Modifier normal, no modifier
         ) {
             item {
                 Text(
@@ -51,13 +55,12 @@ fun ItemRecipeScreen() {
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.fillMaxWidth()
-
                 )
             }
+
             item {
                 Box(
-                    modifier = Modifier.fillMaxWidth()
-
+                    modifier = Modifier.fillMaxWidth() // Modifier, no modifier
                 ) {
                     Image(
                         painter = painterResource(R.drawable.recipe),
@@ -66,19 +69,22 @@ fun ItemRecipeScreen() {
                         modifier = Modifier
                             .fillMaxWidth()
                             .heightIn(min = 250.dp)
-
                     )
 
-                    //Buttons
+                    // Buttons
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
                         verticalAlignment = Alignment.Bottom,
                         modifier = Modifier
                             .align(Alignment.BottomEnd)
-                            .offset(x = (8).dp, y = 16.dp)
+                            .offset(x = 8.dp, y = 16.dp)
                     ) {
                         // Edit
-                        Box {
+                        Box(
+                            Modifier.clickable(true) {
+                                onNavigate(NavigationRoutes.MODIFIED_SCREEN)
+                            }
+                        ) {
                             Image(
                                 painter = painterResource(R.drawable.circle),
                                 contentDescription = null,
@@ -90,8 +96,8 @@ fun ItemRecipeScreen() {
                                 contentDescription = stringResource(R.string.edit),
                                 modifier = Modifier
                                     .align(Alignment.Center)
-                                    .offset(x = 8.dp, y = 16.dp)
-                                    .size(48.dp)
+                                    .offset(x = 6.dp, y = 12.dp)
+                                    .size(40.dp)
                             )
                         }
 
@@ -108,86 +114,141 @@ fun ItemRecipeScreen() {
                                 contentDescription = stringResource(R.string.favs),
                                 modifier = Modifier
                                     .align(Alignment.Center)
-                                    .offset( y = 16.dp)
-                                    .size(48.dp)
+                                    .offset(y = 12.dp)
+                                    .size(40.dp)
                             )
                         }
                     }
-                }
+                    //Origin - flag
+                   Box(
+                       modifier =Modifier.fillMaxWidth()
+                       .offset(x = 12.dp)
+                   ) {
+                       Image(
+                           painter = painterResource(R.drawable.chef_flag),
+                           contentDescription = stringResource(R.string.china),
+                           modifier = Modifier
+                               .align(Alignment.TopEnd)
+                               .size(40.dp)
+                               .shadow(16.dp)
+                       )
+                   }
 
-                Spacer(modifier = Modifier.size(48.dp))
+                    }
+
+                //Preptime & portions
+                Row(
+                    horizontalArrangement = Arrangement.Start,
+                    ) {
+                    Image(
+                        painter = painterResource(R.drawable.chef_flag),
+                        contentDescription = stringResource(R.string.china),
+                        modifier = Modifier
+
+                            .size(24.dp)
+                            .shadow(16.dp)
+                    )
+                    Spacer(Modifier.size(8.dp))
+                    IconAndText(
+                        modifier = Modifier,
+                        imageResource = R.drawable.user_white,
+                        imageContent = R.string.portions,
+                        textIn = "3"
+                    )
+                    Spacer(Modifier.size(8.dp))
+                    IconAndText(
+                        modifier = Modifier,
+                        imageResource = R.drawable.timer,
+                        imageContent = R.string.prep_time,
+                        textIn = "160"
+                    )
+
+
+                }
+                Spacer(modifier = Modifier.size(32.dp))
             }
 
             item {
-                Row() {
+                Row {
                     Text(
                         text = stringResource(R.string.ingredients),
-                        style = MaterialTheme.typography.bodyLarge,
+                        style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.weight(1f)
-
                     )
-                    LazyRow() {
-                        item {
-                            ModifyAlergensList()
-                        }
+                    LazyRow {
+                        item { ModifyAlergensList() }
                     }
                 }
             }
-            //Ingredients
+
             item {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp)
-
                 ) {
                     ModifyItemIngredients()
                 }
             }
 
-            //Steps
             item {
                 Text(
                     text = stringResource(R.string.steps),
-                    style = MaterialTheme.typography.bodyLarge,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.weight(1f)
-
                 )
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp)
-
                 ) {
-                ModifyItemSteps()
-            }
+                    ModifyItemSteps()
+                }
             }
 
+            item { //TODO puntuacion seleccionable
+                Spacer(modifier = Modifier.size(24.dp))
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+
+                    Text(
+                        stringResource(R.string.rating_ramen),
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                    RecipeRatingSelector(3)
+                }
+            }
         }
     }
-
 }
+
 
 @Composable
 fun ModifyItemIngredients() {
     Row(
-        modifier = Modifier.fillMaxWidth()
+//TODO: deberia ser un for
     ) {
         Text(
-            text = "cantidad",
-            modifier = Modifier.weight(1f),
-            style = MaterialTheme.typography.bodyLarge
+            text = stringResource(R.string.quantity),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onBackground
         )
         Text(
-            text = "unidad",
-            modifier = Modifier.weight(1f)
+            text = stringResource(R.string.unit),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onBackground
         )
         Spacer(modifier = Modifier.size(20.dp))
         Text(
-            text = "ingrediente",
-            modifier = Modifier.weight(1f)
+            text = stringResource(R.string.ingredient),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onBackground
         )
     }
 }
@@ -195,13 +256,17 @@ fun ModifyItemIngredients() {
 @Composable
 fun ModifyItemSteps() {
     Row {
-        Text(text = "pasos")
+        Text(
+            text = "pasos",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onBackground
+        )
     }
 }
 
 @Composable
 fun ModifyAlergensList() {
-    //TODO: rellenar con listado de alergenos de la receta
+    //TODO: rellenar con listado de alergenos de la receta, deberia ser un for
     Image(
         painter = painterResource(R.drawable.mustard),
         contentDescription = "mostaza",
@@ -219,11 +284,35 @@ fun ModifyAlergensList() {
     )
 }
 
+@Composable
+fun IconAndText(
+    modifier: Modifier = Modifier,
+    imageResource: Int,
+    imageContent: Int,
+    textIn: String
+) {
+    Row(
+        modifier = modifier,
+        ) {
+        Image(
+            painter = painterResource(id = imageResource),
+            contentDescription = stringResource(id = imageContent),
+            modifier = Modifier.size(20.dp)
+        )
+        Spacer(modifier.size(4.dp))
+        Text(
+            text = textIn ,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onPrimary
+        )
+    }
+}
+
 
 @Composable
 @Preview
 fun PreviewItemRecipe() {
-    CocinaConCatalinaTheme(darkTheme = false) {
-        ItemRecipeScreen()
+    CocinaConCatalinaTheme(darkTheme = true) {
+        ItemRecipeScreen(onNavigate = {})
     }
 }

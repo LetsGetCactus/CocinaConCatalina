@@ -5,7 +5,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,8 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.MaterialTheme
@@ -31,13 +28,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.letsgetcactus.cocinaconcatalina.R
+import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
+import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonGoogle
+import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonMain
+import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonSecondary
 import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
 
 
@@ -53,24 +53,17 @@ fun isValidEmail(email: String): Boolean {
 /**
  * Screen to register a new user of the app
  *
- * @param onLogin Action to go back to login screen
- * @param onRegister action to register a new user when clicking the button
- * @param loginPass password given in the LoginScreen to be shown on the textfield now
- * @param loginEmail email given on LoginScreen to be shown
  */
 @Composable
 fun RegisterScreen(
-    loginEmail: String,
-    loginPass: String,
-    onRegister: (String, String) -> Unit,
-    onLogin: () -> Unit,
 
+    onNavigate:(String) -> Unit
 
     ) {
     // States for the textFields
     var name by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf(loginEmail) }
-    var pass by remember { mutableStateOf(loginPass) }
+    var email by remember { mutableStateOf("loginEmail") }
+    var pass by remember { mutableStateOf("loginPass") }
     var confirmPass by remember { mutableStateOf("") }
 
 
@@ -84,7 +77,7 @@ fun RegisterScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .padding(48.dp,40.dp),
+            .padding(48.dp, 40.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
 
@@ -274,7 +267,7 @@ fun RegisterScreen(
             Text(
                 text = stringResource(R.string.termsAndConditions),
                 modifier = Modifier
-                    .clickable { }
+                    .clickable { onNavigate(NavigationRoutes.TERMS_CONDITIONS_SCREEN) }
                     .fillMaxWidth()
                     .padding(top = 16.dp),
                 style = MaterialTheme.typography.labelSmall,
@@ -290,86 +283,25 @@ fun RegisterScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .shadow(8.dp),
-                onClick = onLogin,
-                shape = MaterialTheme.shapes.small,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
-                )
+            ButtonMain(
+                buttonText = stringResource(R.string.login),
+                onNavigate = {onNavigate(NavigationRoutes.HOME_SCREEN)},
+                modifier = Modifier.fillMaxWidth()
+            )
 
-            ) {
-                Text(
-                    text = stringResource(R.string.back),
-                    style = MaterialTheme.typography.labelLarge
-                )
-            }
             Spacer(modifier=Modifier.size(8.dp))
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .shadow(8.dp),
-                onClick = {
-                    if (isValidEmail(email) && pass == confirmPass) {
-                        onRegister(email, pass)
-                    } else {
-                        emailError = !isValidEmail(email)
-                        passError = pass != confirmPass
-                    }
-                },
-                shape = MaterialTheme.shapes.small,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.secondary,
-                    contentColor = MaterialTheme.colorScheme.onSecondary
-                )
 
-
-            ) {
-                Text(
-                    text = stringResource(R.string.register),
-                    style = MaterialTheme.typography.labelLarge
-                )
-            }
+            ButtonSecondary(
+                buttonText = stringResource(R.string.register),
+                modifier = Modifier.fillMaxWidth(),
+                onNavigate = {onNavigate(NavigationRoutes.REGISTER_SCREEN)}
+            )
             Spacer(Modifier.height(36.dp))
 
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-
-            ) {
-
-                Button(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .shadow(8.dp),
-                    onClick = {},
-                    shape = MaterialTheme.shapes.small,
-                    colors = ButtonDefaults.buttonColors(
-                        MaterialTheme.colorScheme.surface,
-                        MaterialTheme.colorScheme.onSurface
-                    )
-                ) {
-                    Text(
-                        text = stringResource(R.string.googleRegister),
-                        modifier = Modifier.padding(start = 16.dp),
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                }
-
-
-                Image(
-                    painter = painterResource(R.drawable.google),
-                    contentDescription = stringResource(R.string.googleImg),
-                    modifier = Modifier
-                        .align(Alignment.CenterStart)
-                        .padding(start = 8.dp)
-                        .size(24.dp),
-                    contentScale = ContentScale.Fit
-                )
-            }
+           ButtonGoogle(
+               onNavigate = { },
+               modifier = Modifier.fillMaxWidth()
+           ) 
         }
     }
 
@@ -381,10 +313,7 @@ fun RegisterScreen(
 fun PreviewRegisterScreen() {
     CocinaConCatalinaTheme(darkTheme = false) {
     RegisterScreen(
-        onRegister = { _, _ -> },
-        onLogin = { },
-        loginEmail = "",
-        loginPass = ""
+        onNavigate = {}
     )
     }
 

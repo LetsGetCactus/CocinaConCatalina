@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">CocinaConCatalina</string>
+    <string name="app_name" translatable="false">Cocina con Catalina</string>
     <string name="welcome">Welcome to Cocina con Catalina!</string>
     <string name="email">Insert your email</string>
     <string name="pass">Insert your password</string>
@@ -24,10 +24,10 @@
     <string name="home">Home</string>
     <string name="favs">Favourites</string>
     <string name="search_bar">Search by ingredient or title</string>
-    <string name="loading">Loading...</string>
+    <string name="loading">Loading…</string>
     <string name="error">An error has happened</string>
     <string name="ingredients">Ingredients</string>
-    <string name="steps">steps</string>
+    <string name="steps">Steps</string>
     <string name="emptyList">Oops, it looks like your list is empty</string>
     <string name="upload_pic">Upload picture here</string>
     <string name="upload">Upload</string>
@@ -89,4 +89,49 @@
     <string name="filters">Filters</string>
     <string name="insert_filter">Insert filters separated by comas</string>
     <string name="save">Save</string>
+    <string name="tasty">Mmmm, sounds tasty!</string>
+    <string name="termsAndConditionsExplained" translatable="false">\n## 🧾 AVISO LEGAL\n\n**Titular:** LetsGetCactus\n**Nombre comercial:** Cocina con Catalina\n**Correo electrónico de contacto:** [info.letsgetcactus@gmail.com](mailto:info.letsgetcactus@gmail.com)\n**Sede:** España\n\nEl presente aviso legal regula el uso de la aplicación móvil **Cocina con Catalina** (en adelante, “la App”), propiedad de **LetsGetCactus** (en adelante, “el Titular”).\n\nEl acceso y uso de la App implica la aceptación plena y sin reservas de este Aviso Legal. Si el usuario no está de acuerdo con estas condiciones, deberá abstenerse de usar la App.\n\nEl Titular se reserva el derecho de modificar en cualquier momento la presentación, configuración y contenidos de la App, así como las condiciones requeridas para su uso.\n\n---\n\n## 🔒 POLÍTICA DE PRIVACIDAD\n\n### 1. Responsable del tratamiento\n\n**LetsGetCactus**\nCorreo electrónico: [info.letsgetcactus@gmail.com](mailto:info.letsgetcactus@gmail.com)\nUbicación: España\n\n### 2. Datos personales que se recogen\n\nLa App recopila los siguientes datos personales:\n\n* Nombre\n* Correo electrónico\n* Contraseña (encriptada)\n\nDe forma opcional, en el futuro podrían solicitarse otros datos como fotografía de perfil o contenido generado por el usuario (recetas, valoraciones, comentarios, etc.).\n\n### 3. Finalidad del tratamiento\n\nLos datos personales se utilizan para:\n\n* Crear y gestionar la cuenta de usuario.\n* Permitir el acceso a funciones personalizadas.\n* Facilitar la participación de los usuarios (subida, edición y valoración de recetas).\n* Enviar notificaciones o comunicaciones relacionadas con el servicio (por ejemplo, recuperación de contraseña o cambios en los términos).\n* Mejorar la experiencia de usuario y la calidad del servicio.\n\nEn caso de que se ofrezcan **servicios de suscripción o pago**, se informará claramente sobre el tratamiento de los datos de pago y se solicitará consentimiento expreso.\n\n### 4. Base legal para el tratamiento\n\nEl tratamiento de los datos se realiza sobre la base de:\n\n* El **consentimiento** otorgado por el usuario al registrarse en la App.\n* La **ejecución del contrato de servicio** (uso de la App).\n* El **cumplimiento de obligaciones legales** aplicables (por ejemplo, fiscales o de protección de datos).\n\n### 5. Conservación de los datos\n\nLos datos se conservarán mientras la cuenta de usuario esté activa o mientras sea necesario para cumplir con las finalidades descritas.\nEl usuario puede solicitar la eliminación de su cuenta en cualquier momento.\n\n### 6. Comunicación de los datos\n\nLos datos no se cederán a terceros salvo obligación legal o cuando sea necesario para la prestación del servicio (por ejemplo, proveedores de almacenamiento o envío de correos electrónicos). En ese caso, dichos terceros actuarán como **encargados del tratamiento** bajo contrato conforme al RGPD.\n\n### 7. Derechos del usuario\n\nEl usuario puede ejercer sus derechos de acceso, rectificación, supresión, oposición, limitación y portabilidad enviando un correo a: **[info.letsgetcactus@gmail.com](mailto:info.letsgetcactus@gmail.com)**\n\nTambién tiene derecho a presentar una reclamación ante la Agencia Española de Protección de Datos ([www.aepd.es](http://www.aepd.es)).\n\n### 8. Seguridad de los datos\n\nLos datos se almacenan de forma segura y las contraseñas se guardan mediante mecanismos de cifrado. Se implementan medidas técnicas y organizativas adecuadas para proteger la información personal contra el acceso no autorizado.\n\n### 9. Menores de edad\n\nEl uso de la App está dirigido a mayores de 14 años. Si el usuario es menor, se requerirá consentimiento de los padres o tutores.\n\n---\n\n## 📜 TÉRMINOS Y CONDICIONES DE USO\n\n### 1. Objeto\n\nEstos Términos regulan el acceso y uso de la App “**Cocina con Catalina**”, así como las responsabilidades derivadas del uso de sus contenidos y servicios.\n\n### 2. Registro y cuenta de usuario\n\nPara acceder a ciertas funciones, el usuario debe crear una cuenta proporcionando nombre, correo electrónico y contraseña.\nEl usuario se compromete a que los datos aportados sean veraces y a mantener la confidencialidad de su contraseña.\n\n### 3. Contenido generado por el usuario\n\nEl usuario puede subir, modificar o valorar recetas.\nAl publicar contenido, el usuario declara ser titular de los derechos sobre el mismo y autoriza a **LetsGetCactus** a mostrarlo dentro de la App.\nEl Titular podrá eliminar contenido que considere inapropiado, ofensivo o que infrinja derechos de terceros.\n\n### 4. Propiedad intelectual\n\nTodos los derechos de propiedad intelectual e industrial sobre la App, su diseño, logotipos, código y contenidos originales pertenecen a **LetsGetCactus** o a sus licenciantes.\nEl usuario no podrá copiar, distribuir o modificar la App sin autorización expresa.\n\n### 5. Funcionamiento y disponibilidad\n\nEl Titular no garantiza la disponibilidad continua de la App, aunque procurará evitar interrupciones y mantener actualizaciones regulares.\n\n### 6. Enlaces y contenidos de terceros\n\nLa App puede incluir enlaces a sitios web de terceros. **LetsGetCactus** no se hace responsable del contenido ni de las políticas de dichos sitios.\n\n### 7. Servicios de pago (futuro)\n\nEn caso de que se habiliten funciones de pago o suscripción, se informará de forma clara y se solicitará consentimiento expreso del usuario antes de efectuar cualquier cobro.\n\n### 8. Limitación de responsabilidad\n\nEl uso de la App se realiza bajo la responsabilidad del usuario. **LetsGetCactus** no se responsabiliza de los daños derivados de un mal uso o de la publicación de contenidos ilícitos por parte de los usuarios.\n\n### 9. Modificaciones\n\nEl Titular podrá modificar estos Términos en cualquier momento. Las modificaciones se comunicarán al usuario mediante la App o correo electrónico. El uso continuado de la App implica la aceptación de las nuevas condiciones.\n\n### 10. Legislación y jurisdicción aplicable\n\nEste contrato se rige por la legislación española y cualquier controversia se someterá a los tribunales de la ciudad de residencia del usuario.\n\n---\n\n</string>
+    <string name="spotify">Spotify</string>
+    <string name="menu_drawer">Menu drawer</string>
+    <string name="search">Search</string>
+    <string name="close">Close\n</string>
+    <string name="modified">My modified recipes</string>
+    <string name="config">Configuration</string>
+    <string name="language">Language</string>
+    <string name="close_session">Close user session</string>
+    <string name="delete_user_data">Delete user</string>
+    <string name="contact">Contact</string>
+    <string name="faq"><![CDATA[F&A]]></string>
+    <string name="mode">Dark mode</string>
+    <string name="advanced_filters">Search filters</string>
+    <string name="clear">clear</string>
+    <string name="clic_select">Click to select</string>
+    <string name="category">Categories</string>
+    <string name="by_plate">by plate:</string>
+    <string name="easy">easy</string>
+    <string name="medium">medium</string>
+    <string name="hard">hard</string>
+    <string name="chef" translatable="false">chef</string>
+    <string name="starter">starter</string>
+    <string name="main">main</string>
+    <string name="dessert">dessert</string>
+    <string name="sauce">sauce</string>
+    <string name="side_dish">side dish</string>
+    <string name="japan">Japan</string>
+    <string name="korea">Korea</string>
+    <string name="china">China</string>
+    <string name="thai">Thailand</string>
+    <string name="vietnam">Vietnam</string>
+    <string name="chef_made">Chef\'s creation</string>
+    <string name="rating">Rating</string>
+    <string name="max_ingredients">Max ingredients</string>
+    <string name="prep_time">Preparation time</string>
+    <string name="origin">Origin</string>
+    <string name="dish_type">Dish type</string>
+    <string name="level_dif">Level</string>
+    <string name="rating_ramen">Give this recipe some ramen!</string>
+    <string name="allergens_not">Without</string>
+    <string name="portions">Portions</string>
+    <string name="insert_category">Insert a category</string>
+
 </resources>
