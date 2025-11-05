@@ -127,4 +127,6 @@
     <string name="dish_type">Tipo de prato</string>
     <string name="level_dif">Nivel</string>
     <string name="rating_ramen">"Dalle rámen a esta receita! "</string>
+    <string name="allergens_not">Evitar</string>
+    <string name="portions">Porcións</string>
 </resources>

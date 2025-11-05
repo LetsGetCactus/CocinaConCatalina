@@ -134,6 +134,7 @@ fun AppNavigation(
                 }
                 composable(NavigationRoutes.ADD_RECIPE_SCREEN) {
                     AddRecipeScreen(
+                        modifier = Modifier.padding(innerPadding),
                         onNavigate = { route ->
                             navController.navigate(route)
 

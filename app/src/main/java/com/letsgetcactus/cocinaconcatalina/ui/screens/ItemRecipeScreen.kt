@@ -10,10 +10,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.MaterialTheme
@@ -21,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -28,7 +31,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.letsgetcactus.cocinaconcatalina.R
 import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
+import com.letsgetcactus.cocinaconcatalina.model.enum.DificultyEnum
 import com.letsgetcactus.cocinaconcatalina.ui.components.RecipeRating
+import com.letsgetcactus.cocinaconcatalina.ui.components.RecipeRatingSelector
 import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
 
 @Composable
@@ -95,8 +100,8 @@ fun ItemRecipeScreen(
                                 contentDescription = stringResource(R.string.edit),
                                 modifier = Modifier
                                     .align(Alignment.Center)
-                                    .offset(x = 8.dp, y = 16.dp)
-                                    .size(48.dp)
+                                    .offset(x = 6.dp, y = 12.dp)
+                                    .size(40.dp)
                             )
                         }
 
@@ -113,21 +118,65 @@ fun ItemRecipeScreen(
                                 contentDescription = stringResource(R.string.favs),
                                 modifier = Modifier
                                     .align(Alignment.Center)
-                                    .offset(y = 16.dp)
-                                    .size(48.dp)
+                                    .offset(y = 12.dp)
+                                    .size(40.dp)
                             )
                         }
                     }
-                }
+                    //Origin - flag
+                   Box(
+                       modifier =Modifier.fillMaxWidth()
+                       .offset(x = 12.dp)
+                   ) {
+                       Image(
+                           painter = painterResource(R.drawable.chef_flag),
+                           contentDescription = stringResource(R.string.china),
+                           modifier = Modifier
+                               .align(Alignment.TopEnd)
+                               .size(40.dp)
+                               .shadow(16.dp)
+                       )
+                   }
 
-                Spacer(modifier = Modifier.size(48.dp))
+                    }
+
+                //Preptime & portions
+                Row(
+                    horizontalArrangement = Arrangement.Start,
+                    ) {
+                    Image(
+                        painter = painterResource(R.drawable.chef_flag),
+                        contentDescription = stringResource(R.string.china),
+                        modifier = Modifier
+
+                            .size(24.dp)
+                            .shadow(16.dp)
+                    )
+                    Spacer(Modifier.size(8.dp))
+                    IconAndText(
+                        modifier = Modifier,
+                        imageResource = R.drawable.user_white,
+                        imageContent = R.string.portions,
+                        textIn = "3"
+                    )
+                    Spacer(Modifier.size(8.dp))
+                    IconAndText(
+                        modifier = Modifier,
+                        imageResource = R.drawable.timer,
+                        imageContent = R.string.prep_time,
+                        textIn = "160"
+                    )
+
+
+                }
+                Spacer(modifier = Modifier.size(32.dp))
             }
 
             item {
                 Row {
                     Text(
                         text = stringResource(R.string.ingredients),
-                        style = MaterialTheme.typography.bodyLarge,
+                        style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.weight(1f)
                     )
@@ -150,7 +199,7 @@ fun ItemRecipeScreen(
             item {
                 Text(
                     text = stringResource(R.string.steps),
-                    style = MaterialTheme.typography.bodyLarge,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.weight(1f)
                 )
@@ -165,8 +214,8 @@ fun ItemRecipeScreen(
 
             item { //TODO puntuacion seleccionable
                 Spacer(modifier = Modifier.size(24.dp))
-                Column (
-                    modifier= Modifier.fillMaxWidth() ,
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
@@ -176,7 +225,7 @@ fun ItemRecipeScreen(
                         color = MaterialTheme.colorScheme.primary,
                         style = MaterialTheme.typography.bodySmall
                     )
-                    RecipeRating(3)
+                    RecipeRatingSelector(3)
                 }
             }
         }
@@ -187,7 +236,7 @@ fun ItemRecipeScreen(
 @Composable
 fun ModifyItemIngredients() {
     Row(
-
+//TODO: deberia ser un for
     ) {
         Text(
             text = stringResource(R.string.quantity),
@@ -221,7 +270,7 @@ fun ModifyItemSteps() {
 
 @Composable
 fun ModifyAlergensList() {
-    //TODO: rellenar con listado de alergenos de la receta
+    //TODO: rellenar con listado de alergenos de la receta, deberia ser un for
     Image(
         painter = painterResource(R.drawable.mustard),
         contentDescription = "mostaza",
@@ -240,13 +289,29 @@ fun ModifyAlergensList() {
 }
 
 @Composable
-fun InfoRecipeForFilters(){
-    //Category List . dont need to be shown
-    //Origin : Image -->Box on toprightcorner
-    //Preparation Time -->minutes bottom main image
-    //Portions --> besides preparation
-    //Difficulty -->Shown by the color of preparation and portions. Better on List Item? ramen colors?
+fun IconAndText(
+    modifier: Modifier = Modifier,
+    imageResource: Int,
+    imageContent: Int,
+    textIn: String
+) {
+    Row(
+        modifier = modifier,
+        ) {
+        Image(
+            painter = painterResource(id = imageResource),
+            contentDescription = stringResource(id = imageContent),
+            modifier = Modifier.size(20.dp)
+        )
+        Spacer(modifier.size(4.dp))
+        Text(
+            text = textIn ,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onPrimary
+        )
+    }
 }
+
 
 @Composable
 @Preview

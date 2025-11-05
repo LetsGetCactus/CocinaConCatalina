@@ -123,13 +123,15 @@
     <string name="thai">Thailand</string>
     <string name="vietnam">Vietnam</string>
     <string name="chef_made">Chef\'s creation</string>
-    <string name="rating">rating</string>
-    <string name="max_ingredients">max ingredients</string>
+    <string name="rating">Rating</string>
+    <string name="max_ingredients">Max ingredients</string>
     <string name="prep_time">Preparation time</string>
     <string name="origin">Origin</string>
     <string name="dish_type">Dish type</string>
     <string name="level_dif">Level</string>
     <string name="rating_ramen">Give this recipe some ramen!</string>
     <string name="allergens_not">Without</string>
+    <string name="portions">Portions</string>
+    <string name="insert_category">Insert a category</string>
 
 </resources>
