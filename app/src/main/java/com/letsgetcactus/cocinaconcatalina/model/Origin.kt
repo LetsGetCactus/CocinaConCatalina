@@ -1,9 +1,10 @@
 package com.letsgetcactus.cocinaconcatalina.model
 
-import androidx.compose.ui.text.LinkAnnotation
+
+import com.letsgetcactus.cocinaconcatalina.model.enum.OriginEnum
 
 data class Origin(
     val id: Int,
     val country: String,
-    val flag: LinkAnnotation.Url
+    val flag: Int
 )
