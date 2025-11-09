@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "166093713399",
+    "project_id": "cocinaconcatarina-f6667",
+    "storage_bucket": "cocinaconcatarina-f6667.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:166093713399:android:e106fa894d70f95046c8f2",
+        "android_client_info": {
+          "package_name": "com.letsgetcactus.cocinaconcatalina"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCHD_MjmK37FO_XwVX6d5YCJ-clIPC5jSw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
