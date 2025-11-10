@@ -80,22 +80,6 @@ fun ItemRecipeScreen(
         //Flag
         val flagForRecipe = getFlagForCountry(currentRecipe.origin)
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            BackStackButton(
-                navController = navController,
-            )
-            Text(
-                text = stringResource(R.string.favs),
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.primary
-            )
-        }
-
-
         Log.i("ItemRecipeScreen", "Entrando en la pantalla para mostrar ${currentRecipe}")
 
         Column(
@@ -111,12 +95,17 @@ fun ItemRecipeScreen(
                 modifier = Modifier.fillMaxSize() // usamos Modifier normal, no modifier
             ) {
                 item {
-                    Text(
-                        text = currentRecipe.title,
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.fillMaxWidth()
-                    )
+                    Row {
+                        BackStackButton(
+                            navController = navController
+                        )
+                        Text(
+                            text = currentRecipe.title,
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
                 }
 
                 item {
