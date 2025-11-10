@@ -61,8 +61,7 @@ fun AppNavigation(
         drawerContent = {
             MenuDrawerComponent(
                 modifier = Modifier.width(LocalConfiguration.current.screenWidthDp.dp * 0.7f),
-                onNavigate = {
-                    route ->
+                onNavigate = { route ->
                     navController.navigate(route)
                     coroutineScope.launch {
                         drawerState.close()
@@ -83,15 +82,13 @@ fun AppNavigation(
                     currentRoute != NavigationRoutes.FILTER_SCREEN
                 ) {
                     TopBarComposable(
-                        navController =  navController ,
+                        navController = navController,
                         onMenu = {
                             coroutineScope.launch {
                                 drawerState.open()
                             }
                         },
-                        onSearchChanged = {},
-
-
+                        onSearchChanged = {}
                     )
                 }
             },
@@ -102,14 +99,13 @@ fun AppNavigation(
                     currentRoute != NavigationRoutes.REGISTER_SCREEN &&
                     currentRoute != NavigationRoutes.MODIFIED_SCREEN
                 ) {
-                    BottomBarComposable {
-                        route ->
-                            if(route != currentRoute){
-                                navController.navigate(route){
-                                    launchSingleTop =true//Not to recharge the current screen
-                                    restoreState=true
-                                }
+                    BottomBarComposable { route ->
+                        if (route != currentRoute) {
+                            navController.navigate(route) {
+                                launchSingleTop = true//Not to recharge the current screen
+                                restoreState = true
                             }
+                        }
                     }
 
                 }
@@ -120,7 +116,7 @@ fun AppNavigation(
                 navController = navController,
                 startDestination = startDestination,
 
-            ) {
+                ) {
                 composable(NavigationRoutes.LOGIN_SCREEN) {
                     LoginScreen(
                         onNavigate = { route ->
@@ -193,10 +189,10 @@ fun AppNavigation(
 
                         )
                 }
-                
+
                 composable(NavigationRoutes.FILTER_SCREEN) {
                     FilterScreen(
-                        onSearchClick = {  }
+                        onSearchClick = { }
                     )
                 }
 

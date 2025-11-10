@@ -43,6 +43,7 @@ import com.letsgetcactus.cocinaconcatalina.model.Ingredient
 import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
 import com.letsgetcactus.cocinaconcatalina.model.enum.AllergenEnum
 import com.letsgetcactus.cocinaconcatalina.model.enum.UnitsTypeEnum
+import com.letsgetcactus.cocinaconcatalina.ui.components.BackStackButton
 import com.letsgetcactus.cocinaconcatalina.ui.components.FAB
 import com.letsgetcactus.cocinaconcatalina.ui.components.filters.AllergenIconsSelector
 import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
@@ -84,7 +85,9 @@ fun ModifyRecipeScreen(
 
 
 
-        Box {
+        Box(
+            modifier = Modifier.padding(vertical = 48.dp)
+        ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -92,12 +95,16 @@ fun ModifyRecipeScreen(
                     .verticalScroll(scrollState)
                     .padding(32.dp)
             ) {
-                Text(
-                    text = "Modificar ${currentRecipe.title}",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.primary
-                )
-
+                Row() {
+                    BackStackButton(
+                        navController = navController,
+                    )
+                    Text(
+                        text = currentRecipe.title,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
 
                 // Image
                 val img = rememberAsyncImagePainter(

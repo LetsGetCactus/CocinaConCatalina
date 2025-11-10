@@ -33,12 +33,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
 import com.letsgetcactus.cocinaconcatalina.R
 import com.letsgetcactus.cocinaconcatalina.model.Allergen
 import com.letsgetcactus.cocinaconcatalina.model.Ingredient
 import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
 import com.letsgetcactus.cocinaconcatalina.model.Recipe
+import com.letsgetcactus.cocinaconcatalina.ui.components.BackStackButton
 import com.letsgetcactus.cocinaconcatalina.ui.components.RecipeRatingSelector
 import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
 import com.letsgetcactus.cocinaconcatalina.viewmodel.RecipeViewModel
@@ -59,6 +61,7 @@ fun ItemRecipeScreen(
 
     val recipe by viewModel.selectedRecipe.collectAsState()
 
+
     //To obtain the drawable form the origin
     fun getFlagForCountry(origin: String): Int {
         return when (origin.uppercase()) {
@@ -77,8 +80,19 @@ fun ItemRecipeScreen(
         //Flag
         val flagForRecipe = getFlagForCountry(currentRecipe.origin)
 
-        Column {
-            Text(text = currentRecipe.title)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            BackStackButton(
+                navController = navController,
+            )
+            Text(
+                text = stringResource(R.string.favs),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.primary
+            )
         }
 
 
@@ -199,14 +213,14 @@ fun ItemRecipeScreen(
                         Spacer(Modifier.size(8.dp))
                         IconAndText(
                             modifier = Modifier,
-                            imageResource = R.drawable.user_red,
+                            imageResource = R.drawable.user_red_fat,
                             imageContent = R.string.portions,
                             textIn = currentRecipe.portions.toString()
                         )
                         Spacer(Modifier.size(8.dp))
                         IconAndText(
                             modifier = Modifier,
-                            imageResource = R.drawable.timer_red,
+                            imageResource = R.drawable.timer_red_fat,
                             imageContent = R.string.prep_time,
                             textIn = currentRecipe.prepTime.toString()
                         )
