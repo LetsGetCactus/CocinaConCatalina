@@ -32,6 +32,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.letsgetcactus.cocinaconcatalina.R
 import com.letsgetcactus.cocinaconcatalina.model.Ingredient
 import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
@@ -43,20 +45,20 @@ import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
 
 @Composable
 fun ModifyRecipeScreen(
-
     onNavigate: (String) -> Unit,
-
-    //TODO: Examples
-    ingredientList: List<Ingredient> = listOf(
-        Ingredient("Harina", "100", UnitsTypeEnum.GRAM),
-        Ingredient("Leche", "200", UnitsTypeEnum.MILLILITER)
-    ),
+    navController: NavHostController,
+//
+//    //TODO: Examples
+//    ingredientList: List<Ingredient> = listOf(
+//        Ingredient("Harina", "100", UnitsTypeEnum.GRAM),
+//        Ingredient("Leche", "200", UnitsTypeEnum.MILLILITER)
+//    ),
     onIngredientChange: (Ingredient) -> Unit = {},
-    stepList: List<String> = listOf(
-        "1. Cocer el huevo 10 minutos, o mejor 5 y dejarlo luego un rato para que quede la yemita jugosota",
-        "2. Pelar tomates y cortarlos en trozos del tamaño de un guisante",
-        "3. Coger todo y hacer algo que simule que cocinas mientras pides comida a just eat"
-    )
+//    stepList: List<String> = listOf(
+//        "1. Cocer el huevo 10 minutos, o mejor 5 y dejarlo luego un rato para que quede la yemita jugosota",
+//        "2. Pelar tomates y cortarlos en trozos del tamaño de un guisante",
+//        "3. Coger todo y hacer algo que simule que cocinas mientras pides comida a just eat"
+//    )
 ) {
 
     val scrollState = rememberScrollState()

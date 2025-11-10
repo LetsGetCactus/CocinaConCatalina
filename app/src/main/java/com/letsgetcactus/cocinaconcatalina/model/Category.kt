@@ -1,6 +1,6 @@
 package com.letsgetcactus.cocinaconcatalina.model
 
 data class Category(
-    val id: Int,
-    var name: String
+    val id: Int = 0,
+    var name: String = ""
 )

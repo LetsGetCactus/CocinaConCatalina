@@ -53,7 +53,7 @@ fun SearchBarComponent(
         textStyle = MaterialTheme.typography.bodyMedium
     )
        Spacer(modifier = Modifier.width(16.dp))
-
+        
        // Botón de filtros avanzados
        ButtonSecondary(
            buttonText = stringResource(R.string.advanced_filters),

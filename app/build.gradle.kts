@@ -1,7 +1,10 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("com.google.gms.google-services")
 
 }
 
@@ -34,6 +37,7 @@ android {
     }
     kotlinOptions {
         jvmTarget = "11"
+
     }
     buildFeatures {
         compose = true
@@ -63,34 +67,41 @@ dependencies {
 
 
     // Jetpack Compose
-    implementation("androidx.activity:activity-compose:1.9.0")
-    implementation("androidx.compose:compose-bom:2025.09.01")
-    implementation("androidx.navigation:navigation-compose:2.9.5")
-    implementation("androidx.compose.ui:ui:1.6.0")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.9.3")
-    implementation("androidx.compose.material3:material3:1.3.1")
-    implementation("androidx.compose.material:material-icons-extended")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.9.3")
+    implementation(libs.androidx.activity.compose)
+    implementation(platform(libs.androidx.compose.bom.v20250901))
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.tooling.preview.v193)
+    implementation(libs.androidx.compose.material3.v131)
+    implementation(libs.androidx.compose.material.icons.extended)
+    debugImplementation(libs.androidx.compose.ui.tooling.v193)
 
     // Coil para Compose
-    implementation("io.coil-kt:coil-compose:2.7.0")
+    implementation(libs.coil.compose)
 
     // Google Play Services Auth
-    implementation("com.google.android.gms:play-services-auth:21.4.0")
+    implementation(libs.play.services.auth)
 
     // Material3
-    implementation("androidx.compose.ui:ui:1.7.0")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.7.0")
-    implementation("androidx.activity:activity-compose:1.9.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.0")
-    implementation("com.google.android.material:material:1.12.0")
+    implementation(libs.androidx.compose.ui.v170)
+    implementation(libs.androidx.compose.ui.tooling.preview.v170)
+    implementation(libs.activity.compose.v190)
+    implementation(libs.androidx.lifecycle.runtime.ktx.v280)
+    implementation(libs.material)
 
     // DataStore
-    implementation("androidx.datastore:datastore-preferences:1.1.7")
-    implementation("androidx.compose.ui:ui:1.6.0")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.9.3")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.9.3")
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.ui.v160)
+    implementation(libs.androidx.compose.ui.ui.tooling.preview)
+    debugImplementation(libs.ui.tooling)
 
-
+    //Firebase
+    implementation(platform(libs.firebase.bom.v3440))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
+    implementation(libs.kotlinx.coroutines.play.services)
 
 }
+
+

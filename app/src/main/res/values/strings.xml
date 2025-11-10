@@ -103,7 +103,7 @@
     <string name="contact">Contact</string>
     <string name="faq"><![CDATA[F&A]]></string>
     <string name="mode">Dark mode</string>
-    <string name="advanced_filters">Search filters</string>
+    <string name="advanced_filters">more filters</string>
     <string name="clear">clear</string>
     <string name="clic_select">Click to select</string>
     <string name="category">Categories</string>
@@ -133,5 +133,6 @@
     <string name="allergens_not">Without</string>
     <string name="portions">Portions</string>
     <string name="insert_category">Insert a category</string>
+    <string name="soup">Soup</string>
 
 </resources>

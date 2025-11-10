@@ -7,5 +7,6 @@ enum class DishTypeEnum(override val enumId: Int): TranslatableEnum{
     MAIN(R.string.main),
     DESSERT(R.string.dessert),
     SAUCE(R.string.sauce),
-    SIDE_DISH(R.string.side_dish)
+    SIDE_DISH(R.string.side_dish),
+    SOUP(R.string.soup)
 }

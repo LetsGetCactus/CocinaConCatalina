@@ -1,6 +1,7 @@
 package com.letsgetcactus.cocinaconcatalina.ui
 
 import MenuDrawerComponent
+import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.DrawerValue
@@ -14,12 +15,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
+import com.letsgetcactus.cocinaconcatalina.model.Recipe
 import com.letsgetcactus.cocinaconcatalina.ui.components.bars.BottomBarComposable
 import com.letsgetcactus.cocinaconcatalina.ui.screens.AddRecipeScreen
 import com.letsgetcactus.cocinaconcatalina.ui.screens.FavouritesScreen
@@ -33,6 +36,7 @@ import com.letsgetcactus.cocinaconcatalina.ui.screens.RegisterScreen
 import com.letsgetcactus.cocinaconcatalina.ui.screens.TermsAndConditionsScreen
 import com.letsgetcactus.cocinaconcatalina.ui.screens.TopBarComposable
 import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
+import com.letsgetcactus.cocinaconcatalina.viewmodel.RecipeViewModel
 import kotlinx.coroutines.launch
 
 
@@ -151,19 +155,16 @@ fun AppNavigation(
                 composable(NavigationRoutes.ITEM_RECIPE_SCREEN) {
                     ItemRecipeScreen(
                         modifier = Modifier.padding(innerPadding),
-                        onNavigate = { route ->
-                            navController.navigate(route)
-
-                        }
+                        onNavigate = { route -> navController.navigate(route) },
+                        navController = navController
                     )
                 }
                 composable(NavigationRoutes.LIST_RECIPES_HOST_SCREEN) {
+                    val vModel: RecipeViewModel = viewModel()
                     ListRecipeHostScreen(
                         modifier = Modifier.padding(innerPadding),
-                        onNavigate = { route ->
-                            navController.navigate(route)
-
-                        }
+                        onNavigate = { navController.navigate(NavigationRoutes.ITEM_RECIPE_SCREEN) },
+                        viewModel = vModel
                     )
                 }
                 composable(NavigationRoutes.MODIFIED_SCREEN) {
