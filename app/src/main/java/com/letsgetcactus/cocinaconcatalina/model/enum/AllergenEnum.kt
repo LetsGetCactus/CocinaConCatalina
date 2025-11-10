@@ -12,6 +12,7 @@ enum class AllergenEnum(
         R.drawable.mustard,
     ),
 
+
     PEANUT(
         R.drawable.peanut_grey,
         R.drawable.peanut,
@@ -70,5 +71,9 @@ enum class AllergenEnum(
     SESAME(
         R.drawable.sesame_grey,
         R.drawable.sesame,
+    ),
+    SOY(
+    R.drawable.soja_gris,
+    R.drawable.soja,
     )
 }

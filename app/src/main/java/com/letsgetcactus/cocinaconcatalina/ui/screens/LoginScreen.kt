@@ -95,12 +95,6 @@ fun LoginScreen(
                     style = MaterialTheme.typography.labelSmall,
                 )
             },
-            placeholder = {
-                Text(
-                    text = stringResource(R.string.email),
-                    style = MaterialTheme.typography.labelLarge,
-                )
-            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 8.dp)
@@ -132,12 +126,6 @@ fun LoginScreen(
                 Text(
                     text = stringResource(R.string.pass),
                     style = MaterialTheme.typography.labelSmall,
-                )
-            },
-            placeholder = {
-                Text(
-                    text = stringResource(R.string.pass),
-                    style = MaterialTheme.typography.labelLarge,
                 )
             },
             modifier = Modifier
@@ -192,11 +180,12 @@ fun LoginScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.End
         ) {//TODO: Implementar que hacer si se ha olvidado la pass
+            Spacer(Modifier.size(8.dp))
             Text(
                 text = stringResource(R.string.forgot_pass),
                 textAlign = TextAlign.End,
                 color = MaterialTheme.colorScheme.tertiary,
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.labelSmall,
 
                 )
         }
@@ -209,7 +198,7 @@ fun LoginScreen(
             Text(
                 text = stringResource(R.string.new_here),
                 color = MaterialTheme.colorScheme.tertiary,
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.labelSmall,
                 textAlign = TextAlign.Start
             )
         }

@@ -29,6 +29,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -39,6 +40,7 @@ import com.letsgetcactus.cocinaconcatalina.model.Ingredient
 import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
 import com.letsgetcactus.cocinaconcatalina.model.Recipe
 import com.letsgetcactus.cocinaconcatalina.ui.components.RecipeRatingSelector
+import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
 import com.letsgetcactus.cocinaconcatalina.viewmodel.RecipeViewModel
 
 @Composable
@@ -57,7 +59,24 @@ fun ItemRecipeScreen(
 
     val recipe by viewModel.selectedRecipe.collectAsState()
 
+    //To obtain the drawable form the origin
+    fun getFlagForCountry(origin: String): Int {
+        return when (origin.uppercase()) {
+            "JAPAN" -> R.drawable.japan_flag
+            "KOREA" -> R.drawable.korea_flag
+            "CHINA" -> R.drawable.china_flag
+            "THAILAND" -> R.drawable.thailand_flag
+            "VIETNAM" -> R.drawable.vietnam_flag
+            else -> R.drawable.chef_flag
+        }
+    }
+
+
     recipe?.let { currentRecipe ->
+
+        //Flag
+        val flagForRecipe = getFlagForCountry(currentRecipe.origin)
+
         Column {
             Text(text = currentRecipe.title)
         }
@@ -93,7 +112,7 @@ fun ItemRecipeScreen(
                         Image(
                             painter = rememberAsyncImagePainter(currentRecipe.img),
                             contentDescription = currentRecipe.title,
-                            contentScale = ContentScale.Fit,
+                            contentScale = ContentScale.Crop,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .heightIn(min = 250.dp)
@@ -154,12 +173,12 @@ fun ItemRecipeScreen(
                                 .offset(x = 12.dp)
                         ) {
                             Image(
-                                painter = rememberAsyncImagePainter(currentRecipe.origin),
+                                painter = rememberAsyncImagePainter(flagForRecipe),
                                 contentDescription = currentRecipe.origin,
                                 modifier = Modifier
                                     .align(Alignment.TopEnd)
                                     .size(40.dp)
-                                    .shadow(16.dp)
+
                             )
                         }
 
@@ -169,27 +188,27 @@ fun ItemRecipeScreen(
                     Row(
                         horizontalArrangement = Arrangement.Start,
                     ) {
+                        Spacer(Modifier.size(4.dp))
                         Image(
-                            painter = rememberAsyncImagePainter(currentRecipe.origin),
+                            painter = rememberAsyncImagePainter(flagForRecipe),
                             contentDescription = currentRecipe.origin,
                             modifier = Modifier
-
                                 .size(24.dp)
-                                .shadow(16.dp)
+
                         )
                         Spacer(Modifier.size(8.dp))
                         IconAndText(
                             modifier = Modifier,
-                            imageResource = R.drawable.user_white,
+                            imageResource = R.drawable.user_red,
                             imageContent = R.string.portions,
-                            textIn = "3"
+                            textIn = currentRecipe.portions.toString()
                         )
                         Spacer(Modifier.size(8.dp))
                         IconAndText(
                             modifier = Modifier,
-                            imageResource = R.drawable.timer,
+                            imageResource = R.drawable.timer_red,
                             imageContent = R.string.prep_time,
-                            textIn = "160"
+                            textIn = currentRecipe.prepTime.toString()
                         )
 
 
@@ -219,6 +238,7 @@ fun ItemRecipeScreen(
                     ) {
                         ItemIngredients(currentRecipe.ingredientList)
                     }
+                    Spacer(Modifier.size(16.dp))
                 }
 
                 item {
@@ -266,11 +286,23 @@ fun ItemIngredients(ingredients: List<Ingredient>) {
     Column {
         ingredients.forEach { ingredient ->
             Row {
-                Text(text = ingredient.quantity.toString())
+                Text(
+                    text = ingredient.quantity.toString(),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
                 Spacer(modifier = Modifier.size(8.dp))
-                Text(text = stringResource(id = ingredient.unit.enumId))
+                Text(
+                    text = stringResource(id = ingredient.unit.enumId),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
                 Spacer(modifier = Modifier.size(16.dp))
-                Text(text = ingredient.name)
+                Text(
+                    text = ingredient.name,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
             }
         }
     }
@@ -279,13 +311,24 @@ fun ItemIngredients(ingredients: List<Ingredient>) {
 @Composable
 fun ItemSteps(steps: List<String>) {
     var count = 1
-
-    Row {
+    Column {
         for (step in steps) {
-            Text("${count}. ")
-            Text(text = step)
+            Row {
+                Text(
+                    "${count}. ",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                Text(
+                    text = step,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                count++
+            }
+            Spacer(modifier = Modifier.size(4.dp))
         }
-        Spacer(modifier = Modifier.size(16.dp))
+
     }
 }
 
@@ -320,7 +363,7 @@ fun IconAndText(
         Text(
             text = textIn,
             style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onPrimary
+            color = MaterialTheme.colorScheme.primary
         )
     }
 }
@@ -332,8 +375,7 @@ fun IconAndText(
 //    CocinaConCatalinaTheme(darkTheme = true) {
 //        ItemRecipeScreen(
 //            onNavigate = {},
-//            modifier = Modifier,
-//            recipe =
+//            modifier = Modifier
 //        )
 //    }
 //}

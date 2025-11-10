@@ -4,7 +4,7 @@ data class RecipeDto(
     val id: String = "",
     val title: String = "",
     val avgRating: Int = 0,
-    val steps: String = "",
+    val steps: List<String> = emptyList(),
     val ingredientList: List<IngredientDto> = emptyList(),
     val allergenList: List<AllergenDto> = emptyList(),
     val categoryList: List<CategoryDto> = emptyList(),

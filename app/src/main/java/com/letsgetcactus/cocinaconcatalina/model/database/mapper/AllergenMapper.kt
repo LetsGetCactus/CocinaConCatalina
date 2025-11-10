@@ -1,5 +1,6 @@
 package com.letsgetcactus.cocinaconcatalina.model.database.mapper
 
+import android.util.Log
 import com.letsgetcactus.cocinaconcatalina.model.Allergen
 import com.letsgetcactus.cocinaconcatalina.model.database.dto.AllergenDto
 import com.letsgetcactus.cocinaconcatalina.model.enum.AllergenEnum
@@ -9,10 +10,28 @@ import com.letsgetcactus.cocinaconcatalina.model.enum.AllergenEnum
  *
  */
 fun AllergenDto.toAllergen(): Allergen {
+    val mapToEnum = mapOf(
+        "SHELLFISH_ICON" to AllergenEnum.MOLLUSK,
+        "EGG_ICON" to AllergenEnum.EGG,
+        "FISH_ICON" to AllergenEnum.FISH,
+        "SOY_ICON" to AllergenEnum.SOY,
+        "PEANUT_ICON" to AllergenEnum.PEANUT,
+        "GLUTEN_ICON" to AllergenEnum.GLUTEN,
+        "MILK_ICON" to AllergenEnum.DAIRY,
+        "MUSTARD_ICON" to AllergenEnum.MUSTARD,
+        "CELERY_ICON" to AllergenEnum.CELERY,
+        "SESAME_ICON" to AllergenEnum.SESAME,
+        "NUTS_ICON" to AllergenEnum.NUTS,
+        "CRAB_ICON" to AllergenEnum.CRAB,
+        "ALTRAMUZ_ICON" to AllergenEnum.ALTRAMUZ,
+        "SULFITE_ICON" to AllergenEnum.SULFITE
+    )
+
+    val allergenEnum = mapToEnum[this.img] ?: AllergenEnum.ALTRAMUZ
+    Log.i("AllergenMapper", "Firebase allergen: ${this.img}")
 
     return Allergen(
-        name = name,
-        img = AllergenEnum.entries.find { it.name == this.img } ?: AllergenEnum.ALTRAMUZ
-
+        name = this.name,
+        img = allergenEnum
     )
 }

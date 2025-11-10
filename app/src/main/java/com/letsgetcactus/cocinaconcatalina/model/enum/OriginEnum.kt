@@ -7,7 +7,7 @@ enum class OriginEnum(override val enumId: Int, flag: Int): TranslatableEnum {
         R.string.japan,
         R.drawable.japan_flag),
     KOREA(R.string.korea,
-        R.drawable.s_korea_flag),
+        R.drawable.korea_flag),
     CHINA(R.string.china,
         R.drawable.china_flag),
     THAILAND(R.string.thai,

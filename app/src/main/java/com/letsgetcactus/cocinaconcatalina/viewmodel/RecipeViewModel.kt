@@ -39,6 +39,7 @@ class RecipeViewModel(): ViewModel() {
 
     /**
      * Method to save the users selection on ListRecipeHost
+     * Shares the shared state between screens
      */
     fun selectRecipe(recipe: Recipe) {
         _selectedRecipe.value = recipe

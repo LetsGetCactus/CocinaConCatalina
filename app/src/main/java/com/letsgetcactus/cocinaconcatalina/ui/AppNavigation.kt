@@ -169,10 +169,10 @@ fun AppNavigation(
                 }
                 composable(NavigationRoutes.MODIFIED_SCREEN) {
                     ModifyRecipeScreen(
-                        onNavigate = { route ->
-                            navController.navigate(route)
 
-                        }
+                        onNavigate = { route -> navController.navigate(route) },
+                        navController = navController,
+                        onIngredientChange = {}
                     )
                 }
                 composable(NavigationRoutes.TERMS_CONDITIONS_SCREEN) {

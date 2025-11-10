@@ -10,7 +10,7 @@ fun RecipeDto.toRecipe(): Recipe {
         id = this.id,
         title = this.title,
         avgRating = this.avgRating,
-        steps = listOf(this.steps),
+        steps = this.steps,
         ingredientList = this.ingredientList.map { it.toIngredient() },
         allergenList = this.allergenList.map { it.toAllergen() },
         categoryList = this.categoryList.map { Category(name = it.name) },
