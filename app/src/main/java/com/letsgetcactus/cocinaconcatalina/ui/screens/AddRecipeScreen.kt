@@ -26,7 +26,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,6 +39,7 @@ import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonMain
 import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonPair
 import com.letsgetcactus.cocinaconcatalina.ui.components.FAB
 import com.letsgetcactus.cocinaconcatalina.ui.components.filters.AllergenIconsSelector
+import com.letsgetcactus.cocinaconcatalina.ui.components.filters.ChipSelector
 import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
 
 @Composable
@@ -62,6 +62,9 @@ fun AddRecipeScreen(
 
     // Allergens
     var selectedAllergens by remember { mutableStateOf(AllergenEnum.entries.associateWith { false }) }
+
+    //Difficulty chip selector:
+    var selectedDifficulty: DificultyEnum? by remember { mutableStateOf(null) }
 
     val scrollState = rememberScrollState()
     Box() {
@@ -222,7 +225,7 @@ fun AddRecipeScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(MaterialTheme.colorScheme.background)
-                    .shadow(16.dp)
+
             )
 
 
@@ -272,7 +275,6 @@ fun AddRecipeScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(MaterialTheme.colorScheme.background)
-                            .shadow(16.dp)
                     )
                 }
             }
@@ -280,17 +282,16 @@ fun AddRecipeScreen(
             Spacer(Modifier.size(32.dp))
 
             //Difficulty
-            Text(
-                text = stringResource(R.string.level_dif),
-                color = MaterialTheme.colorScheme.onBackground,
-                style = MaterialTheme.typography.bodyLarge
-            )
-            DropDownMenuSelector(
-                options = DificultyEnum.values(),
-                selected = DificultyEnum.EASY,
-                onSelect = { },
-                placeholder = stringResource(R.string.level_dif),
-                modifier = Modifier.fillMaxWidth()
+            ChipSelector(
+                modifier = Modifier.fillMaxWidth(),
+                title = stringResource(R.string.level_dif),
+                options = DificultyEnum.entries.map { it.name },
+                selectedOptions = selectedDifficulty?.let { setOf(it.name) } ?: emptySet(),
+                onSelectionChanged = { selectedNames ->
+                    selectedDifficulty =
+                        DificultyEnum.entries.firstOrNull { it.name in selectedNames }
+                },
+                singleSelection = true
             )
             Spacer(Modifier.size(32.dp))
 
@@ -339,7 +340,7 @@ fun AddRecipeScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(MaterialTheme.colorScheme.background)
-                            .shadow(16.dp)
+
                     )
                 }
             }
