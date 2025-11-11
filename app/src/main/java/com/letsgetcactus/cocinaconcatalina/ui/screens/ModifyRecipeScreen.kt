@@ -251,6 +251,7 @@ fun ModifyItemIngredients(
                 Spacer(Modifier.width(8.dp))
 
                 // Choose unit from selector
+                //TODO: me selecciona en todas las referencias el mismo tipo, al seleccionarlo en una
                 DropDownMenuSelector(
                     options = UnitsTypeEnum.entries.toTypedArray(),
                     selected = unit,
