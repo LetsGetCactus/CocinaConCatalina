@@ -4,18 +4,18 @@ import androidx.compose.ui.text.LinkAnnotation
 import com.letsgetcactus.cocinaconcatalina.model.enum.DificultyEnum
 
 data class Recipe(
-    val id: String,
-    val title: String,
-    var avgRating: Int,
-    val steps: String,
-    var ingredientList: List<Ingredient>,
-    val allergenList: List<Allergen>,
-    var categoryList: List<Category>,
-    var prepTime: Int,
-    val dificulty: DificultyEnum,
-    val origin: Origin,
-    var portions: Int,
-    var active: Boolean = true,
-    var img: LinkAnnotation.Url,
-    var video: LinkAnnotation.Url
+    val id: String ,
+    val title: String ,
+    val avgRating: Int ,
+    val steps: List<String> ,
+    val ingredientList: List<Ingredient> ,
+    val allergenList: List<Allergen> ,
+    val categoryList: List<Category>,
+    val prepTime: Int ,
+    val dificulty: DificultyEnum ,
+    val origin: String,
+    val portions: Int ,
+    val active: Boolean ,
+    val img: String ,
+    val video: String
 )

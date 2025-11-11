@@ -1,5 +1,6 @@
 package com.letsgetcactus.cocinaconcatalina.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -10,54 +11,73 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.letsgetcactus.cocinaconcatalina.R
-import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
-import com.letsgetcactus.cocinaconcatalina.model.enum.DificultyEnum
+import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.rememberAsyncImagePainter
+import com.letsgetcactus.cocinaconcatalina.model.Recipe
 import com.letsgetcactus.cocinaconcatalina.ui.components.RecipeRating
 import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
+import com.letsgetcactus.cocinaconcatalina.viewmodel.RecipeViewModel
 
 @Composable
 fun ListRecipeHostScreen(
     modifier: Modifier = Modifier,
-    onNavigate: (String) -> Unit
+    onNavigate: () -> Unit,
+    viewModel: RecipeViewModel = viewModel()
 ) {
+    val recipesVModel by viewModel.recipes.collectAsState()
+
     ListRecipeContent(
         modifier = modifier,
-        onNavigate = onNavigate
+        onNavigate = {
+            selected ->
+            Log.i("ListRecipeHostScreen", "Clicked recipe: ${selected.title}")
+            viewModel.selectRecipe(selected)
+            onNavigate()
+        },
+        recipes = recipesVModel
     )
 }
+
 
 @Composable
 fun ListRecipeContent(
     modifier: Modifier = Modifier,
-    onNavigate: (String) -> Unit
+    onNavigate: (Recipe) -> Unit,
+    recipes: List<Recipe>
 ) {
     LazyColumn(
         modifier = modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        items(5) { // simulamos 5 recetas
-            RecipeCard(onNavigate = onNavigate)
+        items(recipes) {
+            it ->
+            RecipeCard(
+                recipe = it,
+                onNavigate = onNavigate
+
+            )
         }
     }
 }
 
 @Composable
 private fun RecipeCard(
-    onNavigate: (String) -> Unit
+    recipe: Recipe,
+    onNavigate: (Recipe) -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -69,11 +89,14 @@ private fun RecipeCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(250.dp)
-                .clickable { onNavigate(NavigationRoutes.ITEM_RECIPE_SCREEN) }
+                .clickable {
+                    Log.i("ListRecipeHostScreen", "Clicked recipe inside card: ${recipe.title}")
+                    onNavigate(recipe)
+                }
         ) {
             Image(
-                painter = painterResource(R.drawable.recipe),
-                contentDescription = stringResource(R.string.image_description),
+                painter = rememberAsyncImagePainter(recipe.img),
+                contentDescription = recipe.title,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -88,11 +111,14 @@ private fun RecipeCard(
                 verticalArrangement = Arrangement.Bottom
             ) {
                 Text(
-                    text = "Rica receta sencilla",
+                    text = recipe.title,
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSecondary
                 )
-                RecipeRating(4, DificultyEnum.EASY)
+                RecipeRating(
+                    recipe.avgRating,
+                    difficulty = recipe.dificulty
+                )
             }
         }
     }
@@ -102,9 +128,9 @@ private fun RecipeCard(
 @Composable
 fun PreviewListRecipeHost() {
     CocinaConCatalinaTheme(darkTheme = false) {
-      ListRecipeHostScreen(
-          onNavigate = {},
-          modifier = Modifier
-      )
+        ListRecipeHostScreen(
+            onNavigate = {},
+            modifier = Modifier
+        )
     }
 }

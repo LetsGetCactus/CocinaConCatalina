@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.letsgetcactus.cocinaconcatalina" />
+                  <option name="mobileSdkAppId" value="1:166093713399:android:e106fa894d70f95046c8f2" />
+                  <option name="projectId" value="cocinaconcatarina-f6667" />
+                  <option name="projectNumber" value="166093713399" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,8 +29,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.rememberNavController
 import com.letsgetcactus.cocinaconcatalina.R
 import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
+import com.letsgetcactus.cocinaconcatalina.ui.components.BackStackButton
 import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
 
 @Composable
@@ -45,18 +48,24 @@ fun FavouritesScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.size(96.dp))
-
-        Text(
-            text = stringResource(R.string.favs),
-            modifier = Modifier.padding(horizontal = 40.dp)
-                .align(Alignment.Start),
-            style = MaterialTheme.typography.displayLarge,
-            color = MaterialTheme.colorScheme.tertiary
-        )
-
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            //TODO: No funciona!!!
+            BackStackButton(
+                navController = rememberNavController(),
+            )
+            Text(
+                text = stringResource(R.string.favs),
+                style = MaterialTheme.typography.displayLarge,
+                color = MaterialTheme.colorScheme.tertiary
+            )
+        }
         LazyColumn(
             modifier = Modifier.fillMaxWidth(),
-            contentPadding = androidx.compose.foundation.layout.PaddingValues(vertical = 8.dp),
+            contentPadding = PaddingValues(vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(2) {
@@ -76,7 +85,10 @@ fun FavCard(
             .widthIn(min = 400.dp, max = 800.dp)
             .heightIn(min = 160.dp, max = 200.dp)
             .shadow(8.dp, shape = MaterialTheme.shapes.small)
-            .background(color = MaterialTheme.colorScheme.primary, shape = MaterialTheme.shapes.small)
+            .background(
+                color = MaterialTheme.colorScheme.primary,
+                shape = MaterialTheme.shapes.small
+            )
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .clickable { onNavigate(NavigationRoutes.ITEM_RECIPE_SCREEN) }
     ) {

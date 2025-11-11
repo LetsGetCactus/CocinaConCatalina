@@ -1,6 +1,7 @@
 package com.letsgetcactus.cocinaconcatalina.ui
 
 import MenuDrawerComponent
+import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.DrawerValue
@@ -14,12 +15,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
+import com.letsgetcactus.cocinaconcatalina.model.Recipe
 import com.letsgetcactus.cocinaconcatalina.ui.components.bars.BottomBarComposable
 import com.letsgetcactus.cocinaconcatalina.ui.screens.AddRecipeScreen
 import com.letsgetcactus.cocinaconcatalina.ui.screens.FavouritesScreen
@@ -33,6 +36,7 @@ import com.letsgetcactus.cocinaconcatalina.ui.screens.RegisterScreen
 import com.letsgetcactus.cocinaconcatalina.ui.screens.TermsAndConditionsScreen
 import com.letsgetcactus.cocinaconcatalina.ui.screens.TopBarComposable
 import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
+import com.letsgetcactus.cocinaconcatalina.viewmodel.RecipeViewModel
 import kotlinx.coroutines.launch
 
 
@@ -57,8 +61,7 @@ fun AppNavigation(
         drawerContent = {
             MenuDrawerComponent(
                 modifier = Modifier.width(LocalConfiguration.current.screenWidthDp.dp * 0.7f),
-                onNavigate = {
-                    route ->
+                onNavigate = { route ->
                     navController.navigate(route)
                     coroutineScope.launch {
                         drawerState.close()
@@ -79,15 +82,13 @@ fun AppNavigation(
                     currentRoute != NavigationRoutes.FILTER_SCREEN
                 ) {
                     TopBarComposable(
-                        navController =  navController ,
+                        navController = navController,
                         onMenu = {
                             coroutineScope.launch {
                                 drawerState.open()
                             }
                         },
-                        onSearchChanged = {},
-
-
+                        onSearchChanged = {}
                     )
                 }
             },
@@ -98,14 +99,13 @@ fun AppNavigation(
                     currentRoute != NavigationRoutes.REGISTER_SCREEN &&
                     currentRoute != NavigationRoutes.MODIFIED_SCREEN
                 ) {
-                    BottomBarComposable {
-                        route ->
-                            if(route != currentRoute){
-                                navController.navigate(route){
-                                    launchSingleTop =true//Not to recharge the current screen
-                                    restoreState=true
-                                }
+                    BottomBarComposable { route ->
+                        if (route != currentRoute) {
+                            navController.navigate(route) {
+                                launchSingleTop = true//Not to recharge the current screen
+                                restoreState = true
                             }
+                        }
                     }
 
                 }
@@ -116,7 +116,7 @@ fun AppNavigation(
                 navController = navController,
                 startDestination = startDestination,
 
-            ) {
+                ) {
                 composable(NavigationRoutes.LOGIN_SCREEN) {
                     LoginScreen(
                         onNavigate = { route ->
@@ -151,27 +151,24 @@ fun AppNavigation(
                 composable(NavigationRoutes.ITEM_RECIPE_SCREEN) {
                     ItemRecipeScreen(
                         modifier = Modifier.padding(innerPadding),
-                        onNavigate = { route ->
-                            navController.navigate(route)
-
-                        }
+                        onNavigate = { route -> navController.navigate(route) },
+                        navController = navController
                     )
                 }
                 composable(NavigationRoutes.LIST_RECIPES_HOST_SCREEN) {
+                    val vModel: RecipeViewModel = viewModel()
                     ListRecipeHostScreen(
                         modifier = Modifier.padding(innerPadding),
-                        onNavigate = { route ->
-                            navController.navigate(route)
-
-                        }
+                        onNavigate = { navController.navigate(NavigationRoutes.ITEM_RECIPE_SCREEN) },
+                        viewModel = vModel
                     )
                 }
                 composable(NavigationRoutes.MODIFIED_SCREEN) {
                     ModifyRecipeScreen(
-                        onNavigate = { route ->
-                            navController.navigate(route)
 
-                        }
+                        onNavigate = { route -> navController.navigate(route) },
+                        navController = navController,
+                        onIngredientChange = {}
                     )
                 }
                 composable(NavigationRoutes.TERMS_CONDITIONS_SCREEN) {
@@ -192,10 +189,10 @@ fun AppNavigation(
 
                         )
                 }
-                
+
                 composable(NavigationRoutes.FILTER_SCREEN) {
                     FilterScreen(
-                        onSearchClick = {  }
+                        onSearchClick = { }
                     )
                 }
 

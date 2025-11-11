@@ -102,7 +102,7 @@
     <string name="contact">Contacto</string>
     <string name="faq">Preguntas frecuentes</string>
     <string name="mode">Modo oscuro</string>
-    <string name="advanced_filters">filtros de búsqueda</string>
+    <string name="advanced_filters">más filtros</string>
     <string name="clear">limpiar</string>
     <string name="clic_select">Clica para seleccionar</string>
     <string name="category">Categorías</string>
@@ -130,4 +130,6 @@
     <string name="rating_ramen">Dale rámen a esta receta!</string>
     <string name="allergens_not">Evitar</string>
     <string name="portions">Porciones</string>
+    <string name="insert_category">Inserte una categoría</string>
+    <string name="soup">Sopa</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.letsgetcactus.cocinaconcatalina.ui.screens
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -33,6 +34,7 @@ fun TopBarComposable(
     navController: NavController,
     onMenu: () -> Unit,
     onSearchChanged: (String) -> Unit,
+
 
 ) {
     var isSearchActive by remember { mutableStateOf(false) }
@@ -94,12 +96,12 @@ fun TopBarComposable(
 @Composable
 fun PreviewTopAppBarComponent() {
     CocinaConCatalinaTheme(darkTheme = false) {
-        var navController= rememberNavController()
+        var navController = rememberNavController()
 
         TopBarComposable(
             onMenu = {},
             onSearchChanged = {},
-            navController =navController
+            navController = navController
         )
     }
 }
