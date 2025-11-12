@@ -17,17 +17,20 @@ import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
 import com.letsgetcactus.cocinaconcatalina.ui.components.menuDrawer.DrawerItem
 import com.letsgetcactus.cocinaconcatalina.ui.components.menuDrawer.DrawerSwitchItem
 import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
+import com.letsgetcactus.cocinaconcatalina.ui.theme.LightGrey
+import com.letsgetcactus.cocinaconcatalina.ui.theme.menuDColor
 
 @Composable
 fun MenuDrawerComponent(
     onNavigate: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSecondary) {
+    CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSecondary)
+    {
         Column(
             modifier = modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.secondary)
+                .background(menuDColor)
                 .padding(vertical = 48.dp, horizontal = 24.dp)
         ) {
             Text(
@@ -36,7 +39,10 @@ fun MenuDrawerComponent(
                 style = MaterialTheme.typography.bodyMedium
             )
 
-            HorizontalDivider(modifier = Modifier.padding(top = 16.dp, bottom = 8.dp))
+            HorizontalDivider(
+                modifier = Modifier.padding(top = 16.dp, bottom = 8.dp),
+                color = MaterialTheme.colorScheme.onSecondary
+            )
 
             // Drawer items
             DrawerItem(
@@ -62,8 +68,10 @@ fun MenuDrawerComponent(
                 onClick = { onNavigate(NavigationRoutes.ADD_RECIPE_SCREEN) }
             )
 
+
             HorizontalDivider(
-                modifier =Modifier.padding(vertical = 8.dp)
+                modifier = Modifier.padding(top = 16.dp, bottom = 8.dp),
+                color = MaterialTheme.colorScheme.onSecondary
             )
 
             DrawerItem(
@@ -76,7 +84,7 @@ fun MenuDrawerComponent(
                 icon = R.drawable.icon,
                 label = stringResource(R.string.mode),
                 checked = false,
-                onCheckedChange = {  }
+                onCheckedChange = { }
             )
 
 
@@ -92,10 +100,11 @@ fun MenuDrawerComponent(
                 onClick = { /* borrar datos */ }
             )
 
-            HorizontalDivider(
-                modifier =Modifier.padding(vertical = 8.dp)
-            )
 
+            HorizontalDivider(
+                modifier = Modifier.padding(top = 16.dp, bottom = 8.dp),
+                color = MaterialTheme.colorScheme.onSecondary
+            )
             DrawerItem(
                 icon = R.drawable.icon,
                 label = stringResource(R.string.contact),
@@ -112,10 +121,9 @@ fun MenuDrawerComponent(
 }
 
 
-
 @Preview
 @Composable
-fun PreviewMenuDrawer(){
+fun PreviewMenuDrawer() {
     CocinaConCatalinaTheme(darkTheme = false) {
         MenuDrawerComponent(onNavigate = {})
     }

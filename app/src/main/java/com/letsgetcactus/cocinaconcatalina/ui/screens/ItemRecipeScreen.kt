@@ -191,15 +191,7 @@ fun ItemRecipeScreen(
                     Row(
                         horizontalArrangement = Arrangement.Start,
                     ) {
-                        Spacer(Modifier.size(4.dp))
-                        Image(
-                            painter = rememberAsyncImagePainter(flagForRecipe),
-                            contentDescription = currentRecipe.origin,
-                            modifier = Modifier
-                                .size(24.dp)
 
-                        )
-                        Spacer(Modifier.size(8.dp))
                         IconAndText(
                             modifier = Modifier,
                             imageResource = R.drawable.user_red_fat,
@@ -371,7 +363,7 @@ fun IconAndText(
     }
 }
 
-//
+
 //@Composable
 //@Preview
 //fun PreviewItemRecipe() {
