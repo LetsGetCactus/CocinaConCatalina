@@ -78,6 +78,7 @@ dependencies {
 
     // Coil para Compose
     implementation(libs.coil.compose)
+    implementation(libs.coil.gif)
 
     // Google Play Services Auth
     implementation(libs.play.services.auth)
