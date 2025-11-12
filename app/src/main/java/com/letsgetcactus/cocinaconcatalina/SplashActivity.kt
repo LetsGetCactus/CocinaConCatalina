@@ -1,5 +1,7 @@
 package com.letsgetcactus.cocinaconcatalina
 
+
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -8,6 +10,8 @@ import androidx.compose.runtime.LaunchedEffect
 import com.letsgetcactus.cocinaconcatalina.ui.screens.LoadingAppScreen
 import kotlinx.coroutines.delay
 
+
+@SuppressLint("CustomSplashScreen")
 class SplashActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
