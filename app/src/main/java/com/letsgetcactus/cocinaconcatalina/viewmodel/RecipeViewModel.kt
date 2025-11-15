@@ -8,6 +8,8 @@ import com.letsgetcactus.cocinaconcatalina.model.database.FirebaseConnection
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.util.Locale
+
 
 /**
 This class will load the data from Firebase and export it in the UI, updating them whenever they change
@@ -33,7 +35,10 @@ class RecipeViewModel(): ViewModel() {
             val result = FirebaseConnection.getAsianOriginalRecipes()
             _recipes.value = result
 
-            Log.i("RecipeViewModel", "Obtained ${result.size} recipes")
+            Log.i(
+                "RecipeViewModel",
+                "Obtained ${result.size}} recipes in ${Locale.getDefault().language}"
+            )
         }
     }
 
@@ -42,7 +47,10 @@ class RecipeViewModel(): ViewModel() {
      * Shares the shared state between screens
      */
     fun selectRecipe(recipe: Recipe) {
-        _selectedRecipe.value = recipe
-        Log.i("RecipeViewModel", "Selected recipe: ${recipe.title}")
+        val recipe = _recipes.value.find { it.id == recipe.id }
+        recipe?.let {
+            _selectedRecipe.value = it
+            Log.i("RecipeViewModel", "Selected recipe: ${it.title}")
+        }
     }
 }

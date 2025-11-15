@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.android.application)
@@ -78,6 +77,7 @@ dependencies {
 
     // Coil para Compose
     implementation(libs.coil.compose)
+    implementation(libs.coil.gif)
 
     // Google Play Services Auth
     implementation(libs.play.services.auth)
@@ -100,7 +100,13 @@ dependencies {
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
+    implementation(libs.firebase.functions)
+
+    //Coroutines
     implementation(libs.kotlinx.coroutines.play.services)
+
+    //Google ML Kit - Translation API
+    implementation(libs.translate)
 
 }
 

@@ -10,3 +10,13 @@ val Beis = Color(0xFFF5EEEA)
 val White = Color(0xFFFFFFFF)
 val DarkGrey = Color(0xFF171717)
 val LightGrey = Color(0xFF2D2D2D)
+
+
+//For DifficultyEnum
+val Green= Color(0xFF206723) // verde exacto
+val Yellow= Color(0xFFA89B24) // amarillo exacto
+
+//For MenuDrawe
+val menuDColor = Color(0xFF561A1A)
+
+

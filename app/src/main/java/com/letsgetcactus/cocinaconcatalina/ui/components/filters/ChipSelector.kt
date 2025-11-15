@@ -22,7 +22,7 @@ fun ChipSelector(
     title: String? = null,
     options: List<String>,
     selectedOptions: Set<String>,
-    onSelectionChanged: (String) -> Unit,
+    onSelectionChanged: (Set<String>) -> Unit,
     singleSelection: Boolean = false,
     ) {
     Column(modifier = modifier) {
@@ -40,20 +40,22 @@ fun ChipSelector(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             options.forEach { option ->
-                val isSelected = selectedOptions.contains(option)
+                var isSelected = option in selectedOptions
                 FilterChip(
                     selected = isSelected,
                     onClick = {
                         val newSelection = when {
+                           singleSelection && isSelected -> emptySet()
                             singleSelection -> setOf(option)
                             isSelected -> selectedOptions - option
                             else -> selectedOptions + option
                         }
-                        onSelectionChanged(option)
+                        onSelectionChanged(newSelection)
+
                     },
                     label = {
                         Text(text= option,
-                            style = MaterialTheme.typography.bodySmall,
+                            style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onBackground
                         )
                             },
