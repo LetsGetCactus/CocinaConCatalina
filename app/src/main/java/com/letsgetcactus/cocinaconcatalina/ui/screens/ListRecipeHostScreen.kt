@@ -35,6 +35,7 @@ import com.letsgetcactus.cocinaconcatalina.ui.components.ImageAndTextComponent
 import com.letsgetcactus.cocinaconcatalina.ui.components.RecipeRating
 import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
 import com.letsgetcactus.cocinaconcatalina.viewmodel.RecipeViewModel
+import java.util.Locale
 
 @Composable
 fun ListRecipeHostScreen(
@@ -42,7 +43,11 @@ fun ListRecipeHostScreen(
     onNavigate: () -> Unit,
     viewModel: RecipeViewModel = viewModel()
 ) {
+    Log.i("ListRecipeScreen", "Mostrando el listado de recetas en ${Locale.getDefault().language}")
+
     val recipesVModel by viewModel.recipes.collectAsState()
+
+
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally

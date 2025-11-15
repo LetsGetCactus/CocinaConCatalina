@@ -1,5 +1,5 @@
 [versions]
-agp = "8.13.0"
+agp = "8.13.1"
 androidxActivityCompose = "1.11.0"
 androidxComposeUiUi = "1.9.4"
 androidxUi = "1.9.4"
@@ -19,6 +19,7 @@ junit = "4.13.2"
 junitVersion = "1.3.0"
 espressoCore = "3.7.0"
 kotlinxCoroutinesPlayServices = "1.10.2"
+kotlinxCoroutinesPlayServicesVersion = "1.8.0"
 lifecycleRuntimeKtx = "2.9.4"
 activityCompose = "1.11.0"
 composeBom = "2025.11.00"
@@ -29,12 +30,14 @@ material3Version = "1.4.0"
 navigationCompose = "2.9.6"
 navigationSafeArgsGradlePlugin = "2.9.6"
 playServicesAuth = "21.4.0"
+translate = "17.0.3"
 ui = "1.9.4"
 uiTooling = "1.9.4"
 uiToolingPreview = "1.9.4"
 uiToolingPreviewVersion = "1.9.4"
 uiToolingVersion = "1.9.4"
 uiVersion = "1.9.4"
+firebaseFunctionsKtx = "22.1.0"
 
 [libraries]
 activity-compose-v190 = { module = "androidx.activity:activity-compose", version.ref = "androidxActivityCompose" }
@@ -63,9 +66,11 @@ firebase-bom-v3440 = { module = "com.google.firebase:firebase-bom", version.ref 
 firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
 firebase-firestore-ktx = { module = "com.google.firebase:firebase-firestore-ktx" }
 firebase-auth-ktx = { module = "com.google.firebase:firebase-auth-ktx" }
+firebase-functions = { module = "com.google.firebase:firebase-functions" }
 firebase-storage-ktx = { module = "com.google.firebase:firebase-storage-ktx" }
 google-firebase-auth-ktx = { module = "com.google.firebase:firebase-auth-ktx" }
 google-firebase-firestore-ktx = { module = "com.google.firebase:firebase-firestore-ktx" }
+google-firebase-functions-ktx = { module = "com.google.firebase:firebase-functions-ktx" }
 google-firebase-storage-ktx = { module = "com.google.firebase:firebase-storage-ktx" }
 google-services = { module = "com.google.gms:google-services", version.ref = "googleServices" }
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
@@ -84,10 +89,13 @@ androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "ui" }
 kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinxCoroutinesPlayServices" }
+kotlinx-coroutines-play-services-v180 = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinxCoroutinesPlayServicesVersion" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
+translate = { module = "com.google.mlkit:translate", version.ref = "translate" }
 ui = { group = "androidx.compose.ui", name = "ui", version.ref = "uiVersion" }
 ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "uiToolingVersion" }
+firebase-functions-ktx = { group = "com.google.firebase", name = "firebase-functions-ktx", version.ref = "firebaseFunctionsKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
