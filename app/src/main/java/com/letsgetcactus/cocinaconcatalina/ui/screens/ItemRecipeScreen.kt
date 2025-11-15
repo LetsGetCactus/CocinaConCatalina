@@ -25,31 +25,28 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
 import com.letsgetcactus.cocinaconcatalina.R
 import com.letsgetcactus.cocinaconcatalina.model.Allergen
 import com.letsgetcactus.cocinaconcatalina.model.Ingredient
 import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
-import com.letsgetcactus.cocinaconcatalina.model.Recipe
 import com.letsgetcactus.cocinaconcatalina.ui.components.BackStackButton
 import com.letsgetcactus.cocinaconcatalina.ui.components.RecipeRatingSelector
-import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
 import com.letsgetcactus.cocinaconcatalina.viewmodel.RecipeViewModel
+import java.util.Locale
 
 @Composable
 fun ItemRecipeScreen(
     modifier: Modifier = Modifier,
     onNavigate: (String) -> Unit,
-    navController: NavHostController
+    navController: NavHostController,
+
 ) {
 
 
@@ -78,21 +75,21 @@ fun ItemRecipeScreen(
     recipe?.let { currentRecipe ->
 
         //Flag
-        val flagForRecipe = getFlagForCountry(currentRecipe.origin)
+        val flagForRecipe = getFlagForCountry(currentRecipe.origin.country)
 
-        Log.i("ItemRecipeScreen", "Entrando en la pantalla para mostrar ${currentRecipe}")
+        Log.i("ItemRecipeScreen", "Entrando en la pantalla para mostrar ${currentRecipe.title}, in ${Locale.getDefault().language}")
 
         Column(
             modifier = modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
-                .padding(24.dp, 40.dp), // padding interno propio
+                .padding(24.dp, 40.dp),
 
         ) {
             Spacer(modifier = Modifier.size(56.dp))
 
             LazyColumn(
-                modifier = Modifier.fillMaxSize() // usamos Modifier normal, no modifier
+                modifier = Modifier.fillMaxSize()
             ) {
                 item {
                     Row {
@@ -177,7 +174,7 @@ fun ItemRecipeScreen(
                         ) {
                             Image(
                                 painter = rememberAsyncImagePainter(flagForRecipe),
-                                contentDescription = currentRecipe.origin,
+                                contentDescription = currentRecipe.origin.country,
                                 modifier = Modifier
                                     .align(Alignment.TopEnd)
                                     .size(40.dp)
@@ -191,15 +188,7 @@ fun ItemRecipeScreen(
                     Row(
                         horizontalArrangement = Arrangement.Start,
                     ) {
-                        Spacer(Modifier.size(4.dp))
-                        Image(
-                            painter = rememberAsyncImagePainter(flagForRecipe),
-                            contentDescription = currentRecipe.origin,
-                            modifier = Modifier
-                                .size(24.dp)
 
-                        )
-                        Spacer(Modifier.size(8.dp))
                         IconAndText(
                             modifier = Modifier,
                             imageResource = R.drawable.user_red_fat,
@@ -290,7 +279,7 @@ fun ItemIngredients(ingredients: List<Ingredient>) {
         ingredients.forEach { ingredient ->
             Row {
                 Text(
-                    text = ingredient.quantity.toString(),
+                    text = ingredient.quantity,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onBackground
                 )
@@ -371,7 +360,7 @@ fun IconAndText(
     }
 }
 
-//
+
 //@Composable
 //@Preview
 //fun PreviewItemRecipe() {

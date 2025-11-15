@@ -7,9 +7,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
@@ -27,9 +30,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.letsgetcactus.cocinaconcatalina.model.Recipe
+import com.letsgetcactus.cocinaconcatalina.model.enum.DificultyEnum
+import com.letsgetcactus.cocinaconcatalina.ui.components.ImageAndTextComponent
 import com.letsgetcactus.cocinaconcatalina.ui.components.RecipeRating
 import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
 import com.letsgetcactus.cocinaconcatalina.viewmodel.RecipeViewModel
+import java.util.Locale
 
 @Composable
 fun ListRecipeHostScreen(
@@ -37,18 +43,25 @@ fun ListRecipeHostScreen(
     onNavigate: () -> Unit,
     viewModel: RecipeViewModel = viewModel()
 ) {
+    Log.i("ListRecipeScreen", "Mostrando el listado de recetas en ${Locale.getDefault().language}")
+
     val recipesVModel by viewModel.recipes.collectAsState()
 
-    ListRecipeContent(
+
+    Column(
         modifier = modifier,
-        onNavigate = {
-            selected ->
-            Log.i("ListRecipeHostScreen", "Clicked recipe: ${selected.title}")
-            viewModel.selectRecipe(selected)
-            onNavigate()
-        },
-        recipes = recipesVModel
-    )
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        LegendComposable()
+        ListRecipeContent(
+            onNavigate = { selected ->
+                Log.i("ListRecipeHostScreen", "Clicked recipe: ${selected.title}")
+                viewModel.selectRecipe(selected)
+                onNavigate()
+            },
+            recipes = recipesVModel
+        )
+    }
 }
 
 
@@ -63,8 +76,7 @@ fun ListRecipeContent(
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        items(recipes) {
-            it ->
+        items(recipes) { it ->
             RecipeCard(
                 recipe = it,
                 onNavigate = onNavigate
@@ -123,6 +135,30 @@ private fun RecipeCard(
         }
     }
 }
+
+@Composable
+fun LegendComposable() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        DificultyEnum.entries.forEach { difficulty ->
+            ImageAndTextComponent(
+                textToShow = difficulty.enumId,
+                colorText = difficulty.color,
+                textStyle = MaterialTheme.typography.labelSmall,
+                imgToShow = difficulty.icon,
+                imgDescription = difficulty.enumId,
+                iconSize = 16
+            )
+            Spacer(Modifier.size(16.dp))
+        }
+    }
+}
+
 
 @Preview(showBackground = true)
 @Composable

@@ -9,7 +9,7 @@ import com.letsgetcactus.cocinaconcatalina.model.enum.AllergenEnum
  * Class that translates Firebases simple types (DTO) into our Kotlin types for the recipes
  *
  */
-fun AllergenDto.toAllergen(): Allergen {
+fun AllergenDto.toAllergen(language: String): Allergen {
     val mapToEnum = mapOf(
         "SHELLFISH_ICON" to AllergenEnum.MOLLUSK,
         "EGG_ICON" to AllergenEnum.EGG,
@@ -27,11 +27,16 @@ fun AllergenDto.toAllergen(): Allergen {
         "SULFITE_ICON" to AllergenEnum.SULFITE
     )
 
+
     val allergenEnum = mapToEnum[this.img] ?: AllergenEnum.ALTRAMUZ
     Log.i("AllergenMapper", "Firebase allergen: ${this.img}")
 
+    // 👇 Nuevo manejo multilenguaje
+    val lang = if (language !in listOf("es", "gl", "en")) "en" else language
+    val localizedName = this.name[lang] ?: this.name["en"] ?: ""
+
     return Allergen(
-        name = this.name,
+        name = localizedName,
         img = allergenEnum
     )
 }

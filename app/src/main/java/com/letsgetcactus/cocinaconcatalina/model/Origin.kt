@@ -1,10 +1,8 @@
 package com.letsgetcactus.cocinaconcatalina.model
 
 
-import com.letsgetcactus.cocinaconcatalina.model.enum.OriginEnum
-
 data class Origin(
-    val id: Int ,
-    val country: String,
-    val flag: Int
+    val id: Int =0,
+    val country: String= "",
+    val flag: Int= 0
 )
