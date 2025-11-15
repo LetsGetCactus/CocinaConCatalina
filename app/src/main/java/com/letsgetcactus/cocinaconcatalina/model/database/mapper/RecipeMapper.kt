@@ -25,7 +25,7 @@ fun RecipeDto.toRecipe(language:String = Locale.getDefault().language): Recipe {
         dificulty = DificultyEnum.entries.find { it.name == this.dificulty } ?: DificultyEnum.EASY,
         origin = Origin(
             id = (origin.id as? Number)?.toInt() ?: 0,
-            country = (origin.country),
+            country = (origin.country).uppercase(),
             flag = (origin.flag as? Number)?.toInt() ?: 0
         ),
         portions = this.portions,

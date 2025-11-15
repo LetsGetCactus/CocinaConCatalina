@@ -39,7 +39,7 @@ import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
 import com.letsgetcactus.cocinaconcatalina.ui.components.BackStackButton
 import com.letsgetcactus.cocinaconcatalina.ui.components.RecipeRatingSelector
 import com.letsgetcactus.cocinaconcatalina.viewmodel.RecipeViewModel
-import java.util.Locale
+
 
 @Composable
 fun ItemRecipeScreen(
@@ -61,11 +61,11 @@ fun ItemRecipeScreen(
 
     //To obtain the drawable form the origin
     fun getFlagForCountry(origin: String): Int {
-        return when (origin.uppercase()) {
-            "JAPAN" -> R.drawable.japan_flag
-            "KOREA" -> R.drawable.korea_flag
+        return when (origin.trim().uppercase()) {
+            "JAPÓN", "JAPAN", "XAPÓN" ,"JAPON","XAPON" -> R.drawable.japan_flag
+            "KOREA","COREA" -> R.drawable.korea_flag
             "CHINA" -> R.drawable.china_flag
-            "THAILAND" -> R.drawable.thailand_flag
+            "THAILANDIA","TAILANDIA" -> R.drawable.thailand_flag
             "VIETNAM" -> R.drawable.vietnam_flag
             else -> R.drawable.chef_flag
         }
@@ -77,7 +77,7 @@ fun ItemRecipeScreen(
         //Flag
         val flagForRecipe = getFlagForCountry(currentRecipe.origin.country)
 
-        Log.i("ItemRecipeScreen", "Entrando en la pantalla para mostrar ${currentRecipe.title}, in ${Locale.getDefault().language}")
+        Log.i("ItemRecipeScreen", "Entrando en la pantalla con origen : ${currentRecipe.origin.country}")
 
         Column(
             modifier = modifier
@@ -173,11 +173,12 @@ fun ItemRecipeScreen(
                                 .offset(x = 12.dp)
                         ) {
                             Image(
-                                painter = rememberAsyncImagePainter(flagForRecipe),
+                                painter = painterResource(flagForRecipe),
                                 contentDescription = currentRecipe.origin.country,
                                 modifier = Modifier
                                     .align(Alignment.TopEnd)
                                     .size(40.dp)
+                                    .offset(x=-16.dp)
 
                             )
                         }
@@ -208,6 +209,7 @@ fun ItemRecipeScreen(
                     Spacer(modifier = Modifier.size(32.dp))
                 }
 
+                //Allergens
                 item {
                     Row {
                         Text(
@@ -222,6 +224,7 @@ fun ItemRecipeScreen(
                     }
                 }
 
+                //Ingredients
                 item {
                     Column(
                         modifier = Modifier
@@ -359,15 +362,3 @@ fun IconAndText(
         )
     }
 }
-
-
-//@Composable
-//@Preview
-//fun PreviewItemRecipe() {
-//    CocinaConCatalinaTheme(darkTheme = true) {
-//        ItemRecipeScreen(
-//            onNavigate = {},
-//            modifier = Modifier
-//        )
-//    }
-//}
