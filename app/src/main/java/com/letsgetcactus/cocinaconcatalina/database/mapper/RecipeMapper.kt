@@ -1,8 +1,8 @@
-package com.letsgetcactus.cocinaconcatalina.model.database.mapper
+package com.letsgetcactus.cocinaconcatalina.database.mapper
 
 import com.letsgetcactus.cocinaconcatalina.model.Recipe
 import com.letsgetcactus.cocinaconcatalina.model.Category
-import com.letsgetcactus.cocinaconcatalina.model.database.dto.RecipeDto
+import com.letsgetcactus.cocinaconcatalina.database.dto.RecipeDto
 import com.letsgetcactus.cocinaconcatalina.model.enum.DificultyEnum
 
 fun RecipeDto.toRecipe(): Recipe {

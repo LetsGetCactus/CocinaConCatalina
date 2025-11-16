@@ -1,7 +1,7 @@
-package com.letsgetcactus.cocinaconcatalina.model.database.mapper
+package com.letsgetcactus.cocinaconcatalina.database.mapper
 
 import com.letsgetcactus.cocinaconcatalina.model.Ingredient
-import com.letsgetcactus.cocinaconcatalina.model.database.dto.IngredientDto
+import com.letsgetcactus.cocinaconcatalina.database.dto.IngredientDto
 import com.letsgetcactus.cocinaconcatalina.model.enum.UnitsTypeEnum
 
 fun IngredientDto.toIngredient(): Ingredient {

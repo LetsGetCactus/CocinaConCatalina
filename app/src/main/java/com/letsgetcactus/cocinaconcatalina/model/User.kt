@@ -4,13 +4,14 @@ import com.letsgetcactus.cocinaconcatalina.model.enum.RoleEnum
 import java.util.Date
 
 data class User(
-    val id: Int,
-    var name: String,
-    var email: String,
-    var password: String,
-    val resgisteredInDate: Date,
-    var isActive: Boolean,
-    val Role: RoleEnum = RoleEnum.USER,
-    var favouritesRecipes: List<Int> = emptyList(),
-    var modifiedRecipes: List<Recipe> =emptyList()
+    val id: String = "",
+    val name: String = "",
+    val email: String = "",
+    val password: String = "",
+    val registeredInDate: String = "",
+    val isActive: Boolean = true,
+    val role: String = "USER",
+    val favouritesRecipes: List<String> = emptyList(),
+    val modifiedRecipes: List<String> = emptyList()
 )
+

@@ -1,12 +1,11 @@
-package com.letsgetcactus.cocinaconcatalina.model.database
+package com.letsgetcactus.cocinaconcatalina.database
 
 import android.util.Log
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
-import com.google.firebase.firestore.toObjects
 import com.letsgetcactus.cocinaconcatalina.model.Recipe
-import com.letsgetcactus.cocinaconcatalina.model.database.dto.RecipeDto
-import com.letsgetcactus.cocinaconcatalina.model.database.mapper.toRecipe
+import com.letsgetcactus.cocinaconcatalina.database.dto.RecipeDto
+import com.letsgetcactus.cocinaconcatalina.database.mapper.toRecipe
 import kotlinx.coroutines.tasks.await
 
 /**

@@ -262,7 +262,7 @@ fun ItemRecipeScreen(
                     }
                 }
 
-                item { //TODO puntuacion seleccionable
+                item { //TODO puntuacion seleccionable, actualizar ratings
                     Spacer(modifier = Modifier.size(24.dp))
                     Column(
                         modifier = Modifier.fillMaxWidth(),
@@ -275,7 +275,18 @@ fun ItemRecipeScreen(
                             color = MaterialTheme.colorScheme.primary,
                             style = MaterialTheme.typography.bodySmall
                         )
-                        RecipeRatingSelector(3)
+                        Row(
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ){
+                            Text(text= "(4.8)",
+                                style = MaterialTheme.typography.labelSmall,
+                                color= MaterialTheme.colorScheme.primary)
+                            RecipeRatingSelector(3)
+                            Text(text= "(342 ratings)",
+                                style = MaterialTheme.typography.labelSmall,
+                                color= MaterialTheme.colorScheme.primary)
+                        }
                     }
                 }
             }

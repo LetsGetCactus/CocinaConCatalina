@@ -1,4 +1,4 @@
-package com.letsgetcactus.cocinaconcatalina.model.database.dto
+package com.letsgetcactus.cocinaconcatalina.database.dto
 
 data class IngredientDto(
     val name: String = "",
