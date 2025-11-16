@@ -1,7 +1,7 @@
 package com.letsgetcactus.cocinaconcatalina.database.dto
 
 data class IngredientDto(
-    val name: String = "",
+    val name: Map<String, String> = emptyMap(),
     val quantity: String= "",
     val unit: String = ""
 )
