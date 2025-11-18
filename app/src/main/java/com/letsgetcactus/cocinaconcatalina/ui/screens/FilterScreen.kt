@@ -23,10 +23,12 @@ import com.letsgetcactus.cocinaconcatalina.ui.components.filters.AllergenIconsSe
 import com.letsgetcactus.cocinaconcatalina.ui.components.filters.ChipSelector
 import com.letsgetcactus.cocinaconcatalina.ui.components.filters.SliderSelector
 import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
+import com.letsgetcactus.cocinaconcatalina.viewmodel.RecipeViewModel
 
 @Composable
 fun FilterScreen(
-    onSearchClick: () -> Unit
+    onSearchClick: () -> Unit,
+    recipeViewModel: RecipeViewModel
 ) {
     // States
     var selectedOrigin: OriginEnum? by remember { mutableStateOf(null) }
@@ -150,7 +152,18 @@ fun FilterScreen(
             ) {
                 ButtonMain(
                     buttonText = stringResource(R.string.search),
-                    onNavigate = onSearchClick,
+                    onNavigate = {
+                        recipeViewModel.applyFilters(
+                            origin = selectedOrigin,
+                            dishType = selectedDishType,
+                            difficulty = selectedDifficulty,
+                            prepTime = prepTime.toInt(),
+                            maxIngredients = maxIngredients.toInt(),
+                            rating = rating.toInt(),
+                            allergens = selectedAllergens.filter { it.value }.keys.toList()
+                        )
+                        onSearchClick()
+                    },
                     modifier = Modifier.weight(1f)
                 )
                 ButtonSecondary(
@@ -170,13 +183,5 @@ fun FilterScreen(
 
             Spacer(modifier = Modifier.height(48.dp))
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewFilterScreen() {
-    CocinaConCatalinaTheme(darkTheme = false) {
-        FilterScreen(onSearchClick = {})
     }
 }

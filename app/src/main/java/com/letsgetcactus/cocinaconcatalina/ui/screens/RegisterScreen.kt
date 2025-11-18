@@ -1,6 +1,9 @@
 package com.letsgetcactus.cocinaconcatalina.ui.screens// Archivo: app/src/main/java/com/letsgetcactus/cocinaconcatarina2/ui/screens/RegisterScreen.kt
 
+import android.os.Build
 import android.util.Patterns
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -24,21 +27,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.letsgetcactus.cocinaconcatalina.R
 import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
 import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonGoogle
 import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonMain
 import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonSecondary
-import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
+import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
+import kotlinx.coroutines.launch
 
 
 /**
@@ -54,23 +61,26 @@ fun isValidEmail(email: String): Boolean {
  * Screen to register a new user of the app
  *
  */
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun RegisterScreen(
+    navController: NavController,
+    userViewModel: UserViewModel
+) {
 
-    onNavigate:(String) -> Unit
+    val userViewModel: UserViewModel = viewModel()
+    val scope = rememberCoroutineScope()
+    val context= LocalContext.current
 
-    ) {
     // States for the textFields
     var name by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("loginEmail") }
-    var pass by remember { mutableStateOf("loginPass") }
+    var email by remember { mutableStateOf("") }
+    var pass by remember { mutableStateOf("") }
     var confirmPass by remember { mutableStateOf("") }
 
 
     //States for possible errors on mail or password
     var emailError by remember { mutableStateOf(false) }
-    var passError by remember { mutableStateOf(false) }
-
 
 
     Column(
@@ -118,13 +128,6 @@ fun RegisterScreen(
                     style = MaterialTheme.typography.labelSmall,
                 )
             },
-            placeholder = {
-                Text(
-                    text = stringResource(R.string.insert_name),
-                    style = MaterialTheme.typography.bodySmall,
-                )
-            },
-
             modifier = Modifier
                 .shadow(8.dp)
                 .fillMaxWidth()
@@ -154,12 +157,6 @@ fun RegisterScreen(
                     style = MaterialTheme.typography.labelSmall,
                 )
             },
-            placeholder = {
-                Text(
-                    text = stringResource(R.string.email),
-                    style = MaterialTheme.typography.bodySmall,
-                )
-            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 8.dp)
@@ -173,14 +170,6 @@ fun RegisterScreen(
             ),
             shape = MaterialTheme.shapes.small
         )
-        if (emailError) {
-            Text(
-                text = "Formato de email incorrecto",
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodySmall
-            )
-
-        }
 
 
         // Password
@@ -191,12 +180,6 @@ fun RegisterScreen(
                 Text(
                     text = stringResource(R.string.pass),
                     style = MaterialTheme.typography.labelSmall,
-                )
-            },
-            placeholder = {
-                Text(
-                    text = stringResource(R.string.pass),
-                    style = MaterialTheme.typography.bodySmall,
                 )
             },
             modifier = Modifier
@@ -224,12 +207,6 @@ fun RegisterScreen(
                     style = MaterialTheme.typography.labelSmall,
                 )
             },
-            placeholder = {
-                Text(
-                    text = stringResource(R.string.confirm_pass),
-                    style = MaterialTheme.typography.bodySmall,
-                )
-            },
             modifier = Modifier
                 .fillMaxWidth()
                 .shadow(8.dp),
@@ -243,13 +220,6 @@ fun RegisterScreen(
             ),
             shape = MaterialTheme.shapes.small
         )
-        if (pass != confirmPass && confirmPass.isNotEmpty()) {
-            Text(
-                text = "Las contraseñas no coinciden",
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodySmall
-            )
-        }
 
 
         Row(
@@ -267,7 +237,7 @@ fun RegisterScreen(
             Text(
                 text = stringResource(R.string.termsAndConditions),
                 modifier = Modifier
-                    .clickable { onNavigate(NavigationRoutes.TERMS_CONDITIONS_SCREEN) }
+                    .clickable { navController.navigate(NavigationRoutes.TERMS_CONDITIONS_SCREEN) }
                     .fillMaxWidth()
                     .padding(top = 16.dp),
                 style = MaterialTheme.typography.labelSmall,
@@ -278,14 +248,14 @@ fun RegisterScreen(
 
         Spacer(Modifier.height(24.dp))
 
-        //Action buttons: Back and Register
+        //Buttons:Back and Register
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             ButtonMain(
-                buttonText = stringResource(R.string.login),
-                onNavigate = {onNavigate(NavigationRoutes.HOME_SCREEN)},
+                buttonText = stringResource(R.string.back),
+                onNavigate = {navController.navigate(NavigationRoutes.LOGIN_SCREEN)},
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -294,27 +264,39 @@ fun RegisterScreen(
             ButtonSecondary(
                 buttonText = stringResource(R.string.register),
                 modifier = Modifier.fillMaxWidth(),
-                onNavigate = {onNavigate(NavigationRoutes.REGISTER_SCREEN)}
+                onNavigate = {
+                    scope.launch {
+                        if (name.isBlank() || email.isBlank() || pass.isBlank() || confirmPass.isBlank()) {
+                            Toast.makeText(context,R.string.complete_all,Toast.LENGTH_SHORT).show()
+                        } else if (pass != confirmPass) {
+                            Toast.makeText(context,R.string.pass_not_matching, Toast.LENGTH_SHORT).show()
+                        }  else if (!isValidEmail(email)) {
+                            Toast.makeText(context,R.string.emailError, Toast.LENGTH_SHORT).show()
+                        }else {
+
+                            val success = userViewModel.register(name, email, pass)
+                            if (success) {
+                                navController.navigate(NavigationRoutes.HOME_SCREEN) {
+                                    popUpTo(NavigationRoutes.REGISTER_SCREEN) { inclusive = true }
+                                }
+                            }else {
+                                Toast.makeText(context,R.string.email_pass_incorrect, Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                }
             )
+
+
+
             Spacer(Modifier.height(36.dp))
 
-           ButtonGoogle(
+           ButtonGoogle( //TODO
                onNavigate = { },
                modifier = Modifier.fillMaxWidth()
-           ) 
+           )
         }
     }
 
 }
 
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewRegisterScreen() {
-    CocinaConCatalinaTheme(darkTheme = false) {
-    RegisterScreen(
-        onNavigate = {}
-    )
-    }
-
-}

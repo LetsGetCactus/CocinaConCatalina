@@ -1,6 +1,10 @@
 package com.letsgetcactus.cocinaconcatalina.ui.screens
 
 import DropDownMenuSelector
+import android.net.Uri
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -20,18 +24,25 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.letsgetcactus.cocinaconcatalina.R
+import com.letsgetcactus.cocinaconcatalina.model.Allergen
+import com.letsgetcactus.cocinaconcatalina.model.Category
+import com.letsgetcactus.cocinaconcatalina.model.Ingredient
 import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
+import com.letsgetcactus.cocinaconcatalina.model.Origin
+import com.letsgetcactus.cocinaconcatalina.model.Recipe
 import com.letsgetcactus.cocinaconcatalina.model.enum.AllergenEnum
 import com.letsgetcactus.cocinaconcatalina.model.enum.DificultyEnum
 import com.letsgetcactus.cocinaconcatalina.model.enum.UnitsTypeEnum
@@ -40,33 +51,62 @@ import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonPair
 import com.letsgetcactus.cocinaconcatalina.ui.components.FAB
 import com.letsgetcactus.cocinaconcatalina.ui.components.filters.AllergenIconsSelector
 import com.letsgetcactus.cocinaconcatalina.ui.components.filters.ChipSelector
-import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
+import com.letsgetcactus.cocinaconcatalina.ui.components.filters.SliderSelector
+import com.letsgetcactus.cocinaconcatalina.viewmodel.RecipeViewModel
+import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
+import java.util.UUID
 
 @Composable
 fun AddRecipeScreen(
     onNavigate: (String) -> Unit,
-    modifier: Modifier
+    modifier: Modifier,
+    recipeViewModel: RecipeViewModel,
+    userViewModel: UserViewModel
 ) {
 
-    var title: String by remember { mutableStateOf("") }
+    //Check for ADMIN ONLY
+    val context= LocalContext.current
+    val currentUser by userViewModel.currentUser.collectAsState()
+    if (currentUser?.role == "ADMIN") {
+        onNavigate(NavigationRoutes.HOME_SCREEN)
+        Toast.makeText(context,stringResource(R.string.admin_only),Toast.LENGTH_SHORT).show()
+        return
+    }
 
-    // Ingredients
+    //State vars
+    var title: String by remember { mutableStateOf("") }
+    var img: Uri? by remember { mutableStateOf(null) }
+
     var ingredientName by remember { mutableStateOf("") }
     var quantity by remember { mutableStateOf("") }
+    var listIngredients by remember { mutableStateOf(listOf<Ingredient>()) }
     var unit by remember { mutableStateOf(UnitsTypeEnum.GRAM) }
-    var listIngredients by remember { (mutableStateOf(listOf<String>())) }
 
-    // Steps
     var steps by remember { mutableStateOf("") }
-    var listSteps by remember { (mutableStateOf(listOf<String>())) }
+    var listSteps by remember { mutableStateOf(listOf<String>()) }
 
-    // Allergens
     var selectedAllergens by remember { mutableStateOf(AllergenEnum.entries.associateWith { false }) }
-
-    //Difficulty chip selector:
     var selectedDifficulty: DificultyEnum? by remember { mutableStateOf(null) }
 
+    var categories by remember { mutableStateOf(listOf<Category>()) }
+    var categoryIn by remember {mutableStateOf("")}
+
+    var prepTime by remember { mutableStateOf(0f) }
+    var portions by remember { mutableStateOf(0f) }
+    var active by remember { mutableStateOf(true) }
+    var origin by remember { mutableStateOf(Origin(country = "")) }
+
+
     val scrollState = rememberScrollState()
+
+    //Launcher for img
+    val launcher= rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) {
+        uri -> img = uri
+    }
+
+    //UI
     Box() {
         Column(
             modifier = modifier
@@ -77,6 +117,7 @@ fun AddRecipeScreen(
 
         ) {
 
+            //CCC logo
             Image(
                 painter = painterResource(R.drawable.icon),
                 contentDescription = stringResource(R.string.ccc_icon),
@@ -106,17 +147,17 @@ fun AddRecipeScreen(
                     },
                     shape = MaterialTheme.shapes.small,
                     modifier = Modifier
-                        .weight(0.7f)
+                        .fillMaxWidth()
                         .background(MaterialTheme.colorScheme.background)
                 )
 
-                Spacer(Modifier.size(8.dp))
-
-                ButtonMain(
-                    buttonText = stringResource(R.string.add),
-                    onNavigate = { },
-                    modifier = Modifier.fillMaxHeight()
-                )
+//                Spacer(Modifier.size(8.dp))
+//
+//                ButtonMain(
+//                    buttonText = stringResource(R.string.add),
+//                    onNavigate = { },
+//                    modifier = Modifier.fillMaxHeight()
+//                )
             }
 
             Spacer(Modifier.size(32.dp))
@@ -128,10 +169,11 @@ fun AddRecipeScreen(
                 style = MaterialTheme.typography.bodyLarge
             )
             ButtonMain(
-                buttonText = stringResource(R.string.img_selector),
-                onNavigate = { },
+                buttonText = if(img==null) stringResource(R.string.img_selector) else img.toString(),
+                onNavigate = {launcher.launch("image/*") },
                 modifier = Modifier.fillMaxWidth()
             )
+
 
             Spacer(Modifier.size(32.dp))
 
@@ -164,7 +206,7 @@ fun AddRecipeScreen(
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
-                    ) {
+                ) {
                     TextField(
                         modifier = Modifier
                             .background(MaterialTheme.colorScheme.background)
@@ -182,11 +224,11 @@ fun AddRecipeScreen(
                     Spacer(Modifier.width(8.dp))
 
                     DropDownMenuSelector(
-                        options = UnitsTypeEnum.values(),
+                        options = UnitsTypeEnum.entries.toTypedArray(),
                         selected = unit,
                         onSelect = { unit = it },
                         placeholder = UnitsTypeEnum.GRAM.toString(),
-                        modifier=Modifier.weight(1f)
+                        modifier = Modifier.weight(1f)
                     )
                 }
                 Row() {
@@ -211,15 +253,35 @@ fun AddRecipeScreen(
                 ButtonPair(
                     textLeft = stringResource(R.string.add),
                     textRight = stringResource(R.string.delete_last),
-                    onNavigateRight = {},
-                    onNavigateLeft = {}
+                    onNavigateRight = {
+                        if (listIngredients.isNotEmpty()) {
+                            listIngredients = listIngredients.dropLast(1)
+                        }
+                    },
+                    onNavigateLeft = {
+                        if (ingredientName.isNotBlank() && quantity.isNotBlank()) {
+                            listIngredients =listIngredients +  Ingredient(
+                                name = ingredientName,
+                                quantity = quantity,
+                                unit = unit
+                            )
+
+                            // cleans the fields
+                            ingredientName = ""
+                            quantity = ""
+                            unit = UnitsTypeEnum.GRAM
+                        }
+                    }
+
                 )
             }
 
             Spacer(Modifier.size(8.dp))
 
             Text(
-                text = "1Kg Ejemplo a reemplazar\n2 uds Otro ejemplo",
+                text = listIngredients.joinToString("\n") {
+                    "${it.quantity} ${it.unit.enumId}. ${it.name}"
+                },
                 color = MaterialTheme.colorScheme.onBackground,
                 style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier
@@ -263,13 +325,25 @@ fun AddRecipeScreen(
                 ButtonPair(
                     textLeft = stringResource(R.string.add),
                     textRight = stringResource(R.string.delete_last),
-                    onNavigateRight = {},
-                    onNavigateLeft = {}
+                    onNavigateRight = {
+                        if(listSteps.isNotEmpty()){
+                            listSteps= listSteps.dropLast(1)
+                        }
+                    },
+                    onNavigateLeft = {
+                        if (steps.isNotBlank()){
+                            listSteps = listSteps + steps
+                            steps = ""
+                        }
+                    }
                 )
 
                 Row() {
                     Text(
-                        text = "1. Ejemplo a reemplazar\n2. Otro ejemplo\n3. Y otro más por qué no?",
+                        text = listSteps.mapIndexed {
+                            index, step ->
+                            "${index+1}. $step"
+                        }.joinToString("\n"),
                         color = MaterialTheme.colorScheme.onBackground,
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier
@@ -307,8 +381,8 @@ fun AddRecipeScreen(
             ) {
                 Row() {
                     TextField(
-                        value = steps,
-                        onValueChange = { steps = it },
+                        value = categoryIn,
+                        onValueChange = { categoryIn = it },
                         label = {
                             Text(
                                 text = stringResource(R.string.insert_category),
@@ -328,13 +402,26 @@ fun AddRecipeScreen(
                 ButtonPair(
                     textLeft = stringResource(R.string.add),
                     textRight = stringResource(R.string.delete_last),
-                    onNavigateRight = {},
-                    onNavigateLeft = {}
+                    onNavigateRight = {
+                        if(categories.isNotEmpty()){
+                            categories = categories.dropLast(1)
+                        }
+                    },
+                    onNavigateLeft = {
+                        if(categoryIn.isNotBlank()){
+                            val newCategory = Category(
+                                id= UUID.randomUUID().mostSignificantBits.toInt(),
+                                name= categoryIn
+                            )
+                            categories = categories + newCategory
+                            categoryIn= ""
+                        }
+                    }
                 )
 
                 Row() {
                     Text(
-                        text = "categoria, categoria, categoria",
+                        text = categories.joinToString(",") ,
                         color = MaterialTheme.colorScheme.onBackground,
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier
@@ -344,6 +431,22 @@ fun AddRecipeScreen(
                     )
                 }
             }
+
+            SliderSelector(
+                label = stringResource(R.string.prep_time),
+                value = prepTime,
+                onValueChange = { prepTime = it },
+                valueRange = 5f..180f,
+                steps = 175
+            )
+
+            SliderSelector(
+                label = stringResource(R.string.portions),
+                value = portions,
+                onValueChange = { portions = it },
+                valueRange = 1f..10f,
+                steps = 9
+            )
 
 
         }
@@ -358,22 +461,36 @@ fun AddRecipeScreen(
             verticalArrangement = Arrangement.Bottom
         ) {
             FAB(
-                onNavigate = { onNavigate(NavigationRoutes.HOME_SCREEN) }
+                onNavigate = {
+                    val newRecipe = Recipe(
+                        id = UUID.randomUUID().toString(),
+                        title = title,
+                        ingredientList = listIngredients,
+                        steps = listSteps,
+                        dificulty = selectedDifficulty,
+                        allergenList = selectedAllergens.filter { it.value }
+                            .map {
+                                Allergen(
+                                    name = it.key.name,
+                                    img = it.key
+                                )
+                            },
+                        categoryList = categories,
+                        prepTime = prepTime.toInt(),
+                        portions = portions.toInt(),
+                        active = active,
+                        origin = origin,
+                        img = img?.toString() ?: "",
+                        avgRating = 5,
+                        video = null
+                    )
+
+                    recipeViewModel.addRecipe(newRecipe)
+                    onNavigate(NavigationRoutes.HOME_SCREEN)
+                }
             )
         }
     }
 
 
-}
-
-
-@Preview
-@Composable
-fun PreviewAddRecipe() {
-    CocinaConCatalinaTheme(darkTheme = false) {
-        AddRecipeScreen(
-            onNavigate = {},
-            modifier = Modifier
-        )
-    }
 }

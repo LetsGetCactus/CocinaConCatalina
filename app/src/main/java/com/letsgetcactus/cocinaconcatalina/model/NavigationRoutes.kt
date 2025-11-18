@@ -11,4 +11,5 @@ object NavigationRoutes{
     const val MODIFIED_SCREEN= "ModifiedScreen"
     const val TERMS_CONDITIONS_SCREEN= "TermsAndConditionsScreen"
     const val FILTER_SCREEN= "FilterScreen"
+    const val SPLASH_SCREEN="SplashScreen"
 }

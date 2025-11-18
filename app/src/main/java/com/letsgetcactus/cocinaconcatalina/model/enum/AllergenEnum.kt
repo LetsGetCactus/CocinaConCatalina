@@ -2,7 +2,12 @@ package com.letsgetcactus.cocinaconcatalina.model.enum
 
 import com.letsgetcactus.cocinaconcatalina.R
 
-//Enum for each allergens picture on grey and color
+/**
+ * Enum for each allergens picture on grey and color
+ * @param greyDrawable For whenever an allergen is unselected
+ * @param colorDrawable For when an allergen icon is selected or appears in the Recipe
+ *
+ */
 enum class AllergenEnum(
     val greyDrawable: Int,
     val colorDrawable: Int,

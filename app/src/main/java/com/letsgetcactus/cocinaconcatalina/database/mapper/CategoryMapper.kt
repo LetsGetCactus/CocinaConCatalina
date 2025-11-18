@@ -1,4 +1,4 @@
-package com.letsgetcactus.cocinaconcatalina.model.database.mapper
+package com.letsgetcactus.cocinaconcatalina.database.mapper
 
 import com.letsgetcactus.cocinaconcatalina.database.dto.CategoryDto
 import com.letsgetcactus.cocinaconcatalina.model.Category

@@ -1,5 +1,6 @@
 package com.letsgetcactus.cocinaconcatalina.ui.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -21,28 +22,39 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.navOptions
 import com.letsgetcactus.cocinaconcatalina.R
 import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
 import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonGoogle
 import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonMain
 import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonSecondary
 import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
+import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(
-    onNavigate: (String) -> Unit
+    navController: NavController,
+    userViewModel: UserViewModel
 ) {
+
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     //States for the Text fields (email and password)
     var email by remember { mutableStateOf("") }
@@ -108,14 +120,6 @@ fun LoginScreen(
             ),
             shape = MaterialTheme.shapes.small
         )
-        if (emailError) {
-            Text(
-                text = "Formato de email incorrecto",
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodySmall
-            )
-
-        }
 
 
         // Password
@@ -148,7 +152,24 @@ fun LoginScreen(
 
         ButtonMain(
             buttonText = stringResource(R.string.login),
-            onNavigate = {onNavigate(NavigationRoutes.HOME_SCREEN)},
+            onNavigate = {
+                scope.launch {
+                    if (email.isBlank() || pass.isBlank()) {
+                        Toast.makeText(context, R.string.complete_all, Toast.LENGTH_SHORT).show()
+                    } else if (emailError) {
+                        Toast.makeText(context, R.string.emailError, Toast.LENGTH_SHORT).show()
+                    } else {
+                        val success = userViewModel.login(email, pass)
+                        if (success) {
+                            navController.navigate(NavigationRoutes.HOME_SCREEN) {
+                                popUpTo(NavigationRoutes.LOGIN_SCREEN) { inclusive = true }
+                            }
+                        } else {
+                            Toast.makeText(context, R.string.email_pass_incorrect, Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+            },
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -161,7 +182,7 @@ fun LoginScreen(
         ) {
 
             ButtonGoogle(
-                onNavigate = {onNavigate(NavigationRoutes.HOME_SCREEN)},
+                onNavigate = { navController.navigate(NavigationRoutes.HOME_SCREEN) },
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -204,7 +225,7 @@ fun LoginScreen(
         }
         ButtonSecondary(
             buttonText = stringResource(R.string.register),
-            onNavigate = {onNavigate(NavigationRoutes.REGISTER_SCREEN)},
+            onNavigate = { navController.navigate(NavigationRoutes.REGISTER_SCREEN) },
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -216,17 +237,9 @@ fun LoginScreen(
             style = MaterialTheme.typography.labelSmall,
             modifier = Modifier.clickable(
                 true,
-                onClick = {onNavigate(NavigationRoutes.TERMS_CONDITIONS_SCREEN)}
+                onClick = { navController.navigate(NavigationRoutes.TERMS_CONDITIONS_SCREEN) }
             )
         )
 
-    }
-}
-
-@Composable
-@Preview
-fun PreviewLogin() {
-    CocinaConCatalinaTheme(darkTheme = false) {
-        LoginScreen(onNavigate = {})
     }
 }

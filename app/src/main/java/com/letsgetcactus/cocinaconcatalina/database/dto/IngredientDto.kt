@@ -1,5 +1,8 @@
 package com.letsgetcactus.cocinaconcatalina.database.dto
 
+/**
+ * Validates the data from Firebase to then, if needed , use it on the mapper for "translation" to the app type data
+ */
 data class IngredientDto(
     val name: Map<String, String> = emptyMap(),
     val quantity: String= "",

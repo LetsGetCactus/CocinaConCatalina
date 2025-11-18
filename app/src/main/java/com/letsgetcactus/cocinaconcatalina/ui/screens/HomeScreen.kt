@@ -23,11 +23,15 @@ import com.letsgetcactus.cocinaconcatalina.R
 import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
 import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonRound
 import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
+import com.letsgetcactus.cocinaconcatalina.viewmodel.RecipeViewModel
+import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
 
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    onNavigate: (String) -> Unit
+    onNavigate: (String) -> Unit,
+    userViewModel: UserViewModel,
+    recipeViewModel: RecipeViewModel
 ) {
     val orientation = LocalConfiguration.current
     val isLight = !isSystemInDarkTheme()
@@ -67,13 +71,5 @@ fun HomeScreen(
             buttonText = stringResource(R.string.savouryRecipes),
             onNavigate = { onNavigate(NavigationRoutes.LIST_RECIPES_HOST_SCREEN)}
         )
-    }
-}
-
-@Composable
-@Preview
-fun PreviewHomeScreen() {
-    CocinaConCatalinaTheme(darkTheme = false) {
-        HomeScreen(onNavigate = {})
     }
 }

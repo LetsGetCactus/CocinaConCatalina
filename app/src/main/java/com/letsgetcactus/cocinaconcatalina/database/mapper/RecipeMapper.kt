@@ -1,15 +1,15 @@
-package com.letsgetcactus.cocinaconcatalina.model.database.mapper
+package com.letsgetcactus.cocinaconcatalina.database.mapper
 
 
 import com.letsgetcactus.cocinaconcatalina.database.dto.RecipeDto
-import com.letsgetcactus.cocinaconcatalina.database.mapper.toAllergen
-import com.letsgetcactus.cocinaconcatalina.database.mapper.toIngredient
-import com.letsgetcactus.cocinaconcatalina.model.Recipe
 import com.letsgetcactus.cocinaconcatalina.model.Origin
+import com.letsgetcactus.cocinaconcatalina.model.Recipe
 import com.letsgetcactus.cocinaconcatalina.model.enum.DificultyEnum
 import java.util.Locale
 
-
+/**
+ * Mappers DTO (from DB) to model (to app)
+ */
 fun RecipeDto.toRecipe(language:String = Locale.getDefault().language): Recipe {
     val lang = if (language in listOf("es", "gl", "en")) language else "en"
 
@@ -22,7 +22,7 @@ fun RecipeDto.toRecipe(language:String = Locale.getDefault().language): Recipe {
         },
         ingredientList = this.ingredientList.map { it.toIngredient(language) },
         allergenList = this.allergenList.map { it.toAllergen(language) },
-        categoryList = this.categoryList.map { it.toCategory(language) },
+        categoryList = this.categoryList.map { it.toCategory(lang) },
         prepTime = this.prepTime,
         dificulty = DificultyEnum.entries.find { it.name == this.dificulty } ?: DificultyEnum.EASY,
         origin = Origin(
@@ -56,14 +56,9 @@ fun Recipe.toMap(): Map<String, Any?> {
                 "img" to all.img.name
             )
         },
-        "categoryList" to categoryList.map { cat ->
-            mapOf(
-                "id" to cat.id,
-                "name" to cat.name
-            )
-        },
+        "categoryList" to categoryList.map { it},
         "prepTime" to prepTime,
-        "dificulty" to dificulty.name,
+        "dificulty" to (dificulty?.name ?: DificultyEnum.EASY.name),
         "origin" to mapOf(
             "id" to origin.id,
             "country" to origin.country,

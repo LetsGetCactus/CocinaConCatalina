@@ -18,7 +18,7 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 AppNavigation(
                     navController=navController,
-                    startDestination= NavigationRoutes.LOGIN_SCREEN
+                    startDestination= NavigationRoutes.SPLASH_SCREEN
                 )
 
             }

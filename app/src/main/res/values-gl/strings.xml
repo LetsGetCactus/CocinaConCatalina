@@ -131,4 +131,11 @@
     <string name="portions">Porcións</string>
     <string name="insert_category">Inserte unha categoría</string>
     <string name="soup">Sopa</string>
+    <string name="pass_not_matching">Os contrasinais non son iguais</string>
+    <string name="register_error">Erro no rexistro, revisa os datos</string>
+    <string name="login_error">Erro no inicio de sesión, revisa os datos</string>
+    <string name="complete_all">Por favor, complete todos os campos</string>
+    <string name="email_pass_incorrect">Correo ou contrasinal incorrectos</string>
+    <string name="not_favs_yet">Aínda non tes receitas favoritas</string>
+    <string name="admin_only">Acceso denegado. Só ADMINISTRADOR</string>
 </resources>

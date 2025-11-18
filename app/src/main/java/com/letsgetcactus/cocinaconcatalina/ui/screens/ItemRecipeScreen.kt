@@ -22,14 +22,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.letsgetcactus.cocinaconcatalina.R
@@ -39,6 +37,7 @@ import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
 import com.letsgetcactus.cocinaconcatalina.ui.components.BackStackButton
 import com.letsgetcactus.cocinaconcatalina.ui.components.RecipeRatingSelector
 import com.letsgetcactus.cocinaconcatalina.viewmodel.RecipeViewModel
+import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
 import java.util.Locale
 
 @Composable
@@ -46,26 +45,22 @@ fun ItemRecipeScreen(
     modifier: Modifier = Modifier,
     onNavigate: (String) -> Unit,
     navController: NavHostController,
+    userViewModel : UserViewModel,
+    recipeViewModel: RecipeViewModel,
 
 ) {
 
 
-    // Shared ViewModel from ListRecipeHostScreen
-    val parentEntry = remember(navController.currentBackStackEntry) {
-        navController.getBackStackEntry(NavigationRoutes.LIST_RECIPES_HOST_SCREEN)
-    }
-    val viewModel: RecipeViewModel = viewModel(parentEntry)
-
-    val recipe by viewModel.selectedRecipe.collectAsState()
+    val recipe by recipeViewModel.selectedRecipe.collectAsState()
 
 
     //To obtain the drawable form the origin
     fun getFlagForCountry(origin: String): Int {
         return when (origin.uppercase()) {
-            "JAPAN" -> R.drawable.japan_flag
+            "JAPAN","JAPÓN","JAPON","XAPÓN","XAPON" -> R.drawable.japan_flag
             "KOREA" -> R.drawable.korea_flag
             "CHINA" -> R.drawable.china_flag
-            "THAILAND" -> R.drawable.thailand_flag
+            "THAILAND","TAILANDIA" -> R.drawable.thailand_flag
             "VIETNAM" -> R.drawable.vietnam_flag
             else -> R.drawable.chef_flag
         }
@@ -73,6 +68,10 @@ fun ItemRecipeScreen(
 
 
     recipe?.let { currentRecipe ->
+
+        //To change favs button whether a recipe is in favs or not
+        val favRecepies by userViewModel.favouriteRecipe.collectAsState()
+        val isRecipeFav = favRecepies.any { it.id == currentRecipe.id }
 
         //Flag
         val flagForRecipe = getFlagForCountry(currentRecipe.origin.country)
@@ -149,7 +148,9 @@ fun ItemRecipeScreen(
                             }
 
                             // Favs
-                            Box {
+                            Box(
+                                modifier = Modifier.clickable{ userViewModel.changeFavourite(currentRecipe)}
+                            ) {
                                 Image(
                                     painter = painterResource(R.drawable.circle),
                                     contentDescription = null,
@@ -157,7 +158,9 @@ fun ItemRecipeScreen(
                                     modifier = Modifier.size(48.dp)
                                 )
                                 Image(
-                                    painter = painterResource(R.drawable.set_fav),
+                                    painter = painterResource(
+                                        if (isRecipeFav) R.drawable.lotus
+                                            else R.drawable.set_fav),
                                     contentDescription = stringResource(R.string.favs),
                                     modifier = Modifier
                                         .align(Alignment.Center)

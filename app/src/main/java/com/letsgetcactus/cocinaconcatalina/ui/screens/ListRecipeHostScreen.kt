@@ -35,17 +35,18 @@ import com.letsgetcactus.cocinaconcatalina.ui.components.ImageAndTextComponent
 import com.letsgetcactus.cocinaconcatalina.ui.components.RecipeRating
 import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
 import com.letsgetcactus.cocinaconcatalina.viewmodel.RecipeViewModel
+import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
 import java.util.Locale
 
 @Composable
 fun ListRecipeHostScreen(
     modifier: Modifier = Modifier,
     onNavigate: () -> Unit,
-    viewModel: RecipeViewModel = viewModel()
+    userViewModel : UserViewModel,
+    recipeViewModel : RecipeViewModel,
 ) {
-    Log.i("ListRecipeScreen", "Mostrando el listado de recetas en ${Locale.getDefault().language}")
 
-    val recipesVModel by viewModel.recipes.collectAsState()
+    val recipesVModel by recipeViewModel.recipes.collectAsState()
 
 
     Column(
@@ -56,7 +57,7 @@ fun ListRecipeHostScreen(
         ListRecipeContent(
             onNavigate = { selected ->
                 Log.i("ListRecipeHostScreen", "Clicked recipe: ${selected.title}")
-                viewModel.selectRecipe(selected)
+                recipeViewModel.selectRecipe(selected)
                 onNavigate()
             },
             recipes = recipesVModel
@@ -129,7 +130,7 @@ private fun RecipeCard(
                 )
                 RecipeRating(
                     recipe.avgRating,
-                    difficulty = recipe.dificulty
+                    difficulty = recipe.dificulty ?: DificultyEnum.EASY
                 )
             }
         }
@@ -156,17 +157,5 @@ fun LegendComposable() {
             )
             Spacer(Modifier.size(16.dp))
         }
-    }
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewListRecipeHost() {
-    CocinaConCatalinaTheme(darkTheme = false) {
-        ListRecipeHostScreen(
-            onNavigate = {},
-            modifier = Modifier
-        )
     }
 }

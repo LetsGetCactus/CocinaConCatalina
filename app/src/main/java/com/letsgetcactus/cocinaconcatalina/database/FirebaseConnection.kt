@@ -8,8 +8,8 @@ import com.google.firebase.firestore.firestore
 import com.google.firebase.functions.FirebaseFunctions
 import com.letsgetcactus.cocinaconcatalina.database.dto.RecipeDto
 import com.letsgetcactus.cocinaconcatalina.model.Recipe
-import com.letsgetcactus.cocinaconcatalina.model.database.mapper.toMap
-import com.letsgetcactus.cocinaconcatalina.model.database.mapper.toRecipe
+import com.letsgetcactus.cocinaconcatalina.database.mapper.toMap
+import com.letsgetcactus.cocinaconcatalina.database.mapper.toRecipe
 import kotlinx.coroutines.tasks.await
 import java.util.Locale
 import kotlin.collections.map
@@ -47,6 +47,22 @@ object FirebaseConnection {
             emptyList()
         }
     }
+
+    /**
+     * Gets a recipe by its ID
+     * @param recipeId to look for the recipe
+     * @return Recipe or null
+     */
+    suspend fun getRecipeById(recipeId: String): Recipe? {
+        return try {
+            val doc = Firebase.firestore.collection("recipes").document(recipeId).get().await()
+            doc.toObject(Recipe::class.java)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
 
 
     /**
