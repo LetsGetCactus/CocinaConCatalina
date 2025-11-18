@@ -102,15 +102,19 @@ object UserRepository {
     suspend fun addRecipeToFavourites(userId: String, recipe: Recipe) {
         val fav = usersCollection.document(userId).collection("favouritesRecipes").document(recipe.id)
         fav.set(recipe).await()
+        Log.i("UserRepository","Added a recipe to favs: $fav")
     }
 
     suspend fun removeRecipeFromFavourites(userId: String, recipeId: String) {
         val fav = usersCollection.document(userId).collection("favouritesRecipes").document(recipeId)
         fav.delete().await()
+        Log.i("UserRepository","Removed a recipe to favs: $fav")
     }
 
     suspend fun getFavouriteRecipeIds(userId: String): List<String> {
         val listFavs = usersCollection.document(userId).collection("favouritesRecipes").get().await()
+        Log.i("UserRepository","Getting ${listFavs.size()} recipes from favs")
         return listFavs.documents.map { it.id }
+
     }
 }

@@ -72,6 +72,7 @@ fun ItemRecipeScreen(
         //To change favs button whether a recipe is in favs or not
         val favRecepies by userViewModel.favouriteRecipe.collectAsState()
         val isRecipeFav = favRecepies.any { it.id == currentRecipe.id }
+        Log.i("ItemRecipeScreen","Existen ${favRecepies.size} recetas favoritas")
 
         //Flag
         val flagForRecipe = getFlagForCountry(currentRecipe.origin.country)

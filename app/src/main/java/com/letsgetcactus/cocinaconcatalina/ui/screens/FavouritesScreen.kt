@@ -43,6 +43,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.Navigation
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
@@ -65,13 +67,15 @@ fun FavouritesScreen(
     modifier: Modifier = Modifier,
     onNavigate: (String) -> Unit,
     userViewModel: UserViewModel,
-    recipeViewModel: RecipeViewModel,
+    navController: NavController
+
 ) {
 
     //For chipset filters , by origin
     var selectedOrigin: OriginEnum? by remember { mutableStateOf(null) }
 
     val favouriteRecipes by userViewModel.favouriteRecipe.collectAsState()
+
 
     //UI
     Column(modifier = modifier.background(MaterialTheme.colorScheme.background)) {
@@ -105,7 +109,7 @@ fun FavouritesScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 BackStackButton(
-                    navController = rememberNavController()
+                   navController=navController
                 )
                 Text(
                     text = stringResource(R.string.favs),
@@ -132,6 +136,7 @@ fun FavouritesScreen(
                             recipe = favouriteRecipes[favs],
                             userViewModel = userViewModel,
                             onNavigate = onNavigate,
+
                         )
                     }
                 }
@@ -144,7 +149,7 @@ fun FavouritesScreen(
 fun FavCard(
     recipe: Recipe,
     userViewModel: UserViewModel,
-    onNavigate: (String) -> Unit
+   onNavigate: (String) -> Unit
 ) {
 
 
@@ -160,7 +165,7 @@ fun FavCard(
             )
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .clickable {
-                onNavigate(NavigationRoutes.ITEM_RECIPE_SCREEN + "?recipe=${recipe.id}")
+               onNavigate(NavigationRoutes.ITEM_RECIPE_SCREEN + "?recipe=${recipe.id}")
             }
     ) {
         Row(

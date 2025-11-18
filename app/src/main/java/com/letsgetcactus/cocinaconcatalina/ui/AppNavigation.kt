@@ -150,11 +150,11 @@ fun AppNavigation(
                     FavouritesScreen(
                         modifier = Modifier.padding(innerPadding),
                         userViewModel = userViewModel,
-                        recipeViewModel= recipeViewModel,
-                        onNavigate = { route ->
+                        onNavigate = {
+                            route ->
                             navController.navigate(route)
-
-                        }
+                        },
+                        navController = navController
                     )
                 }
                 composable(NavigationRoutes.ITEM_RECIPE_SCREEN) {
