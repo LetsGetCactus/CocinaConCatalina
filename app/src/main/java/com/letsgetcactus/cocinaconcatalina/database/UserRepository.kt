@@ -5,8 +5,9 @@ import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.auth
-import com.google.firebase.firestore.firestore
 import com.letsgetcactus.cocinaconcatalina.model.Recipe
 import com.letsgetcactus.cocinaconcatalina.model.User
 import kotlinx.coroutines.tasks.await
@@ -14,44 +15,29 @@ import kotlinx.coroutines.tasks.await
 /**
  * This object will manage:
  * - login/logout - Login with Firebase Auth
- * - load/save users with Firestore
+ * - load/save user's profile
  * - register users
+ * - manage user's favourite (ID) and modified recipes
  */
 object UserRepository {
 
-    private val firebaseAuth = Firebase.auth
-    private val usersCollection= Firebase.firestore.collection("users")
+    private val firebaseAuth : FirebaseAuth= Firebase.auth
 
-    /**
-     * Obtains the user from Firestore( val usersCollection) from its Id
-     * @param userId stands for the user's id on Firestore
-     * @return User object or null, depending if it exists/is previously saved in the DB
-     */
-    suspend fun getUserById(userId: String): User? {
-        return try {
-            val userInFirestore= usersCollection.document(userId).get().await()
-            userInFirestore.toObject(User::class.java)
-        }catch (e: Exception){
-            e.printStackTrace()
-            null
-        }
-    }
-
-
+    //AUTH
     /**
      * Logs  the user into de app by FirebaseAuth
      * @param email : user's email
      * @param password: user's password
      * @return User object or null, whether the user is already loggedIn or not
      */
-    suspend fun login(email: String, password: String) : User? {
-        return  try {
-            val result= firebaseAuth.signInWithEmailAndPassword(email,password).await()
-            val userUid= result.user?.uid ?: return null
-
+    suspend fun login(email: String, password: String): User? {
+        return try {
+            val result = firebaseAuth.signInWithEmailAndPassword(email, password).await()
+            val userUid = result.user?.uid ?: return null
             getUserById(userUid)
-        }catch (e: Exception){
-            e.printStackTrace()
+
+        } catch (e: Exception) {
+            Log.e("UserRepository", "Login error", e)
             null
         }
     }
@@ -59,8 +45,9 @@ object UserRepository {
     /**
      * Logout method for the User to sign out from it's session
      */
-    fun logOut(){
+    fun logOut() {
         firebaseAuth.signOut()
+
     }
 
     /**
@@ -88,33 +75,86 @@ object UserRepository {
                 modifiedRecipes = emptyList()
             )
 
-            usersCollection.document(userUid).set(newUser).await()
-
+            FirebaseConnection.saveUser(newUser)
             newUser
         } catch (e: Exception) {
-            e.printStackTrace()
-            Log.i("UserRepository", "Error al registrar ${e}")
+            Log.i("UserRepository", "Register error $e")
             null
         }
     }
 
-    //FavsRecipe's methods to set and get user's favourites recipes
-    suspend fun addRecipeToFavourites(userId: String, recipe: Recipe) {
-        val fav = usersCollection.document(userId).collection("favouritesRecipes").document(recipe.id)
-        fav.set(recipe).await()
-        Log.i("UserRepository","Added a recipe to favs: $fav")
+    /**
+     * Gets user's data from FirebaseConnection
+     * @param userId Id from the user
+     * @return the User itself or null
+     */
+    suspend fun getUserById(userId: String):User?{
+        return FirebaseConnection.getUserById(userId)
     }
 
+    /**
+     * To get Firebase's current user
+     */
+    fun getCurrentFirebaseUser(): FirebaseUser? {
+        val user=firebaseAuth.currentUser
+        Log.i("UserRepository","Obtained user from Firebase: ${user?.displayName}")
+        return user
+    }
+
+    //FAVS RECIPES
+    /**
+     * To add a recipe into the DB (id)
+     * @param userId Id from the user to add the recipe to his favourites subcollection
+     */
+    suspend fun addRecipeToFavourites(userId: String, recipeId: String) {
+        FirebaseConnection.addRecipeToUsersFavorites(userId,recipeId)
+        Log.i("UserRepository", "Added $recipeId to favs on user $userId")
+    }
+
+
+    /**
+     * To remove a recipe from the user's fav DB (id)
+     * @param userId Id from the user to remove the recipe from his favourites subcollection
+     */
     suspend fun removeRecipeFromFavourites(userId: String, recipeId: String) {
-        val fav = usersCollection.document(userId).collection("favouritesRecipes").document(recipeId)
-        fav.delete().await()
-        Log.i("UserRepository","Removed a recipe to favs: $fav")
+        FirebaseConnection.removeUsersFavouriteRecipe(userId,recipeId)
+        Log.i("UserRepository", "Removed ${recipeId }from favs on user $userId ")
     }
 
-    suspend fun getFavouriteRecipeIds(userId: String): List<String> {
-        val listFavs = usersCollection.document(userId).collection("favouritesRecipes").get().await()
-        Log.i("UserRepository","Getting ${listFavs.size()} recipes from favs")
-        return listFavs.documents.map { it.id }
 
+    /**
+     * Gets all user's favourite Recipes
+     * @param userId Id from the user to search for the recipes
+     * @return a list of Recipes
+     */
+    suspend fun getAllFavouriteRecipeIds(userId: String): List<Recipe> {
+       val favs= FirebaseConnection.getUserFavouriteRecipes(userId)
+        Log.i("UserRepository", "Getting ${favs.size} recipes from user $userId")
+
+        return favs
     }
-}
+
+
+    //MODIFIED RECIPES
+    /**
+     * Uploads a modified recipe from the user to his subcollection on Firebase
+     * @param userId Id from the user
+     */
+    suspend fun addModifiedRecipe(userId: String, recipe: Recipe){
+        FirebaseConnection.saveUserModifiedRecipe(userId,recipe)
+        Log.i("UserRepository","Saved ${recipe.title} on user: $userId")
+    }
+
+
+    /**
+     * Gets all modified recipes from user
+     * @param userId Id from the user to obtains his modified recipes from
+     * @return a list of modified recipes by the user
+     */
+    suspend fun getAllModifiedRecipes(userId: String): List<Recipe>{
+       val mods= FirebaseConnection.getUserModifiedRecipes(userId)
+        Log.i("UserRepository", "Loaded ${mods.size} modified recipes for $userId")
+        return mods
+    }
+
+  }

@@ -10,7 +10,7 @@ import java.util.Locale
 /**
  * Mappers DTO (from DB) to model (to app)
  */
-fun RecipeDto.toRecipe(language:String = Locale.getDefault().language): Recipe {
+fun RecipeDto.toRecipe(language: String = Locale.getDefault().language): Recipe {
     val lang = if (language in listOf("es", "gl", "en")) language else "en"
 
     return Recipe(
@@ -37,6 +37,10 @@ fun RecipeDto.toRecipe(language:String = Locale.getDefault().language): Recipe {
     )
 }
 
+
+/**
+ * Mapps a Recipe object to Firebase
+ */
 fun Recipe.toMap(): Map<String, Any?> {
     return mapOf(
         "id" to id,
@@ -56,7 +60,7 @@ fun Recipe.toMap(): Map<String, Any?> {
                 "img" to all.img.name
             )
         },
-        "categoryList" to categoryList.map { it},
+        "categoryList" to categoryList.map { it },
         "prepTime" to prepTime,
         "dificulty" to (dificulty?.name ?: DificultyEnum.EASY.name),
         "origin" to mapOf(
@@ -69,4 +73,14 @@ fun Recipe.toMap(): Map<String, Any?> {
         "img" to img,
         "video" to video
     )
+}
+
+/**
+ * Translates the strings properties in a Recipe
+ * @param language Language for the recipe to be shown
+ */
+fun Recipe.selectLanguage(language: String = "en"): String {
+    val supportedLanguage = listOf("es", "en", "gl")
+    return if (language in supportedLanguage) language else "en"
+
 }

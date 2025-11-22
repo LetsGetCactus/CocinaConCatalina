@@ -50,7 +50,6 @@ import kotlinx.coroutines.launch
 
 /**
  * Validates an email
- *
  * @param email to be validated or not
  */
 fun isValidEmail(email: String): Boolean {
@@ -59,7 +58,6 @@ fun isValidEmail(email: String): Boolean {
 
 /**
  * Screen to register a new user of the app
- *
  */
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -68,9 +66,9 @@ fun RegisterScreen(
     userViewModel: UserViewModel
 ) {
 
-    val userViewModel: UserViewModel = viewModel()
+
     val scope = rememberCoroutineScope()
-    val context= LocalContext.current
+    val context = LocalContext.current
 
     // States for the textFields
     var name by remember { mutableStateOf("") }
@@ -78,6 +76,8 @@ fun RegisterScreen(
     var pass by remember { mutableStateOf("") }
     var confirmPass by remember { mutableStateOf("") }
 
+    //Checkbox state
+    var checkedTerms by remember { mutableStateOf(false) }
 
     //States for possible errors on mail or password
     var emailError by remember { mutableStateOf(false) }
@@ -92,7 +92,7 @@ fun RegisterScreen(
         verticalArrangement = Arrangement.Center
 
 
-        ) {
+    ) {
         // Image
         Image(
             painter = painterResource(id = R.drawable.icon),
@@ -227,8 +227,8 @@ fun RegisterScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Checkbox(
-                checked = false,
-                onCheckedChange = { it },
+                checked = checkedTerms,
+                onCheckedChange = { checkedTerms = it },
                 colors = CheckboxDefaults.colors(
                     checkedColor = MaterialTheme.colorScheme.primary,
                     checkmarkColor = MaterialTheme.colorScheme.onPrimary
@@ -255,11 +255,11 @@ fun RegisterScreen(
         ) {
             ButtonMain(
                 buttonText = stringResource(R.string.back),
-                onNavigate = {navController.navigate(NavigationRoutes.LOGIN_SCREEN)},
+                onNavigate = { navController.navigate(NavigationRoutes.LOGIN_SCREEN) },
                 modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(modifier=Modifier.size(8.dp))
+            Spacer(modifier = Modifier.size(8.dp))
 
             ButtonSecondary(
                 buttonText = stringResource(R.string.register),
@@ -267,20 +267,41 @@ fun RegisterScreen(
                 onNavigate = {
                     scope.launch {
                         if (name.isBlank() || email.isBlank() || pass.isBlank() || confirmPass.isBlank()) {
-                            Toast.makeText(context,R.string.complete_all,Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, R.string.complete_all, Toast.LENGTH_SHORT)
+                                .show()
+                            return@launch
+
                         } else if (pass != confirmPass) {
-                            Toast.makeText(context,R.string.pass_not_matching, Toast.LENGTH_SHORT).show()
-                        }  else if (!isValidEmail(email)) {
-                            Toast.makeText(context,R.string.emailError, Toast.LENGTH_SHORT).show()
-                        }else {
+                            Toast.makeText(context, R.string.pass_not_matching, Toast.LENGTH_SHORT)
+                                .show()
+                            return@launch
+
+                        } else if (!isValidEmail(email)) {
+                            Toast.makeText(context, R.string.emailError, Toast.LENGTH_SHORT).show()
+                            return@launch
+
+                        } else if (!checkedTerms) {
+                            Toast.makeText(context, R.string.not_accepted_terms, Toast.LENGTH_SHORT)
+                                .show()
+                            return@launch
+                        } else {
 
                             val success = userViewModel.register(name, email, pass)
                             if (success) {
                                 navController.navigate(NavigationRoutes.HOME_SCREEN) {
                                     popUpTo(NavigationRoutes.REGISTER_SCREEN) { inclusive = true }
                                 }
-                            }else {
-                                Toast.makeText(context,R.string.email_pass_incorrect, Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    context,
+                                    "${context.getString(R.string.welcome)} + $name",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    context.getString(R.string.email_pass_incorrect),
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
                         }
                     }
@@ -291,10 +312,10 @@ fun RegisterScreen(
 
             Spacer(Modifier.height(36.dp))
 
-           ButtonGoogle( //TODO
-               onNavigate = { },
-               modifier = Modifier.fillMaxWidth()
-           )
+            ButtonGoogle( //TODO
+                onNavigate = { },
+                modifier = Modifier.fillMaxWidth()
+            )
         }
     }
 

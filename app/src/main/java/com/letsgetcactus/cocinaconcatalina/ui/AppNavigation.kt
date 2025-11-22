@@ -1,6 +1,7 @@
 package com.letsgetcactus.cocinaconcatalina.ui
 
 import MenuDrawerComponent
+import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
@@ -40,26 +41,28 @@ import kotlinx.coroutines.launch
 
 
 /*
-* AppNavigation contains NAvHost which stablishes the possible routes (NavigationRoutes) each screen could go
+* AppNavigation contains NAvHost which establishes the possible routes (NavigationRoutes) each screen could go
 * also integrates the TopAppBar and BottomAppBar in the screens that need them
 */
+@SuppressLint("ConfigurationScreenWidthHeight")
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppNavigation(
     navController: NavHostController,
-    startDestination: String
+    startDestination: String,
+    userViewModel: UserViewModel
 ) {
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
-
+    val recipeViewModel: RecipeViewModel=viewModel()
 
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
-            val userViewModel: UserViewModel = viewModel()
+
             MenuDrawerComponent(
                 navController = navController,
                 userViewModel = userViewModel,
@@ -111,12 +114,10 @@ fun AppNavigation(
             }
         ) { innerPadding ->
 
-            val recipeViewModel: RecipeViewModel=viewModel()
-            val userViewModel: UserViewModel=viewModel()
 
             NavHost(
                 navController = navController,
-                startDestination = NavigationRoutes.SPLASH_SCREEN,
+                startDestination = startDestination,
 
                 ) {
                 composable(NavigationRoutes.SPLASH_SCREEN) {
@@ -206,7 +207,7 @@ fun AppNavigation(
                 composable(NavigationRoutes.FILTER_SCREEN) {
                     FilterScreen(
                         onSearchClick = { },
-                        recipeViewModel
+                        recipeViewModel= recipeViewModel
                     )
                 }
 

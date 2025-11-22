@@ -1,5 +1,6 @@
 package com.letsgetcactus.cocinaconcatalina.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -24,6 +25,7 @@ import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
 import com.letsgetcactus.cocinaconcatalina.ui.theme.White
 import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.yield
 
 
 @Composable
@@ -31,12 +33,14 @@ fun SplashScreen(
     navController: NavController,
     userViewModel: UserViewModel
 ) {
-    val userState by userViewModel.currentUser.collectAsState()
+    val isLoggedIn by userViewModel.isLoggedIn.collectAsState()
 
-    LaunchedEffect(userState) {
+
+    LaunchedEffect(isLoggedIn,) {
         delay(3000)
 
-        if (userState != null) {
+        if (isLoggedIn) {
+            Log.i("SplashScreen","Persisting user: ${userViewModel.currentUser.value}")
             navController.navigate(NavigationRoutes.HOME_SCREEN) {
                 popUpTo(NavigationRoutes.SPLASH_SCREEN) { inclusive = true }
             }

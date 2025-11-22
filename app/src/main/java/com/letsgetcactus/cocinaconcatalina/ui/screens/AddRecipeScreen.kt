@@ -2,9 +2,11 @@ package com.letsgetcactus.cocinaconcatalina.ui.screens
 
 import DropDownMenuSelector
 import android.net.Uri
+import android.os.Build
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -29,6 +31,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,6 +39,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.google.android.material.loadingindicator.LoadingIndicator
 import com.letsgetcactus.cocinaconcatalina.R
 import com.letsgetcactus.cocinaconcatalina.model.Allergen
 import com.letsgetcactus.cocinaconcatalina.model.Category
@@ -54,8 +58,10 @@ import com.letsgetcactus.cocinaconcatalina.ui.components.filters.ChipSelector
 import com.letsgetcactus.cocinaconcatalina.ui.components.filters.SliderSelector
 import com.letsgetcactus.cocinaconcatalina.viewmodel.RecipeViewModel
 import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
+import kotlinx.coroutines.launch
 import java.util.UUID
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AddRecipeScreen(
     onNavigate: (String) -> Unit,
@@ -67,7 +73,7 @@ fun AddRecipeScreen(
     //Check for ADMIN ONLY
     val context= LocalContext.current
     val currentUser by userViewModel.currentUser.collectAsState()
-    if (currentUser?.role == "ADMIN") {
+    if (currentUser?.role != "ADMIN") {
         onNavigate(NavigationRoutes.HOME_SCREEN)
         Toast.makeText(context,stringResource(R.string.admin_only),Toast.LENGTH_SHORT).show()
         return
@@ -98,6 +104,7 @@ fun AddRecipeScreen(
 
 
     val scrollState = rememberScrollState()
+    val coroutineToAddRecipe= rememberCoroutineScope () //Needed to call suspend function addRecipe()
 
     //Launcher for img
     val launcher= rememberLauncherForActivityResult(
@@ -105,6 +112,7 @@ fun AddRecipeScreen(
     ) {
         uri -> img = uri
     }
+
 
     //UI
     Box() {
@@ -484,9 +492,18 @@ fun AddRecipeScreen(
                         avgRating = 5,
                         video = null
                     )
+                    coroutineToAddRecipe.launch {
+                        try{
+                            recipeViewModel.addRecipe(newRecipe)
+                            LoadingIndicator(context) //TODO
+                            Toast.makeText(context,context.getString(R.string.recipe_saved),Toast.LENGTH_SHORT).show()
+                            onNavigate(NavigationRoutes.HOME_SCREEN)
 
-                    recipeViewModel.addRecipe(newRecipe)
-                    onNavigate(NavigationRoutes.HOME_SCREEN)
+                        }catch(e: Exception) {
+                            Toast.makeText(context, "${context.getString(R.string.recipe_saved_error)}: $e", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
                 }
             )
         }

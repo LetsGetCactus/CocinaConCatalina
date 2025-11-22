@@ -141,5 +141,8 @@
     <string name="email_pass_incorrect">Email or password incorrect</string>
     <string name="not_favs_yet">You have no favourite recipes yet</string>
     <string name="admin_only">Access denied. ADMIN only</string>
+    <string name="recipe_saved">New recipe saved!</string>
+    <string name="recipe_saved_error">Could not save new recipe</string>
+    <string name="not_accepted_terms">You need to accept Terms and Conditions</string>
 
 </resources>

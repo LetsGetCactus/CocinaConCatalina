@@ -10,7 +10,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.letsgetcactus.cocinaconcatalina.R
 import com.letsgetcactus.cocinaconcatalina.model.enum.AllergenEnum
@@ -22,7 +21,6 @@ import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonSecondary
 import com.letsgetcactus.cocinaconcatalina.ui.components.filters.AllergenIconsSelector
 import com.letsgetcactus.cocinaconcatalina.ui.components.filters.ChipSelector
 import com.letsgetcactus.cocinaconcatalina.ui.components.filters.SliderSelector
-import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
 import com.letsgetcactus.cocinaconcatalina.viewmodel.RecipeViewModel
 
 @Composable
@@ -153,7 +151,7 @@ fun FilterScreen(
                 ButtonMain(
                     buttonText = stringResource(R.string.search),
                     onNavigate = {
-                        recipeViewModel.applyFilters(
+                        recipeViewModel.setFilters(
                             origin = selectedOrigin,
                             dishType = selectedDishType,
                             difficulty = selectedDifficulty,
@@ -175,7 +173,8 @@ fun FilterScreen(
                         prepTime = 0f
                         maxIngredients = 0f
                         rating = 0f
-                        selectedAllergens = AllergenEnum.values().associateWith { false }
+                        selectedAllergens = AllergenEnum.entries.associateWith { false }
+                        recipeViewModel.resetFilters()
                     },
                     modifier = Modifier.weight(1f)
                 )

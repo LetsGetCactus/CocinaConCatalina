@@ -25,18 +25,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.letsgetcactus.cocinaconcatalina.model.Recipe
 import com.letsgetcactus.cocinaconcatalina.model.enum.DificultyEnum
 import com.letsgetcactus.cocinaconcatalina.ui.components.ImageAndTextComponent
 import com.letsgetcactus.cocinaconcatalina.ui.components.RecipeRating
-import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
 import com.letsgetcactus.cocinaconcatalina.viewmodel.RecipeViewModel
 import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
-import java.util.Locale
 
 @Composable
 fun ListRecipeHostScreen(
@@ -46,7 +42,7 @@ fun ListRecipeHostScreen(
     recipeViewModel : RecipeViewModel,
 ) {
 
-    val recipesVModel by recipeViewModel.recipes.collectAsState()
+    val recipesVModel by recipeViewModel.asianOgRecipes.collectAsState()
 
 
     Column(

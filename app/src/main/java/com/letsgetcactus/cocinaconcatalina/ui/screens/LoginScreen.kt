@@ -35,6 +35,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.navOptions
@@ -161,6 +162,7 @@ fun LoginScreen(
                     } else {
                         val success = userViewModel.login(email, pass)
                         if (success) {
+                            Toast.makeText(context,"${context.getString(R.string.welcome)}+ $userViewModel.currentUser.value.name",Toast.LENGTH_SHORT ).show()
                             navController.navigate(NavigationRoutes.HOME_SCREEN) {
                                 popUpTo(NavigationRoutes.LOGIN_SCREEN) { inclusive = true }
                             }

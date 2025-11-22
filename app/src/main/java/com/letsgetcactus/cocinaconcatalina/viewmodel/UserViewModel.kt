@@ -1,60 +1,116 @@
 package com.letsgetcactus.cocinaconcatalina.viewmodel
 
-import android.app.Application
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.letsgetcactus.cocinaconcatalina.dataStore
-import com.letsgetcactus.cocinaconcatalina.database.RecipeRepository
+import com.letsgetcactus.cocinaconcatalina.data.repository.UserSessionRepository
+import com.letsgetcactus.cocinaconcatalina.database.FirebaseConnection
 import com.letsgetcactus.cocinaconcatalina.database.UserRepository
 import com.letsgetcactus.cocinaconcatalina.model.Recipe
 import com.letsgetcactus.cocinaconcatalina.model.User
+import com.letsgetcactus.cocinaconcatalina.model.enum.AllergenEnum
+import com.letsgetcactus.cocinaconcatalina.model.enum.DificultyEnum
+import com.letsgetcactus.cocinaconcatalina.model.enum.DishTypeEnum
+import com.letsgetcactus.cocinaconcatalina.model.enum.OriginEnum
+import com.letsgetcactus.cocinaconcatalina.model.filters.RecipeFiltersEngine
+import com.letsgetcactus.cocinaconcatalina.model.filters.RecipeSearchFilters
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.util.Locale
 
-class UserViewModel(app: Application) : AndroidViewModel(app) {
+/**
+ * Controls login(), logout() and register()
+ * Keeps the user's session (persistency)
+ * Exposes Flows so the Composables can observe the user's state
+ */
+class UserViewModel(
+    private val userRepo: UserRepository,
+    private val userSessionRepo: UserSessionRepository
+) : ViewModel() {
 
-    private val context = app
 
-    //Preferences-keys from DataStore
-    private val USER_ID = stringPreferencesKey("user_id")
+    //Preferences from DataStore
+    private val _userId = MutableStateFlow<String?>(null)
+    val userId: StateFlow<String?> = _userId
 
+    private val _language = MutableStateFlow<String>("es")
+    val language: StateFlow<String> = _language
+
+    private val _theme = MutableStateFlow<String>("system")
+    val theme: StateFlow<String> = _theme
+
+    //user's session
+    private val _isLoggedIn = MutableStateFlow(false)
+    val isLoggedIn: StateFlow<Boolean> = _isLoggedIn
+
+    //Curreny user
     private val _currentUser = MutableStateFlow<User?>(null)
     val currentUser = _currentUser.asStateFlow()
 
-    //For favs Recipes
-    private val _favouriteRecipes= MutableStateFlow<List<Recipe>>(emptyList())
-    val favouriteRecipe= _favouriteRecipes.asStateFlow()
+    //For favs and mod Recipes
+    private val _favouriteRecipes = MutableStateFlow<List<Recipe>>(emptyList())
+    val favouriteRecipe = _favouriteRecipes.asStateFlow()
+
+    private val _modifiedRecipes = MutableStateFlow<List<Recipe>>(emptyList())
+    val modifiedRecipes = _modifiedRecipes.asStateFlow()
+
+    // Both user recipes (favs + mod)
+    private val _userRecipes = MutableStateFlow<List<Recipe>>(emptyList())
+    val userRecipes = _userRecipes.asStateFlow()
+
+    // Filters and search
+    private val _filteredUserRecipes = MutableStateFlow<List<Recipe>>(emptyList())
+    val filteredUserRecipes = _filteredUserRecipes.asStateFlow()
+
+    private val _searchQuery = MutableStateFlow("")
+    val searchQuery = _searchQuery.asStateFlow()
+
+    // Active filters (all grouped together)
+    private val _activeFilter = MutableStateFlow(RecipeSearchFilters())
+    val activeFilter = _activeFilter.asStateFlow()
+
 
     init {
-        loadUserFromDataStore()
+        restoreSessionFromDataStore()
     }
 
     /**
-     * If DataStore has an user, it gives it back from Firestore
+     * For the user to persist
+     * @param userId Id from the user to persist
      */
-    private fun loadUserFromDataStore() {
-        viewModelScope.launch {
-            context.dataStore.data.map { prefs ->
-                prefs[USER_ID]
-            }
-                .collect { userId ->
-                    if (userId != null) {
-                        val userInDataStore = UserRepository.getUserById(userId)
-                        _currentUser.value = userInDataStore
-                        loadFavourites()
-                    } else {
-                        _currentUser.value = null
-                        _favouriteRecipes.value = emptyList()
-                    }
-                }
+    suspend fun setUser(userId: String?) {
+        if (userId != null) {
+            var user = UserRepository.getUserById(userId)
+
+            _currentUser.value = user
+            loadFavourites()
+            loadModified()
+
+        } else {
+            clearAllUserData()
         }
     }
+
+    /**
+     * Empties all data from the UserViewModel
+     */
+    private fun clearAllUserData() {
+        _modifiedRecipes.value = emptyList()
+        _favouriteRecipes.value = emptyList()
+        _userRecipes.value = emptyList()
+        _filteredUserRecipes.value = emptyList()
+        _activeFilter.value = RecipeSearchFilters()
+        _searchQuery.value = ""
+        _currentUser.value = null
+        _userId.value = null
+    }
+
 
     /**
      * Login method to user UserRepository
@@ -65,15 +121,12 @@ class UserViewModel(app: Application) : AndroidViewModel(app) {
 
         val user = UserRepository.login(email, password)
 
-        if (user != null) {
-            saveInDataStore(user)
-
-            _currentUser.value = user
-            return true
-
-        } else {
-            return false
-        }
+        return if (user != null) {
+            userSessionRepo.saveUserIdData(user.id)
+            _currentUser.value= user
+            _isLoggedIn.value = true
+            true
+        } else false
     }
 
 
@@ -87,23 +140,48 @@ class UserViewModel(app: Application) : AndroidViewModel(app) {
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun register(name: String, email: String, password: String): Boolean {
         val newUser = UserRepository.register(name, email, password)
-        if (newUser != null) {
-            saveInDataStore(newUser)
 
+        return if (newUser != null) {
+            userSessionRepo.saveUserIdData(newUser.id)
             _currentUser.value = newUser
-            return true
-        } else {
-            return false
-        }
+            _isLoggedIn.value = true
+            true
+        } else false
     }
 
     /**
-     * Saves/updates the user in session on DataStore.kt for persistence
-     * @param user User logged in the app
+     * Reads and restores user's session from the data saved in DataStore
      */
-    private suspend fun saveInDataStore(user: User) {
-        context.dataStore.edit { prefs ->
-            prefs[USER_ID] = user.id
+    private fun restoreSessionFromDataStore() {
+        viewModelScope.launch {
+
+            userSessionRepo.userIdFlow.collectLatest { id ->
+                _userId.value = id
+                _isLoggedIn.value = id != null
+
+                if (id != null) {
+                    val activeSessionInFirebaseAuth = userRepo.getCurrentFirebaseUser()
+
+                    if (activeSessionInFirebaseAuth == null || activeSessionInFirebaseAuth.uid != id) {
+                        userSessionRepo.clearUserSession()
+                        clearAllUserData()
+                        _isLoggedIn.value = false
+                    } else {
+                        setUser(id)
+                    }
+                } else clearAllUserData()
+            }
+        }
+        viewModelScope.launch {
+            userSessionRepo.userLangFlow.collectLatest { lang ->
+                if (lang != null) _language.value = lang
+            }
+        }
+
+        viewModelScope.launch {
+            userSessionRepo.userThemeFlow.collectLatest { theme ->
+                if (theme != null) _theme.value = theme
+            }
         }
     }
 
@@ -117,13 +195,33 @@ class UserViewModel(app: Application) : AndroidViewModel(app) {
     fun logOut() {
         viewModelScope.launch {
             UserRepository.logOut()
+            userSessionRepo.clearUserSession()
 
-            context.dataStore.edit {
-                it.clear()
-            }
+            _userId.value = null
+            _isLoggedIn.value = false
+        }
+    }
 
-            _currentUser.value = null
+    //Updates for lang and theme
+    /**
+     * Saves a new language for the user
+     * @param lang user's new selected language for the app
+     */
+    fun updateUserLanguage(lang: String) {
+        viewModelScope.launch {
+            userSessionRepo.saveLangData(lang)
+            _language.value = lang
+        }
+    }
 
+    /**
+     * Saves a new theme for the user
+     * @param theme selected by the user to be applied on the app
+     */
+    fun uploadUserTheme(theme: String) {
+        viewModelScope.launch {
+            userSessionRepo.saveThemeData(theme)
+            _theme.value = theme
         }
     }
 
@@ -133,22 +231,29 @@ class UserViewModel(app: Application) : AndroidViewModel(app) {
      * Gets the Recipe's object in the user's fav subcollection
      * Updates the StateFlow
      */
-    fun loadFavourites(){
-        val user= _currentUser.value ?: return
+    fun loadFavourites() {
+        val user = _currentUser.value ?: return
 
         viewModelScope.launch {
-            val favs= UserRepository.getFavouriteRecipeIds(user.id)
+            val favs = UserRepository.getAllFavouriteRecipeIds(user.id)
 
-            val favRecipes = favs.mapNotNull {
-                recipeId ->
-                RecipeRepository.getRecipeById(recipeId)
-            }
+            val fullRecipes = favs.map { recipe ->
+                async(Dispatchers.IO) {
+                    FirebaseConnection.getRecipeById(
+                        user.id,
+                        recipe.id,
+                        Locale.getDefault().language
+                    )
+                }
+            }.mapNotNull { it.await() }
 
-            _favouriteRecipes.value = favRecipes
+            _favouriteRecipes.value = favs.sortedBy { it.title }
+            allTogetherUserRecipes()
 
-      }
+        }
 
     }
+
 
     /**
      * Updates a Recipe to user's favourites list
@@ -156,29 +261,110 @@ class UserViewModel(app: Application) : AndroidViewModel(app) {
      * - If it does not exist: it is saved
      * @param recipe to change from list
      */
-    fun changeFavourite(recipe: Recipe){
-        val user=_currentUser.value ?: return
+    fun changeFavourite(recipe: Recipe) {
+        val user = _currentUser.value ?: return
 
         viewModelScope.launch {
-            val currentFavs= _favouriteRecipes.value.toMutableList()
+            val currentFavs = _favouriteRecipes.value.toMutableList()
 
-            if(isFavourite(recipe.id)){
+            if (isFavourite(recipe.id)) {
                 UserRepository.removeRecipeFromFavourites(user.id, recipe.id)
-                currentFavs.removeAll {it.id == recipe.id}
-            }else{
-                UserRepository.addRecipeToFavourites(user.id, recipe)
+                currentFavs.removeAll { it.id == recipe.id }
+            } else {
+                UserRepository.addRecipeToFavourites(user.id, recipe.id)
                 currentFavs.add(recipe)
             }
 
-            _favouriteRecipes.value=currentFavs //Updates StateFLow
+            _favouriteRecipes.value = currentFavs //Updates StateFLow
+            allTogetherUserRecipes()
         }
     }
 
     /**
      * Checks whether a recipe is in favs or not
      */
-    fun isFavourite(recipeId: String): Boolean{
+    fun isFavourite(recipeId: String): Boolean {
         return _favouriteRecipes.value.any { it.id == recipeId }
     }
+
+    //Methods for Modified
+    private fun loadModified() {
+        val user = _currentUser.value ?: return
+
+        viewModelScope.launch {
+            val modifiedRecipes = UserRepository.getAllModifiedRecipes(user.id)
+            _modifiedRecipes.value = modifiedRecipes.sortedBy { it.title }
+            allTogetherUserRecipes()
+        }
+    }
+
+    //Both favs and modified
+    private fun allTogetherUserRecipes() {
+        val allUserRecipes = (_modifiedRecipes.value + _favouriteRecipes.value)
+            .distinctBy { it.id }
+            .sortedBy { it.title }
+
+        _userRecipes.value = allUserRecipes
+        filterRecipes()
+    }
+
+
+//Filtering & Search. uses RecipeFiltersEngine
+    /**
+     * Established the filters to use on the FilterRecipes() method
+     */
+    fun setFilters(
+        origin: OriginEnum?,
+        dishType: DishTypeEnum?,
+        difficulty: DificultyEnum?,
+        prepTime: Int?,
+        maxIngredients: Int?,
+        rating: Int?,
+        allergens: List<AllergenEnum>
+    ) {
+        _activeFilter.value = RecipeSearchFilters(
+            origin = origin,
+            dishType = dishType,
+            difficulty = difficulty,
+            prepTime = prepTime,
+            maxIngredients = maxIngredients,
+            rating = rating,
+            allergens = allergens,
+            query = _searchQuery.value
+        )
+        filterRecipes()
+    }
+
+    /**
+     * Sets the filters from setFilters() and looks for Recipes with them
+     */
+    private fun filterRecipes() {
+        val result = RecipeFiltersEngine.applyFilters(
+            recipes = _userRecipes.value,
+            filter = _activeFilter.value
+        ).sortedBy { it.title }
+
+        _filteredUserRecipes.value = result
+    }
+
+    /**
+     * For the SearchBar to find data
+     * @query data to be searched for
+     */
+    fun search(query: String) {
+        _searchQuery.value = query
+        _activeFilter.value = _activeFilter.value.copy(query = query)
+        filterRecipes()
+    }
+
+    /**
+     * Resets/clears RecipeViewModel private filter vals to null
+     */
+    fun resetFilters() {
+        _activeFilter.value = RecipeSearchFilters()
+        _searchQuery.value = ""
+        filterRecipes()
+    }
+
 
 }
