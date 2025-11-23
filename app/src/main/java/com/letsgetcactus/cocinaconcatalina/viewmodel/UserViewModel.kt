@@ -78,6 +78,9 @@ class UserViewModel(
     private val _activeFilter = MutableStateFlow(RecipeSearchFilters())
     val activeFilter = _activeFilter.asStateFlow()
 
+    //when the user select a recipe to be shown on itemrecipescreen
+    private val _selectedRecipe = MutableStateFlow<Recipe?>(null)
+    val selectedRecipe: StateFlow<Recipe?> = _selectedRecipe.asStateFlow()
 
     init {
         restoreSessionFromDataStore()
@@ -324,6 +327,15 @@ class UserViewModel(
         Log.i("UserViewModel","Loaded ${modifiedRecipes.size} recipes from modifiedRecipes")
 
     }
+
+    /**
+     * To select a favourite (favCard) recipe and show it on itemRecipeScreen
+     */
+    fun selectRecipe(recipe: Recipe) {
+        _selectedRecipe.value = recipe
+        Log.i("UserViewModel", "Selected recipe: ${recipe.title}")
+    }
+
 
     //Both favs and modified
     private fun allTogetherUserRecipes() {

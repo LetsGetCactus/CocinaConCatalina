@@ -76,7 +76,6 @@ class RecipeViewModel(): ViewModel() {
     }
 
     /**
-     * TODO
      * Method to save the users selection on ListRecipeHost
      * Shares the shared state between screens
      */

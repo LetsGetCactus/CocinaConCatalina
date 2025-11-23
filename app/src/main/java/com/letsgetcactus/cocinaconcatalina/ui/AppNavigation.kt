@@ -3,6 +3,7 @@ package com.letsgetcactus.cocinaconcatalina.ui
 import MenuDrawerComponent
 import android.annotation.SuppressLint
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -167,6 +168,8 @@ fun AppNavigation(
                         userViewModel = userViewModel,
                         recipeViewModel= recipeViewModel,
                     )
+                    Log.i("NavGraph","ItemREcipeScreen received : ${navBackStackEntry?.arguments?.getString("recipe")}")
+
                 }
                 composable(NavigationRoutes.LIST_RECIPES_HOST_SCREEN) {
                     ListRecipeHostScreen(

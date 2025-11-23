@@ -133,15 +133,15 @@ fun FavouritesScreen(
                         )
                     }
                 } else {
-                    items(filteredFavourites.size) {
-                        index->
+                    items(filteredFavourites.size) { index ->
                         val recipe = filteredFavourites[index]
                         FavCard(
                             recipe = recipe,
                             userViewModel = userViewModel,
-                            onNavigate = onNavigate,
+                            onNavigate = onNavigate
 
-                            )
+
+                        )
                     }
                 }
             }
@@ -169,6 +169,7 @@ fun FavCard(
             )
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .clickable {
+                userViewModel.selectRecipe(recipe)
                 onNavigate(NavigationRoutes.ITEM_RECIPE_SCREEN + "?recipe=${recipe.id}")
             }
     ) {

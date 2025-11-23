@@ -51,24 +51,10 @@ fun ItemRecipeScreen(
 
 ) {
 
-
-    val recipe by recipeViewModel.selectedRecipe.collectAsState()
-
-
-//
-//
-//    //To obtain the drawable form the origin
-//    fun getFlagForCountry(origin: String): Int {
-//        return when (origin.uppercase()) {
-//            "JAPAN","JAPÓN","JAPON","XAPÓN","XAPON" -> R.drawable.japan_flag
-//            "KOREA" -> R.drawable.korea_flag
-//            "CHINA" -> R.drawable.china_flag
-//            "THAILAND","TAILANDIA" -> R.drawable.thailand_flag
-//            "VIETNAM" -> R.drawable.vietnam_flag
-//            else -> R.drawable.chef_flag
-//        }
-//    }
-
+    val userSelected by userViewModel.selectedRecipe.collectAsState() //Selected fav or mod recipes
+    val originalSelected by recipeViewModel.selectedRecipe.collectAsState() //Selected from asian
+    //Combine both
+    val recipe = userSelected ?: originalSelected
 
     recipe?.let { currentRecipe ->
 
