@@ -3,12 +3,9 @@ package com.letsgetcactus.cocinaconcatalina.viewmodel
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.intl.Locale
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.letsgetcactus.cocinaconcatalina.data.repository.UserSessionRepository
-import com.letsgetcactus.cocinaconcatalina.database.FirebaseConnection
 import com.letsgetcactus.cocinaconcatalina.database.UserRepository
 import com.letsgetcactus.cocinaconcatalina.database.mapper.OriginMapper
 import com.letsgetcactus.cocinaconcatalina.model.Recipe

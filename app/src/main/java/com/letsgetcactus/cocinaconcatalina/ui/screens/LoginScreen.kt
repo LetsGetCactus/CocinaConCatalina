@@ -33,18 +33,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.navOptions
 import com.letsgetcactus.cocinaconcatalina.R
 import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
 import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonGoogle
 import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonMain
 import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonSecondary
-import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
 import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
 
