@@ -2,12 +2,17 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -18,13 +23,18 @@ import com.letsgetcactus.cocinaconcatalina.ui.components.menuDrawer.DrawerItem
 import com.letsgetcactus.cocinaconcatalina.ui.components.menuDrawer.DrawerSwitchItem
 import com.letsgetcactus.cocinaconcatalina.ui.theme.menuDColor
 import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun MenuDrawerComponent(
     navController: NavController,
     userViewModel: UserViewModel,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    drawerState: DrawerState
 ) {
+    //To close de drawer when navigatin to other screen
+    val scope= rememberCoroutineScope()
+
     CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSecondary)
     {
         Column(
@@ -48,24 +58,34 @@ fun MenuDrawerComponent(
             DrawerItem(
                 icon = R.drawable.tori_gate,
                 label = stringResource(R.string.home),
-                onClick = { navController.navigate(NavigationRoutes.HOME_SCREEN) }
+                onClick = {
+                    navController.navigate(NavigationRoutes.HOME_SCREEN)
+                   scope.launch{ drawerState.close()}
+                }
             )
 
             DrawerItem(
                 icon = R.drawable.favs,
                 label = stringResource(R.string.favs),
-                onClick = { navController.navigate(NavigationRoutes.FAVS_SCREEN) }
+                onClick = {
+                    navController.navigate(NavigationRoutes.FAVS_SCREEN)
+                    scope.launch{ drawerState.close()}}
             )
 
             DrawerItem(
                 icon = R.drawable.food,
                 label = stringResource(R.string.modified),
-                onClick = {  }
+                onClick = {
+                    //navigate to list item filterd by only modified
+                    scope.launch{ drawerState.close()}
+                }
             )
-            DrawerItem( //TODO: only admin
+            DrawerItem(
                 icon = R.drawable.add,
                 label = stringResource(R.string.add_recipe),
-                onClick = { navController.navigate(NavigationRoutes.ADD_RECIPE_SCREEN) }
+                onClick = {
+                    navController.navigate(NavigationRoutes.ADD_RECIPE_SCREEN)
+                    scope.launch{ drawerState.close()}}
             )
 
 
@@ -84,17 +104,20 @@ fun MenuDrawerComponent(
                 icon = R.drawable.moon,
                 label = stringResource(R.string.mode),
                 checked = false,
-                onCheckedChange = { }
+                onCheckedChange = {}//TODO
             )
 
 
             DrawerItem(
                 icon = R.drawable.exit,
                 label = stringResource(R.string.close_session),
-                onClick = { userViewModel.logOut()
+                onClick = {
+                    userViewModel.logOut()
                 navController.navigate(NavigationRoutes.LOGIN_SCREEN){
                 popUpTo(0)}
-                }
+                    scope.launch{ drawerState.close()}
+                },
+
             )
 
             DrawerItem(
@@ -108,6 +131,7 @@ fun MenuDrawerComponent(
                     navController.navigate(NavigationRoutes.LOGIN_SCREEN) {
                         popUpTo(0)
                     }
+                        scope.launch{ drawerState.close()}
                 }}
             )
 
@@ -119,13 +143,14 @@ fun MenuDrawerComponent(
             DrawerItem(
                 icon = R.drawable.contact,
                 label = stringResource(R.string.contact),
-                onClick = { /* enviar mail */ }
+                onClick = { /* enviar mail */ } //Todo
             )
 
             DrawerItem(
                 icon = R.drawable.question,
                 label = stringResource(R.string.faq),
-                onClick = { /* ir a FAQ */ }
+                onClick = { /* ir a FAQ */
+                    scope.launch{ drawerState.close()}} //TODO
             )
         }
     }

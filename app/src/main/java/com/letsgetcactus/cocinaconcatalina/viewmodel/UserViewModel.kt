@@ -1,12 +1,16 @@
 package com.letsgetcactus.cocinaconcatalina.viewmodel
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.intl.Locale
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.letsgetcactus.cocinaconcatalina.data.repository.UserSessionRepository
 import com.letsgetcactus.cocinaconcatalina.database.FirebaseConnection
 import com.letsgetcactus.cocinaconcatalina.database.UserRepository
+import com.letsgetcactus.cocinaconcatalina.database.mapper.OriginMapper
 import com.letsgetcactus.cocinaconcatalina.model.Recipe
 import com.letsgetcactus.cocinaconcatalina.model.User
 import com.letsgetcactus.cocinaconcatalina.model.enum.AllergenEnum
@@ -15,14 +19,12 @@ import com.letsgetcactus.cocinaconcatalina.model.enum.DishTypeEnum
 import com.letsgetcactus.cocinaconcatalina.model.enum.OriginEnum
 import com.letsgetcactus.cocinaconcatalina.model.filters.RecipeFiltersEngine
 import com.letsgetcactus.cocinaconcatalina.model.filters.RecipeSearchFilters
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.util.Locale
 
 /**
  * Controls login(), logout() and register()
@@ -57,6 +59,10 @@ class UserViewModel(
     private val _favouriteRecipes = MutableStateFlow<List<Recipe>>(emptyList())
     val favouriteRecipe = _favouriteRecipes.asStateFlow()
 
+    // Favs filtered by chip
+    private val _filteredFavourites = MutableStateFlow<List<Recipe>>(emptyList())
+    val filteredFavourites = _filteredFavourites.asStateFlow()
+
     private val _modifiedRecipes = MutableStateFlow<List<Recipe>>(emptyList())
     val modifiedRecipes = _modifiedRecipes.asStateFlow()
 
@@ -81,12 +87,12 @@ class UserViewModel(
     }
 
     /**
-     * For the user to persist
+     * For the user to persist. Loads the User and his favs and mod recipes
      * @param userId Id from the user to persist
      */
     suspend fun setUser(userId: String?) {
         if (userId != null) {
-            var user = UserRepository.getUserById(userId)
+            val user = UserRepository.getUserById(userId)
 
             _currentUser.value = user
             loadFavourites()
@@ -123,8 +129,11 @@ class UserViewModel(
 
         return if (user != null) {
             userSessionRepo.saveUserIdData(user.id)
-            _currentUser.value= user
+            _currentUser.value = user
             _isLoggedIn.value = true
+            loadFavourites()
+            loadModified()
+
             true
         } else false
     }
@@ -145,6 +154,7 @@ class UserViewModel(
             userSessionRepo.saveUserIdData(newUser.id)
             _currentUser.value = newUser
             _isLoggedIn.value = true
+
             true
         } else false
     }
@@ -161,15 +171,32 @@ class UserViewModel(
 
                 if (id != null) {
                     val activeSessionInFirebaseAuth = userRepo.getCurrentFirebaseUser()
-
-                    if (activeSessionInFirebaseAuth == null || activeSessionInFirebaseAuth.uid != id) {
-                        userSessionRepo.clearUserSession()
+                    Log.i(
+                        "UserViewModel",
+                        "activeSessionInFirebaseAuth= $activeSessionInFirebaseAuth"
+                    )
+                    if (activeSessionInFirebaseAuth == null) {
+                        //wait to retry
+                        delay(400)
+                        activeSessionInFirebaseAuth
+                        Log.i(
+                            "UserViewModel",
+                            "activeSessionInFirebaseAuth retry= $activeSessionInFirebaseAuth"
+                        )
+                        if (activeSessionInFirebaseAuth == null)
+                            userSessionRepo.clearUserSession()
                         clearAllUserData()
+                        Log.i("UserViewModel", "cleared all user data")
                         _isLoggedIn.value = false
                     } else {
-                        setUser(id)
+                        setUser(activeSessionInFirebaseAuth.uid)
+                        Log.i(
+                            "UserViewModel",
+                            "activeSessionInFirebaseAuth= ${activeSessionInFirebaseAuth.uid}"
+                        )
                     }
-                } else clearAllUserData()
+                } else setUser(id)
+                Log.i("UserViewModel", "user obtained correctly")
             }
         }
         viewModelScope.launch {
@@ -231,27 +258,12 @@ class UserViewModel(
      * Gets the Recipe's object in the user's fav subcollection
      * Updates the StateFlow
      */
-    fun loadFavourites() {
+    suspend fun loadFavourites() {
         val user = _currentUser.value ?: return
 
-        viewModelScope.launch {
-            val favs = UserRepository.getAllFavouriteRecipeIds(user.id)
-
-            val fullRecipes = favs.map { recipe ->
-                async(Dispatchers.IO) {
-                    FirebaseConnection.getRecipeById(
-                        user.id,
-                        recipe.id,
-                        Locale.getDefault().language
-                    )
-                }
-            }.mapNotNull { it.await() }
-
-            _favouriteRecipes.value = favs.sortedBy { it.title }
-            allTogetherUserRecipes()
-
-        }
-
+        val favs = UserRepository.getAllFavouriteRecipeIds(user.id)
+        _favouriteRecipes.value = favs.sortedBy { it.title }
+        Log.i("UserViewModel","Loaded ${favs.size} recipes from favourites: \n $favs")
     }
 
 
@@ -270,14 +282,18 @@ class UserViewModel(
             if (isFavourite(recipe.id)) {
                 UserRepository.removeRecipeFromFavourites(user.id, recipe.id)
                 currentFavs.removeAll { it.id == recipe.id }
+                Log.i("UserViewModel","Removed from favourites")
             } else {
                 UserRepository.addRecipeToFavourites(user.id, recipe.id)
                 currentFavs.add(recipe)
+                Log.i("UserViewModel","Saved in favourites")
             }
 
             _favouriteRecipes.value = currentFavs //Updates StateFLow
             allTogetherUserRecipes()
         }
+
+
     }
 
     /**
@@ -287,15 +303,29 @@ class UserViewModel(
         return _favouriteRecipes.value.any { it.id == recipeId }
     }
 
+    /**
+     * For applying the filter by chips on FavouriteScreen
+     * @param origin for the recipes to have for being shown
+     */
+    fun filterByChipOnFavourites(origin: OriginEnum?){
+        _filteredFavourites.value = if (origin == null) {
+            _favouriteRecipes.value
+        } else {
+            _favouriteRecipes.value.filter { recipe ->
+                val recipeOriginEnum = OriginMapper.mapOriginToEnum(recipe.origin.country)
+                recipeOriginEnum == origin
+            }
+        }
+    }
+
     //Methods for Modified
-    private fun loadModified() {
+    private suspend fun loadModified() {
         val user = _currentUser.value ?: return
 
-        viewModelScope.launch {
-            val modifiedRecipes = UserRepository.getAllModifiedRecipes(user.id)
-            _modifiedRecipes.value = modifiedRecipes.sortedBy { it.title }
-            allTogetherUserRecipes()
-        }
+        val modifiedRecipes = UserRepository.getAllModifiedRecipes(user.id)
+        _modifiedRecipes.value = modifiedRecipes.sortedBy { it.title }
+        Log.i("UserViewModel","Loaded ${modifiedRecipes.size} recipes from modifiedRecipes")
+
     }
 
     //Both favs and modified
@@ -306,6 +336,7 @@ class UserViewModel(
 
         _userRecipes.value = allUserRecipes
         filterRecipes()
+        Log.i("UserViewModel","Loaded ${allUserRecipes.size} recipes from users subcollection")
     }
 
 
@@ -333,6 +364,7 @@ class UserViewModel(
             query = _searchQuery.value
         )
         filterRecipes()
+        Log.i("UserViewModel","Set filters in search")
     }
 
     /**
@@ -355,6 +387,7 @@ class UserViewModel(
         _searchQuery.value = query
         _activeFilter.value = _activeFilter.value.copy(query = query)
         filterRecipes()
+        Log.i("UserViewModel","Searching..")
     }
 
     /**
@@ -364,6 +397,7 @@ class UserViewModel(
         _activeFilter.value = RecipeSearchFilters()
         _searchQuery.value = ""
         filterRecipes()
+        Log.i("UserViewModel","Reseting search filters")
     }
 
 

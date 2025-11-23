@@ -293,7 +293,7 @@ fun RegisterScreen(
                                 }
                                 Toast.makeText(
                                     context,
-                                    "${context.getString(R.string.welcome)} + $name",
+                                    "${context.getString(R.string.welcome)} $name",
                                     Toast.LENGTH_SHORT
                                 ).show()
                             } else {

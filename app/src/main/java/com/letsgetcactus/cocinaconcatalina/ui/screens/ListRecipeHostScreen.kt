@@ -43,6 +43,7 @@ fun ListRecipeHostScreen(
 ) {
 
     val recipesVModel by recipeViewModel.asianOgRecipes.collectAsState()
+    val userRecipesVModel by userViewModel.userRecipes.collectAsState()
 
 
     Column(
@@ -56,7 +57,7 @@ fun ListRecipeHostScreen(
                 recipeViewModel.selectRecipe(selected)
                 onNavigate()
             },
-            recipes = recipesVModel
+            recipes = recipesVModel + userRecipesVModel
         )
     }
 }
@@ -133,6 +134,7 @@ private fun RecipeCard(
     }
 }
 
+//Explains color on recipes ranking
 @Composable
 fun LegendComposable() {
     Row(

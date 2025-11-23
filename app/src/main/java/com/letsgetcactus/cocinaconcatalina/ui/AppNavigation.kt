@@ -67,6 +67,7 @@ fun AppNavigation(
                 navController = navController,
                 userViewModel = userViewModel,
                 modifier = Modifier.width(LocalConfiguration.current.screenWidthDp.dp * 0.7f),
+                drawerState= drawerState
             )
 
         }

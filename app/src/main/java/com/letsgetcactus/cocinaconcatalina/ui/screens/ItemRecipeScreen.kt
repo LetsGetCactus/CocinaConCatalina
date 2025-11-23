@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.letsgetcactus.cocinaconcatalina.R
+import com.letsgetcactus.cocinaconcatalina.database.mapper.OriginMapper
 import com.letsgetcactus.cocinaconcatalina.model.Allergen
 import com.letsgetcactus.cocinaconcatalina.model.Ingredient
 import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
@@ -54,17 +55,19 @@ fun ItemRecipeScreen(
     val recipe by recipeViewModel.selectedRecipe.collectAsState()
 
 
-    //To obtain the drawable form the origin
-    fun getFlagForCountry(origin: String): Int {
-        return when (origin.uppercase()) {
-            "JAPAN","JAPÓN","JAPON","XAPÓN","XAPON" -> R.drawable.japan_flag
-            "KOREA" -> R.drawable.korea_flag
-            "CHINA" -> R.drawable.china_flag
-            "THAILAND","TAILANDIA" -> R.drawable.thailand_flag
-            "VIETNAM" -> R.drawable.vietnam_flag
-            else -> R.drawable.chef_flag
-        }
-    }
+//
+//
+//    //To obtain the drawable form the origin
+//    fun getFlagForCountry(origin: String): Int {
+//        return when (origin.uppercase()) {
+//            "JAPAN","JAPÓN","JAPON","XAPÓN","XAPON" -> R.drawable.japan_flag
+//            "KOREA" -> R.drawable.korea_flag
+//            "CHINA" -> R.drawable.china_flag
+//            "THAILAND","TAILANDIA" -> R.drawable.thailand_flag
+//            "VIETNAM" -> R.drawable.vietnam_flag
+//            else -> R.drawable.chef_flag
+//        }
+//    }
 
 
     recipe?.let { currentRecipe ->
@@ -75,7 +78,9 @@ fun ItemRecipeScreen(
         Log.i("ItemRecipeScreen","Existen ${favRecepies.size} recetas favoritas")
 
         //Flag
-        val flagForRecipe = getFlagForCountry(currentRecipe.origin.country)
+        val originEnum = OriginMapper.mapOriginToEnum(currentRecipe.origin.country)
+        val flagForRecipe = originEnum.flag
+//        val flagForRecipe = getFlagForCountry(currentRecipe.origin.country)
 
         Log.i("ItemRecipeScreen", "Entrando en la pantalla para mostrar ${currentRecipe.title}, in ${Locale.getDefault().language}")
 

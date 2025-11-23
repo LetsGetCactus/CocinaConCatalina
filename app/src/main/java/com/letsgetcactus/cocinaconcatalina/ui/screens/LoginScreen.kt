@@ -162,7 +162,7 @@ fun LoginScreen(
                     } else {
                         val success = userViewModel.login(email, pass)
                         if (success) {
-                            Toast.makeText(context,"${context.getString(R.string.welcome)}+ $userViewModel.currentUser.value.name",Toast.LENGTH_SHORT ).show()
+                            Toast.makeText(context,"${context.getString(R.string.welcome)} $userViewModel.currentUser.value.name",Toast.LENGTH_SHORT ).show()
                             navController.navigate(NavigationRoutes.HOME_SCREEN) {
                                 popUpTo(NavigationRoutes.LOGIN_SCREEN) { inclusive = true }
                             }

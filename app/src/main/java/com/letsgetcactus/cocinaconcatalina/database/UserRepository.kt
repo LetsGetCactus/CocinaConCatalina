@@ -2,7 +2,6 @@ package com.letsgetcactus.cocinaconcatalina.database
 
 import android.os.Build
 import android.util.Log
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -97,8 +96,12 @@ object UserRepository {
      */
     fun getCurrentFirebaseUser(): FirebaseUser? {
         val user=firebaseAuth.currentUser
-        Log.i("UserRepository","Obtained user from Firebase: ${user?.displayName}")
-        return user
+        if(user != null) {
+            Log.i("UserRepository", "Obtained user from Firebase: ${user}")
+
+            return user
+        }else Log.i("UserRepository","Could not load FirebaseUser")
+        return null
     }
 
     //FAVS RECIPES
@@ -123,15 +126,21 @@ object UserRepository {
 
 
     /**
-     * Gets all user's favourite Recipes
+     * Gets all user's favourite Recipes ids and returns them intro Recipe objects
      * @param userId Id from the user to search for the recipes
      * @return a list of Recipes
      */
     suspend fun getAllFavouriteRecipeIds(userId: String): List<Recipe> {
-       val favs= FirebaseConnection.getUserFavouriteRecipes(userId)
+       val favs= FirebaseConnection.getUserFavouriteRecipes(userId).map { it.id }
         Log.i("UserRepository", "Getting ${favs.size} recipes from user $userId")
 
-        return favs
+        val favsToObjectRecipe = favs.mapNotNull {
+            recipeId ->
+            FirebaseConnection.getRecipeById(userId,recipeId)
+        }
+
+
+        return favsToObjectRecipe
     }
 
 

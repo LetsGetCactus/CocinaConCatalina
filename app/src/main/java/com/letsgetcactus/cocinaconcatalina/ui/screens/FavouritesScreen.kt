@@ -1,6 +1,6 @@
 package com.letsgetcactus.cocinaconcatalina.ui.screens
 
-import android.widget.Toast
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -13,15 +13,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,31 +32,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.vector.DefaultTintColor
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
-import androidx.navigation.Navigation
-import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.letsgetcactus.cocinaconcatalina.R
-import com.letsgetcactus.cocinaconcatalina.database.UserRepository
+import com.letsgetcactus.cocinaconcatalina.database.mapper.OriginMapper
 import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
 import com.letsgetcactus.cocinaconcatalina.model.Recipe
-import com.letsgetcactus.cocinaconcatalina.model.enum.DificultyEnum
-import com.letsgetcactus.cocinaconcatalina.model.enum.DishTypeEnum
 import com.letsgetcactus.cocinaconcatalina.model.enum.OriginEnum
 import com.letsgetcactus.cocinaconcatalina.ui.components.BackStackButton
-import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonMain
 import com.letsgetcactus.cocinaconcatalina.ui.components.filters.ChipSelector
-import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
-import com.letsgetcactus.cocinaconcatalina.viewmodel.RecipeViewModel
 import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
 
 @Composable
@@ -71,11 +57,25 @@ fun FavouritesScreen(
 
 ) {
 
-    //For chipset filters , by origin
-    var selectedOrigin: OriginEnum? by remember { mutableStateOf(null) }
-
+    //User's state
     val favouriteRecipes by userViewModel.favouriteRecipe.collectAsState()
+    Log.i("FavouriteScreen", "Showing ${favouriteRecipes.size} recipes from user's favs")
 
+    //Selected chipset
+    var selectedOrigin: OriginEnum? by remember { mutableStateOf(null) }
+    Log.i("FavouriteScreen", "$selectedOrigin")
+    val filteredFavourites = remember(favouriteRecipes, selectedOrigin) {
+        if (selectedOrigin == null) favouriteRecipes
+        else favouriteRecipes.filter { recipe ->
+            Log.i("FavouriteScreen", "$recipe")
+            val recipeOriginEnum = OriginMapper.mapOriginToEnum(recipe.origin.country)
+            recipeOriginEnum == selectedOrigin
+        }
+    }
+    //For the viewmodel to apply whenever a chip is selected
+    LaunchedEffect(selectedOrigin) {
+        userViewModel.filterByChipOnFavourites(selectedOrigin)
+    }
 
     //UI
     Column(modifier = modifier.background(MaterialTheme.colorScheme.background)) {
@@ -109,7 +109,7 @@ fun FavouritesScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 BackStackButton(
-                   navController=navController
+                    navController = navController
                 )
                 Text(
                     text = stringResource(R.string.favs),
@@ -117,27 +117,32 @@ fun FavouritesScreen(
                     color = MaterialTheme.colorScheme.tertiary
                 )
             }
+
             LazyColumn(
                 modifier = Modifier.fillMaxWidth(),
                 contentPadding = PaddingValues(vertical = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                if (favouriteRecipes.isEmpty()) {
+
+                if (filteredFavourites.isEmpty()) {
                     item {
                         Text(
                             text = "No tienes recetas favoritas todavía",
-                            style = MaterialTheme.typography.bodyLarge,
-                            modifier = Modifier.padding(16.dp)
+                            style = MaterialTheme.typography.labelSmall,
+                            modifier = Modifier.padding(16.dp),
+                            color = MaterialTheme.colorScheme.primary
                         )
                     }
                 } else {
-                    items(favouriteRecipes.size) { favs ->
+                    items(filteredFavourites.size) {
+                        index->
+                        val recipe = filteredFavourites[index]
                         FavCard(
-                            recipe = favouriteRecipes[favs],
+                            recipe = recipe,
                             userViewModel = userViewModel,
                             onNavigate = onNavigate,
 
-                        )
+                            )
                     }
                 }
             }
@@ -149,10 +154,10 @@ fun FavouritesScreen(
 fun FavCard(
     recipe: Recipe,
     userViewModel: UserViewModel,
-   onNavigate: (String) -> Unit
+    onNavigate: (String) -> Unit
 ) {
 
-
+    Log.i("FavouriteScreen- FavCard", "$recipe")
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -165,7 +170,7 @@ fun FavCard(
             )
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .clickable {
-               onNavigate(NavigationRoutes.ITEM_RECIPE_SCREEN + "?recipe=${recipe.id}")
+                onNavigate(NavigationRoutes.ITEM_RECIPE_SCREEN + "?recipe=${recipe.id}")
             }
     ) {
         Row(

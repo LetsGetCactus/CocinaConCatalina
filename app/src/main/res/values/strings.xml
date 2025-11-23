@@ -144,5 +144,7 @@
     <string name="recipe_saved">New recipe saved!</string>
     <string name="recipe_saved_error">Could not save new recipe</string>
     <string name="not_accepted_terms">You need to accept Terms and Conditions</string>
+    <string name="recipes_five_ingr">Less than 5 ingredients</string>
+    <string name="recipes_high_rating">Highest ranting</string>
 
 </resources>

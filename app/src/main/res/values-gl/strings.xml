@@ -138,4 +138,9 @@
     <string name="email_pass_incorrect">Correo ou contrasinal incorrectos</string>
     <string name="not_favs_yet">Aínda non tes receitas favoritas</string>
     <string name="admin_only">Acceso denegado. Só ADMINISTRADOR</string>
+    <string name="recipe_saved">Gardouse unha nova receita</string>
+    <string name="recipe_saved_error">Non se poido gardar a recieta</string>
+    <string name="not_accepted_terms">Tes que aceptar os termos e condicións</string>
+    <string name="recipes_five_ingr">Menos de 5 ingredientes</string>
+    <string name="recipes_high_rating">Mellor puntuación</string>
 </resources>

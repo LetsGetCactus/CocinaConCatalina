@@ -256,10 +256,11 @@ object FirebaseConnection {
         return try {
             val result = db.collection("users")
                 .document(userId)
-                .collection("favouritesRecipes")
+                .collection("favouriteRecipes")
                 .get()
                 .await()
 
+            Log.i("FirebaseConnection", "Fetched ${result.size()} favourites recipes (String ID)")
             result.toObjects(RecipeDto::class.java).map { it.toRecipe(language) }
 
 
@@ -297,7 +298,7 @@ object FirebaseConnection {
         try {
             db.collection("users")
                 .document(userId)
-                .collection("favouritesRecipes")
+                .collection("favouriteRecipes")
                 .document(recipeId)
                 .delete()
                 .await()

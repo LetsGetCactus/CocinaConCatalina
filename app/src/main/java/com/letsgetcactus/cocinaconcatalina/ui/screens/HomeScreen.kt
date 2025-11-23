@@ -47,11 +47,11 @@ fun HomeScreen(
                 painter = painterResource(if (isLight) R.drawable.banner_blanco else R.drawable.banner_gris),
                 contentDescription = stringResource(R.string.image_description),
                 contentScale = ContentScale.FillWidth,
-                modifier = Modifier.fillMaxWidth() // 👈 aquí usamos Modifier, no modifier
+                modifier = Modifier.fillMaxWidth()
             )
         }
 
-        Spacer(modifier = Modifier.size(64.dp)) // 👈 igual aquí
+        Spacer(modifier = Modifier.size(64.dp))
 
         ButtonRound(
             buttonText = stringResource(R.string.allRecipes),
@@ -61,15 +61,21 @@ fun HomeScreen(
         Spacer(modifier = Modifier.size(32.dp))
 
         ButtonRound(
-            buttonText = stringResource(R.string.sweetRecipes),
-            onNavigate = { onNavigate(NavigationRoutes.LIST_RECIPES_HOST_SCREEN)}
+            buttonText = stringResource(R.string.recipes_five_ingr),
+            onNavigate = {
+                onNavigate(NavigationRoutes.LIST_RECIPES_HOST_SCREEN)
+            //TODO filter by ingredients
+        }
         )
 
         Spacer(modifier = Modifier.size(32.dp))
 
         ButtonRound(
-            buttonText = stringResource(R.string.savouryRecipes),
-            onNavigate = { onNavigate(NavigationRoutes.LIST_RECIPES_HOST_SCREEN)}
+            buttonText = stringResource(R.string.recipes_high_rating),
+            onNavigate = {
+                onNavigate(NavigationRoutes.LIST_RECIPES_HOST_SCREEN)
+            //TODO filter by avgRating > 4
+            }
         )
     }
 }
