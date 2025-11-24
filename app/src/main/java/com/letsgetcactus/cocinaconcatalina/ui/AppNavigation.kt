@@ -168,8 +168,6 @@ fun AppNavigation(
                         userViewModel = userViewModel,
                         recipeViewModel= recipeViewModel,
                     )
-                    Log.i("NavGraph","ItemREcipeScreen received : ${navBackStackEntry?.arguments?.getString("recipe")}")
-
                 }
                 composable(NavigationRoutes.LIST_RECIPES_HOST_SCREEN) {
                     ListRecipeHostScreen(
@@ -184,9 +182,8 @@ fun AppNavigation(
                         userViewModel = userViewModel,
                         recipeViewModel= recipeViewModel,
                         onNavigate = { route -> navController.navigate(route) },
-                        navController = navController,
-                        onIngredientChange = {}
-                    )
+                        navController = navController
+                        )
                 }
                 composable(NavigationRoutes.TERMS_CONDITIONS_SCREEN) {
                     TermsAndConditionsScreen(

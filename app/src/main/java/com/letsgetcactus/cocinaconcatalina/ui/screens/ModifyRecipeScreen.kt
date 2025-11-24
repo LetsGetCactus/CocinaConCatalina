@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
@@ -51,234 +52,227 @@ import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
 fun ModifyRecipeScreen(
     onNavigate: (String) -> Unit,
     navController: NavHostController,
-    onIngredientChange: (Ingredient) -> Unit = {},
-    userViewModel : UserViewModel,
+    userViewModel: UserViewModel,
     recipeViewModel: RecipeViewModel,
 
     ) {
-    // Get the shared ViewModel from ListRecipeHostScreen
-    val parentEntry = remember(navController.currentBackStackEntry) {
-        navController.getBackStackEntry(NavigationRoutes.LIST_RECIPES_HOST_SCREEN)
-    }
-    val viewModel: RecipeViewModel = viewModel(parentEntry)
-    val recipe by viewModel.selectedRecipe.collectAsState()
+
+    val originalSelected by recipeViewModel.selectedRecipe.collectAsState()
+    val userSelected by userViewModel.selectedRecipe.collectAsState()
+    val currentSelected = originalSelected ?: userSelected
     Log.i("ModifyRecipeScreen", "Dentro de la Screen")
 
-    val scrollState = rememberScrollState()
+    currentSelected?.let { currentRecipe ->
 
-
-    recipe?.let {
-
-            currentRecipe ->
         Log.i("ModifyRecipeScreen", "Dentro de la Screen con ${currentRecipe.title}")
 
-        //To activate recipe's allergens
+        //Local states for allergnes
         var selectedAllergens by remember(currentRecipe) {
             mutableStateOf(
-                AllergenEnum.entries.associateWith {
-                    allergen ->
+                AllergenEnum.entries.associateWith { allergen ->
                     currentRecipe.allergenList.any { it.img == allergen }
                 }
             )
         }
-        Log.i("ModifyRecipeScreen", "Allergens in recipe: ${currentRecipe.allergenList.map { it.img }}")
+        Log.i(
+            "ModifyRecipeScreen",
+            "Allergens in recipe: ${currentRecipe.allergenList.map { it.img }}"
+        )
 
 
 
         Box(
             modifier = Modifier.padding(vertical = 48.dp)
         ) {
-            Column(
+            LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.background)
-                    .verticalScroll(scrollState)
-                    .padding(32.dp)
+                    .padding(32.dp),
+                verticalArrangement = Arrangement.SpaceAround
+
             ) {
-                Row() {
-                    BackStackButton(
-                        navController = navController,
+                item {
+                    Row() {
+                        BackStackButton(
+                            navController = navController,
+                        )
+                        Text(
+                            text = currentRecipe.title,
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                }
+
+                item {
+                    // Image
+                    val img = rememberAsyncImagePainter(
+                        model = currentRecipe.img,
+                        placeholder = painterResource(R.drawable.recipe), // drawable by defaul while updating
+                        error = painterResource(R.drawable.recipe) // in case there's an error
                     )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(min = 200.dp)
+                    ) {
+                        Image(
+                            painter = img,
+                            contentDescription = currentRecipe.title,
+                            contentScale = ContentScale.Fit,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+
+                }
+                item {
+                    // Alergens . Horizontal scroll
                     Text(
-                        text = currentRecipe.title,
+                        text = stringResource(R.string.allergens),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.primary
                     )
-                }
 
-                // Image
-                val img = rememberAsyncImagePainter(
-                    model = currentRecipe.img,
-                    placeholder = painterResource(R.drawable.recipe), // drawable by defaul while updating
-                    error = painterResource(R.drawable.recipe) // in case there's an error
-                )
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(min = 200.dp)
-                ) {
-                    Image(
-                        painter = img,
-                        contentDescription = currentRecipe.title,
-                        contentScale = ContentScale.Fit,
+                    AllergenIconsSelector(
+                        selectedAllergens = selectedAllergens,
+                        onSelectionChanged = { selectedAllergens = it },
                         modifier = Modifier.fillMaxWidth()
                     )
+
                 }
 
-                Spacer(modifier = Modifier.size(24.dp))
-
-                // Alergens . Horizontal scroll
-                Text(
-                    text = stringResource(R.string.allergens),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.primary
-                )
-
-                AllergenIconsSelector(
-                    selectedAllergens = selectedAllergens,
-                    onSelectionChanged = { selectedAllergens = it },
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-
-
-                Spacer(modifier = Modifier.size(24.dp))
-
-                // Ingredients
-                Text(
-                    text = stringResource(R.string.ingredients),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.primary
-                )
-                ModifyItemIngredients(
-                    ingredientList = currentRecipe.ingredientList,
-                    onIngredientChange = { ingredient ->
-                        //Upadte viewmdoel
-                        viewModel.selectRecipe(
-                            currentRecipe.copy(
+                item {
+                    // Ingredients
+                    Text(
+                        text = stringResource(R.string.ingredients),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    ModifyItemIngredients(
+                        ingredientList = currentRecipe.ingredientList,
+                        onIngredientChange = { ingredient ->
+                            val updatedRecipe = currentRecipe.copy(
                                 ingredientList = currentRecipe.ingredientList.map {
                                     if (it.name == ingredient.name) ingredient else it
                                 }
                             )
-                        )
-                    })
-
-                Spacer(Modifier.size(24.dp))
-
-                //Steps
-                Text(
-                    text = stringResource(R.string.steps),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.primary
-                )
-
-
-                Column() {
-                    var count = 1
-                    currentRecipe.steps.forEach { step ->
-                        Row(
-
-                        ) {
-                            Text(text = "${count}.")
-                            Spacer(modifier = Modifier.size(8.dp))
-                            Text(
-                                text = step,
-                                color = MaterialTheme.colorScheme.onBackground,
-                                style = MaterialTheme.typography.bodyMedium
-
-                            )
-                            count++
+                            if (userSelected != null) {
+                                userViewModel.selectRecipe(updatedRecipe)
+                            } else {
+                                recipeViewModel.selectRecipe(updatedRecipe)
+                            }
                         }
-                        Spacer(modifier = Modifier.size(16.dp))
+                    )
+                }
+                item {
+
+                    //Steps
+                    Text(
+                        text = stringResource(R.string.steps),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+
+
+                    Column() {
+                        var count = 1
+                        currentRecipe.steps.forEach { step ->
+                            Row(
+
+                            ) {
+                                Text(text = "${count}.")
+                                Spacer(modifier = Modifier.size(8.dp))
+                                Text(
+                                    text = step,
+                                    color = MaterialTheme.colorScheme.onBackground,
+                                    style = MaterialTheme.typography.bodyMedium
+
+                                )
+                                count++
+                            }
+                            Spacer(modifier = Modifier.size(16.dp))
+                        }
                     }
                 }
             }
-        }
-        //FAB
-        Column(
-            Modifier
-                .fillMaxSize()
-                .padding(horizontal = 24.dp, vertical = 48.dp),
-            horizontalAlignment = Alignment.End,
-            verticalArrangement = Arrangement.Bottom
-        ) {
-            FAB(
-                onNavigate = { onNavigate(NavigationRoutes.ITEM_RECIPE_SCREEN) }
-            )
-        }
-    }
-}
-
-
-@Composable
-fun ModifyItemIngredients(
-    ingredientList: List<Ingredient>,
-    onIngredientChange: (Ingredient) -> Unit
-) {
-
-    var unit by remember { mutableStateOf(UnitsTypeEnum.GRAM) }
-
-
-    Column(
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        ingredientList.forEach { ingredient ->
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth(),
-
-                ) {
-                //Edit quantity
-                TextField(
-                    value = ingredient.quantity,
-                    onValueChange = { newQty: String ->
-                        onIngredientChange(ingredient.copy(quantity = newQty))
-                    },
-
-                    modifier = Modifier.weight(.75f),
-                    shape = MaterialTheme.shapes.small,
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = MaterialTheme.colorScheme.surface,
-                        unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                        focusedTextColor = MaterialTheme.colorScheme.onSurface,
-                        unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
-                    ),
-                    textStyle = MaterialTheme.typography.bodySmall
-
-                )
-
-                Spacer(Modifier.width(8.dp))
-
-                // Choose unit from selector
-                //TODO: me selecciona en todas las referencias el mismo tipo, al seleccionarlo en una
-                DropDownMenuSelector(
-                    options = UnitsTypeEnum.entries.toTypedArray(),
-                    selected = unit,
-                    onSelect = { unit = it },
-                    placeholder = UnitsTypeEnum.GRAM.toString(),
-                    modifier = Modifier.weight(1f)
-                )
-
-                Spacer(Modifier.width(8.dp))
-
-                // Ingredient name (read only)
-                Text(
-                    text = ingredient.name,
-                    modifier = Modifier.weight(1.5f),
-                    style = MaterialTheme.typography.bodyMedium
+            //FAB
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 24.dp, vertical = 48.dp),
+                horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.Bottom
+            ) {
+                FAB(
+                    //TODO: save new recipe with "MOD" on title
+                    onNavigate = { onNavigate(NavigationRoutes.ITEM_RECIPE_SCREEN) }
                 )
             }
         }
     }
 
 }
+    @Composable
+    fun ModifyItemIngredients(
+        ingredientList: List<Ingredient>,
+        onIngredientChange: (Ingredient) -> Unit
+    ) {
+
+        var unit by remember { mutableStateOf(UnitsTypeEnum.GRAM) }
 
 
-//@Preview(showBackground = true)
-//@Composable
-//fun PreviewModifyRecipeScreen() {
-//    CocinaConCatalinaTheme(darkTheme = false) {
-//        ModifyRecipeScreen(onNavigate = {})
-//    }
-//}
+        Column(
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            ingredientList.forEach { ingredient ->
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth(),
+
+                    ) {
+                    //Edit quantity
+                    TextField(
+                        value = ingredient.quantity,
+                        onValueChange = { newQty: String ->
+                            onIngredientChange(ingredient.copy(quantity = newQty))
+                        },
+
+                        modifier = Modifier.weight(.75f),
+                        shape = MaterialTheme.shapes.small,
+                        colors = TextFieldDefaults.colors(
+                            focusedContainerColor = MaterialTheme.colorScheme.surface,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                            unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                        ),
+                        textStyle = MaterialTheme.typography.bodySmall
+
+                    )
+
+                    Spacer(Modifier.width(8.dp))
+
+                    // Choose unit from selector
+                    //TODO: me selecciona en todas las referencias el mismo tipo, al seleccionarlo en una
+                    DropDownMenuSelector(
+                        options = UnitsTypeEnum.entries.toTypedArray(),
+                        selected = unit,
+                        onSelect = { unit = it },
+                        placeholder = UnitsTypeEnum.GRAM.toString(),
+                        modifier = Modifier.weight(1f)
+                    )
+
+                    Spacer(Modifier.width(8.dp))
+
+                    // Ingredient name (read only)
+                    Text(
+                        text = ingredient.name,
+                        modifier = Modifier.weight(1.5f),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+            }
+        }
+
+    }

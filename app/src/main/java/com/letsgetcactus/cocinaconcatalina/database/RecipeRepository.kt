@@ -3,6 +3,7 @@ package com.letsgetcactus.cocinaconcatalina.database
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import com.letsgetcactus.cocinaconcatalina.data.FirebaseConnection
 import com.letsgetcactus.cocinaconcatalina.model.Recipe
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
