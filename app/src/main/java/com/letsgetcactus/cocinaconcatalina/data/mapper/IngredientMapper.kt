@@ -1,7 +1,7 @@
-package com.letsgetcactus.cocinaconcatalina.database.mapper
+package com.letsgetcactus.cocinaconcatalina.data.mapper
 
 import com.letsgetcactus.cocinaconcatalina.model.Ingredient
-import com.letsgetcactus.cocinaconcatalina.database.dto.IngredientDto
+import com.letsgetcactus.cocinaconcatalina.data.dto.IngredientDto
 import com.letsgetcactus.cocinaconcatalina.model.enum.UnitsTypeEnum
 import java.util.Locale
 

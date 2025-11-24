@@ -1,4 +1,4 @@
-package com.letsgetcactus.cocinaconcatalina.database
+package com.letsgetcactus.cocinaconcatalina.data.repository
 
 import android.os.Build
 import android.util.Log
@@ -8,7 +8,6 @@ import com.letsgetcactus.cocinaconcatalina.model.Recipe
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.Locale
-
 
 object RecipeRepository {
 

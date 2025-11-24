@@ -1,4 +1,4 @@
-package com.letsgetcactus.cocinaconcatalina.database.dto
+package com.letsgetcactus.cocinaconcatalina.data.dto
 
 data class CategoryDto(
     val id: Long = 0,

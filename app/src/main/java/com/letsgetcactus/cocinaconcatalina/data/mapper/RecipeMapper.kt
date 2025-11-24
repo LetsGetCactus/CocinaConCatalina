@@ -1,7 +1,7 @@
-package com.letsgetcactus.cocinaconcatalina.database.mapper
+package com.letsgetcactus.cocinaconcatalina.data.mapper
 
 
-import com.letsgetcactus.cocinaconcatalina.database.dto.RecipeDto
+import com.letsgetcactus.cocinaconcatalina.data.dto.RecipeDto
 import com.letsgetcactus.cocinaconcatalina.model.Origin
 import com.letsgetcactus.cocinaconcatalina.model.Recipe
 import com.letsgetcactus.cocinaconcatalina.model.enum.DificultyEnum

@@ -22,7 +22,7 @@ fun <T> DropDownMenuSelector(
     ExposedDropdownMenuBox(
         expanded = expanded,
         onExpandedChange = { expanded = !expanded },
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier
     ) {
         TextField(
             value = selected?.let { stringResource(it.enumId) } ?: "",
@@ -31,7 +31,7 @@ fun <T> DropDownMenuSelector(
             placeholder = {
                 Text(
                     placeholder,
-                    style = MaterialTheme.typography.bodySmall
+                    style = MaterialTheme.typography.labelSmall
                 )
             },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
@@ -39,7 +39,7 @@ fun <T> DropDownMenuSelector(
                 MaterialTheme.colorScheme.onSurface,
                 MaterialTheme.colorScheme.onSurface
             ),
-            textStyle = MaterialTheme.typography.bodyMedium,
+            textStyle = MaterialTheme.typography.labelSmall,
             modifier = Modifier.menuAnchor() //Deprecated pero si no no muestra el desplegable
 
         )

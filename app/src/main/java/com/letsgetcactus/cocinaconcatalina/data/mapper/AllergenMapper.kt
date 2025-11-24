@@ -1,8 +1,8 @@
-package com.letsgetcactus.cocinaconcatalina.database.mapper
+package com.letsgetcactus.cocinaconcatalina.data.mapper
 
 import android.util.Log
 import com.letsgetcactus.cocinaconcatalina.model.Allergen
-import com.letsgetcactus.cocinaconcatalina.database.dto.AllergenDto
+import com.letsgetcactus.cocinaconcatalina.data.dto.AllergenDto
 import com.letsgetcactus.cocinaconcatalina.model.enum.AllergenEnum
 
 /**

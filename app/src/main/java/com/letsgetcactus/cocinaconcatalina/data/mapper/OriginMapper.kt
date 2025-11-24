@@ -1,4 +1,4 @@
-package com.letsgetcactus.cocinaconcatalina.database.mapper
+package com.letsgetcactus.cocinaconcatalina.data.mapper
 
 import com.letsgetcactus.cocinaconcatalina.model.enum.OriginEnum
 

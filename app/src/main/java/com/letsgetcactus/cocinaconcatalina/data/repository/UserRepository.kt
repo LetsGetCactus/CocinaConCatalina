@@ -1,4 +1,4 @@
-package com.letsgetcactus.cocinaconcatalina.database
+package com.letsgetcactus.cocinaconcatalina.data.repository
 
 import android.os.Build
 import android.util.Log
@@ -11,6 +11,7 @@ import com.letsgetcactus.cocinaconcatalina.data.FirebaseConnection
 import com.letsgetcactus.cocinaconcatalina.model.Recipe
 import com.letsgetcactus.cocinaconcatalina.model.User
 import kotlinx.coroutines.tasks.await
+import java.time.Instant
 
 /**
  * This object will manage:
@@ -21,7 +22,7 @@ import kotlinx.coroutines.tasks.await
  */
 object UserRepository {
 
-    private val firebaseAuth : FirebaseAuth= Firebase.auth
+    private val firebaseAuth : FirebaseAuth = Firebase.auth
 
     //AUTH
     /**
@@ -68,7 +69,7 @@ object UserRepository {
                 name = name,
                 email = email,
                 password = "",
-                registeredInDate = java.time.Instant.now().toString(),
+                registeredInDate = Instant.now().toString(),
                 isActive = true,
                 role = "USER",
                 favouritesRecipes = emptyList(),
@@ -88,7 +89,7 @@ object UserRepository {
      * @param userId Id from the user
      * @return the User itself or null
      */
-    suspend fun getUserById(userId: String):User?{
+    suspend fun getUserById(userId: String): User?{
         return FirebaseConnection.getUserById(userId)
     }
 

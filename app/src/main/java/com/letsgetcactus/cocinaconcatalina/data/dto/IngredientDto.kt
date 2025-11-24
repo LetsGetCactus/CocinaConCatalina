@@ -1,4 +1,4 @@
-package com.letsgetcactus.cocinaconcatalina.database.dto
+package com.letsgetcactus.cocinaconcatalina.data.dto
 
 /**
  * Validates the data from Firebase to then, if needed , use it on the mapper for "translation" to the app type data

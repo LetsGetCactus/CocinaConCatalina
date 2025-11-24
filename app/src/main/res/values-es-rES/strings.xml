@@ -144,4 +144,6 @@
     <string name="not_accepted_terms">Tienes que aceptar los términos y condiciones</string>
     <string name="recipes_five_ingr">Menos de cinco ingredientes</string>
     <string name="recipes_high_rating">Mejor puntutación</string>
+    <string name="delete">Borrar</string>
+    <string name="new_step">Añadir paso</string>
 </resources>

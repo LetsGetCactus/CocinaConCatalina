@@ -11,8 +11,8 @@ import com.letsgetcactus.cocinaconcatalina.model.enum.AllergenEnum
 import com.letsgetcactus.cocinaconcatalina.model.enum.DificultyEnum
 import com.letsgetcactus.cocinaconcatalina.model.enum.DishTypeEnum
 import com.letsgetcactus.cocinaconcatalina.model.enum.OriginEnum
-import com.letsgetcactus.cocinaconcatalina.model.filters.RecipeFiltersEngine
-import com.letsgetcactus.cocinaconcatalina.model.filters.RecipeSearchFilters
+import com.letsgetcactus.cocinaconcatalina.data.searchFilters.RecipeFiltersEngine
+import com.letsgetcactus.cocinaconcatalina.data.searchFilters.RecipeSearchFilters
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

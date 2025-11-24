@@ -6,9 +6,9 @@ import androidx.annotation.RequiresApi
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import com.google.firebase.functions.FirebaseFunctions
-import com.letsgetcactus.cocinaconcatalina.database.dto.RecipeDto
-import com.letsgetcactus.cocinaconcatalina.database.mapper.toMap
-import com.letsgetcactus.cocinaconcatalina.database.mapper.toRecipe
+import com.letsgetcactus.cocinaconcatalina.data.dto.RecipeDto
+import com.letsgetcactus.cocinaconcatalina.data.mapper.toMap
+import com.letsgetcactus.cocinaconcatalina.data.mapper.toRecipe
 import com.letsgetcactus.cocinaconcatalina.model.Recipe
 import com.letsgetcactus.cocinaconcatalina.model.User
 import kotlinx.coroutines.tasks.await

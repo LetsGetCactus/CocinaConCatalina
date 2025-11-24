@@ -1,4 +1,4 @@
-package com.letsgetcactus.cocinaconcatalina.model.filters
+package com.letsgetcactus.cocinaconcatalina.data.searchFilters
 
 import com.letsgetcactus.cocinaconcatalina.model.enum.AllergenEnum
 import com.letsgetcactus.cocinaconcatalina.model.enum.DificultyEnum

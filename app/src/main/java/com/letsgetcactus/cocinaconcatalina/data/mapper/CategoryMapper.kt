@@ -1,6 +1,6 @@
-package com.letsgetcactus.cocinaconcatalina.database.mapper
+package com.letsgetcactus.cocinaconcatalina.data.mapper
 
-import com.letsgetcactus.cocinaconcatalina.database.dto.CategoryDto
+import com.letsgetcactus.cocinaconcatalina.data.dto.CategoryDto
 import com.letsgetcactus.cocinaconcatalina.model.Category
 
 fun CategoryDto.toCategory(language: String = "en"): Category {

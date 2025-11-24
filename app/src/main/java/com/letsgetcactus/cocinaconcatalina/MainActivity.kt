@@ -10,8 +10,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.letsgetcactus.cocinaconcatalina.data.local.DataStoreManagment
 import com.letsgetcactus.cocinaconcatalina.data.repository.UserSessionRepository
-import com.letsgetcactus.cocinaconcatalina.database.RecipeRepository
-import com.letsgetcactus.cocinaconcatalina.database.UserRepository
+import com.letsgetcactus.cocinaconcatalina.data.repository.RecipeRepository
+import com.letsgetcactus.cocinaconcatalina.data.repository.UserRepository
 import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
 import com.letsgetcactus.cocinaconcatalina.ui.AppNavigation
 import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme

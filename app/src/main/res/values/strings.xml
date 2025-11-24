@@ -146,5 +146,8 @@
     <string name="not_accepted_terms">You need to accept Terms and Conditions</string>
     <string name="recipes_five_ingr">Less than 5 ingredients</string>
     <string name="recipes_high_rating">Highest ranting</string>
+    <string name="deleteX" translatable="false">X</string>
+    <string name="delete" >Delete</string>
+    <string name="new_step">New step</string>
 
 </resources>
