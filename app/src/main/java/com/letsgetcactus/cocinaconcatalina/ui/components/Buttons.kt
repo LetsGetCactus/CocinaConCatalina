@@ -132,7 +132,7 @@ fun ButtonRound(
     ) {
         Text(
             text = buttonText,
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.bodyMedium
         )
     }
 }

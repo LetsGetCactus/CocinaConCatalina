@@ -1,14 +1,16 @@
-package com.letsgetcactus.cocinaconcatalina.model.database.mapper
+package com.letsgetcactus.cocinaconcatalina.data.mapper
 
 
-import com.letsgetcactus.cocinaconcatalina.model.Recipe
+import com.letsgetcactus.cocinaconcatalina.data.dto.RecipeDto
 import com.letsgetcactus.cocinaconcatalina.model.Origin
-import com.letsgetcactus.cocinaconcatalina.model.database.dto.RecipeDto
+import com.letsgetcactus.cocinaconcatalina.model.Recipe
 import com.letsgetcactus.cocinaconcatalina.model.enum.DificultyEnum
 import java.util.Locale
 
-
-fun RecipeDto.toRecipe(language:String = Locale.getDefault().language): Recipe {
+/**
+ * Mappers DTO (from DB) to model (to app)
+ */
+fun RecipeDto.toRecipe(language: String = Locale.getDefault().language): Recipe {
     val lang = if (language in listOf("es", "gl", "en")) language else "en"
 
     return Recipe(
@@ -20,7 +22,7 @@ fun RecipeDto.toRecipe(language:String = Locale.getDefault().language): Recipe {
         },
         ingredientList = this.ingredientList.map { it.toIngredient(language) },
         allergenList = this.allergenList.map { it.toAllergen(language) },
-        categoryList = this.categoryList.map { it.toCategory(language) },
+        categoryList = this.categoryList.map { it.toCategory(lang) },
         prepTime = this.prepTime,
         dificulty = DificultyEnum.entries.find { it.name == this.dificulty } ?: DificultyEnum.EASY,
         origin = Origin(
@@ -35,6 +37,10 @@ fun RecipeDto.toRecipe(language:String = Locale.getDefault().language): Recipe {
     )
 }
 
+
+/**
+ * Mapps a Recipe object to Firebase
+ */
 fun Recipe.toMap(): Map<String, Any?> {
     return mapOf(
         "id" to id,
@@ -54,14 +60,9 @@ fun Recipe.toMap(): Map<String, Any?> {
                 "img" to all.img.name
             )
         },
-        "categoryList" to categoryList.map { cat ->
-            mapOf(
-                "id" to cat.id,
-                "name" to cat.name
-            )
-        },
+        "categoryList" to categoryList.map { it },
         "prepTime" to prepTime,
-        "dificulty" to dificulty.name,
+        "dificulty" to (dificulty?.name ?: DificultyEnum.EASY.name),
         "origin" to mapOf(
             "id" to origin.id,
             "country" to origin.country,
@@ -72,4 +73,14 @@ fun Recipe.toMap(): Map<String, Any?> {
         "img" to img,
         "video" to video
     )
+}
+
+/**
+ * Translates the strings properties in a Recipe
+ * @param language Language for the recipe to be shown
+ */
+fun Recipe.selectLanguage(language: String = "en"): String {
+    val supportedLanguage = listOf("es", "en", "gl")
+    return if (language in supportedLanguage) language else "en"
+
 }

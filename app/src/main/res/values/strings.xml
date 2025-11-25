@@ -134,5 +134,20 @@
     <string name="portions">Portions</string>
     <string name="insert_category">Insert a category</string>
     <string name="soup">Soup</string>
+    <string name="pass_not_matching">Passwords don\'t match</string>
+    <string name="register_error">Register error! Check data</string>
+    <string name="login_error">Login error, please check the data</string>
+    <string name="complete_all">Please complete all the data</string>
+    <string name="email_pass_incorrect">Email or password incorrect</string>
+    <string name="not_favs_yet">You have no favourite recipes yet</string>
+    <string name="admin_only">Access denied. ADMIN only</string>
+    <string name="recipe_saved">New recipe saved!</string>
+    <string name="recipe_saved_error">Could not save new recipe</string>
+    <string name="not_accepted_terms">You need to accept Terms and Conditions</string>
+    <string name="recipes_five_ingr">Less than 5 ingredients</string>
+    <string name="recipes_high_rating">Highest ranting</string>
+    <string name="deleteX" translatable="false">X</string>
+    <string name="delete" >Delete</string>
+    <string name="new_step">New step</string>
 
 </resources>
