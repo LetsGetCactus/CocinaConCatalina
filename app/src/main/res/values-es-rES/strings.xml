@@ -132,4 +132,18 @@
     <string name="portions">Porciones</string>
     <string name="insert_category">Inserte una categoría</string>
     <string name="soup">Sopa</string>
+    <string name="pass_not_matching">Las contraseñas no coinciden</string>
+    <string name="register_error">Error en el registro , revisa los datos</string>
+    <string name="login_error">Error en el inicio de sesión, revisa los datos</string>
+    <string name="complete_all">Por favor, complete todos los campos</string>
+    <string name="email_pass_incorrect">Correo o contraseña incorrectos</string>
+    <string name="not_favs_yet">Aún no tienes recetas favoritas</string>
+    <string name="admin_only">Acceso denegado. Solo ADMINISTRADOR</string>
+    <string name="recipe_saved">Nueva receta guardada!</string>
+    <string name="recipe_saved_error">No se ha podido guardar la receta</string>
+    <string name="not_accepted_terms">Tienes que aceptar los términos y condiciones</string>
+    <string name="recipes_five_ingr">Menos de cinco ingredientes</string>
+    <string name="recipes_high_rating">Mejor puntutación</string>
+    <string name="delete">Borrar</string>
+    <string name="new_step">Añadir paso</string>
 </resources>

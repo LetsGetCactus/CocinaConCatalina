@@ -25,27 +25,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.letsgetcactus.cocinaconcatalina.model.Recipe
 import com.letsgetcactus.cocinaconcatalina.model.enum.DificultyEnum
 import com.letsgetcactus.cocinaconcatalina.ui.components.ImageAndTextComponent
 import com.letsgetcactus.cocinaconcatalina.ui.components.RecipeRating
-import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
 import com.letsgetcactus.cocinaconcatalina.viewmodel.RecipeViewModel
-import java.util.Locale
+import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
 
 @Composable
 fun ListRecipeHostScreen(
     modifier: Modifier = Modifier,
     onNavigate: () -> Unit,
-    viewModel: RecipeViewModel = viewModel()
+    userViewModel : UserViewModel,
+    recipeViewModel : RecipeViewModel,
 ) {
-    Log.i("ListRecipeScreen", "Mostrando el listado de recetas en ${Locale.getDefault().language}")
 
-    val recipesVModel by viewModel.recipes.collectAsState()
+    val recipesVModel by recipeViewModel.asianOgRecipes.collectAsState()
+    val userRecipesVModel by userViewModel.userRecipes.collectAsState()
 
 
     Column(
@@ -56,10 +54,10 @@ fun ListRecipeHostScreen(
         ListRecipeContent(
             onNavigate = { selected ->
                 Log.i("ListRecipeHostScreen", "Clicked recipe: ${selected.title}")
-                viewModel.selectRecipe(selected)
+                recipeViewModel.selectRecipe(selected)
                 onNavigate()
             },
-            recipes = recipesVModel
+            recipes = recipesVModel + userRecipesVModel
         )
     }
 }
@@ -129,13 +127,14 @@ private fun RecipeCard(
                 )
                 RecipeRating(
                     recipe.avgRating,
-                    difficulty = recipe.dificulty
+                    difficulty = recipe.dificulty ?: DificultyEnum.EASY
                 )
             }
         }
     }
 }
 
+//Explains color on recipes ranking
 @Composable
 fun LegendComposable() {
     Row(
@@ -156,17 +155,5 @@ fun LegendComposable() {
             )
             Spacer(Modifier.size(16.dp))
         }
-    }
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewListRecipeHost() {
-    CocinaConCatalinaTheme(darkTheme = false) {
-        ListRecipeHostScreen(
-            onNavigate = {},
-            modifier = Modifier
-        )
     }
 }

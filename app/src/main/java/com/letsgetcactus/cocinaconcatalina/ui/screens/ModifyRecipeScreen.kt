@@ -4,38 +4,21 @@ import DropDownMenuSelector
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.letsgetcactus.cocinaconcatalina.R
@@ -46,165 +29,168 @@ import com.letsgetcactus.cocinaconcatalina.model.enum.UnitsTypeEnum
 import com.letsgetcactus.cocinaconcatalina.ui.components.BackStackButton
 import com.letsgetcactus.cocinaconcatalina.ui.components.FAB
 import com.letsgetcactus.cocinaconcatalina.ui.components.filters.AllergenIconsSelector
-import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
+import com.letsgetcactus.cocinaconcatalina.ui.components.filters.SliderSelector
 import com.letsgetcactus.cocinaconcatalina.viewmodel.RecipeViewModel
+import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun ModifyRecipeScreen(
     onNavigate: (String) -> Unit,
     navController: NavHostController,
-    onIngredientChange: (Ingredient) -> Unit = {},
+    userViewModel: UserViewModel,
+    recipeViewModel: RecipeViewModel
+) {
 
-    ) {
-    // Get the shared ViewModel from ListRecipeHostScreen
-    val parentEntry = remember(navController.currentBackStackEntry) {
-        navController.getBackStackEntry(NavigationRoutes.LIST_RECIPES_HOST_SCREEN)
-    }
-    val viewModel: RecipeViewModel = viewModel(parentEntry)
-    val recipe by viewModel.selectedRecipe.collectAsState()
-    Log.i("ModifyRecipeScreen", "Dentro de la Screen")
-
-    val scrollState = rememberScrollState()
+    val currentRecipe = userViewModel.selectedRecipe.collectAsState().value
+        ?: recipeViewModel.selectedRecipe.collectAsState().value
 
 
-    recipe?.let {
+    val scope = rememberCoroutineScope()
 
-            currentRecipe ->
-        Log.i("ModifyRecipeScreen", "Dentro de la Screen con ${currentRecipe.title}")
+    currentRecipe?.let { recipe ->
 
-        //To activate recipe's allergens
-        var selectedAllergens by remember(currentRecipe) {
+        var selectedAllergens by remember(recipe) {
             mutableStateOf(
-                AllergenEnum.entries.associateWith {
-                    allergen ->
-                    currentRecipe.allergenList.any { it.img == allergen }
+                AllergenEnum.entries.associateWith { allergen ->
+                    recipe.allergenList.any { it.img == allergen }
                 }
             )
         }
-        Log.i("ModifyRecipeScreen", "Allergens in recipe: ${currentRecipe.allergenList.map { it.img }}")
 
-
-
-        Box(
-            modifier = Modifier.padding(vertical = 48.dp)
-        ) {
-            Column(
+        Box(modifier = Modifier.padding(vertical = 48.dp)) {
+            LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.background)
-                    .verticalScroll(scrollState)
-                    .padding(32.dp)
+                    .padding(32.dp),
+                verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
-                Row() {
-                    BackStackButton(
-                        navController = navController,
-                    )
-                    Text(
-                        text = currentRecipe.title,
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.primary
-                    )
+                // Title
+                item {
+                    Row {
+                        BackStackButton(navController = navController)
+                        Text(
+                            text = recipe.title,
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
                 }
 
                 // Image
-                val img = rememberAsyncImagePainter(
-                    model = currentRecipe.img,
-                    placeholder = painterResource(R.drawable.recipe), // drawable by defaul while updating
-                    error = painterResource(R.drawable.recipe) // in case there's an error
-                )
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(min = 200.dp)
-                ) {
-                    Image(
-                        painter = img,
-                        contentDescription = currentRecipe.title,
-                        contentScale = ContentScale.Fit,
+                item {
+                    val img = rememberAsyncImagePainter(
+                        model = recipe.img,
+                        placeholder = painterResource(R.drawable.recipe),
+                        error = painterResource(R.drawable.recipe)
+                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(min = 200.dp)
+                    ) {
+                        Image(
+                            painter = img,
+                            contentDescription = recipe.title,
+                            contentScale = ContentScale.Fit,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                }
+
+                // Allergens
+                item {
+                    Text(
+                        text = stringResource(R.string.allergens),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+
+                    AllergenIconsSelector(
+                        selectedAllergens = selectedAllergens,
+                        onSelectionChanged = { selectedAllergens = it },
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
 
-                Spacer(modifier = Modifier.size(24.dp))
-
-                // Alergens . Horizontal scroll
-                Text(
-                    text = stringResource(R.string.allergens),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.primary
-                )
-
-                AllergenIconsSelector(
-                    selectedAllergens = selectedAllergens,
-                    onSelectionChanged = { selectedAllergens = it },
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-
-
-                Spacer(modifier = Modifier.size(24.dp))
-
                 // Ingredients
-                Text(
-                    text = stringResource(R.string.ingredients),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.primary
-                )
-                ModifyItemIngredients(
-                    ingredientList = currentRecipe.ingredientList,
-                    onIngredientChange = { ingredient ->
-                        //Upadte viewmdoel
-                        viewModel.selectRecipe(
-                            currentRecipe.copy(
-                                ingredientList = currentRecipe.ingredientList.map {
-                                    if (it.name == ingredient.name) ingredient else it
-                                }
-                            )
-                        )
-                    })
+                item {
+                    Text(
+                        text = stringResource(R.string.ingredients),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.primary
+                    )
 
-                Spacer(Modifier.size(24.dp))
-
-                //Steps
-                Text(
-                    text = stringResource(R.string.steps),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.primary
-                )
-
-
-                Column() {
-                    var count = 1
-                    currentRecipe.steps.forEach { step ->
-                        Row(
-
-                        ) {
-                            Text(text = "${count}.")
-                            Spacer(modifier = Modifier.size(8.dp))
-                            Text(
-                                text = step,
-                                color = MaterialTheme.colorScheme.onBackground,
-                                style = MaterialTheme.typography.bodyMedium
-
-                            )
-                            count++
+                    ModifyItemIngredients(
+                        ingredientList = recipe.ingredientList,
+                        onIngredientListChange = { newList ->
+                            val updatedRecipe = recipe.copy(ingredientList = newList)
+                            userViewModel.selectRecipe(updatedRecipe)
                         }
-                        Spacer(modifier = Modifier.size(16.dp))
-                    }
+                    )
+                }
+
+                // Steps
+                item {
+                    Text(
+                        text = stringResource(R.string.steps),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+
+                    ModifySteps(
+                        steps = recipe.steps,
+                        onStepsChange = { newSteps ->
+                            val updatedRecipe = recipe.copy(steps = newSteps)
+                            userViewModel.selectRecipe(updatedRecipe)
+                        }
+                    )
+                }
+
+                // Sliders: Portions & Prep Time
+                item {
+                    SliderSelector(
+                        label = stringResource(R.string.portions),
+                        value = recipe.portions.toFloat(),
+                        valueRange = 1f..20f,
+                        onValueChange = { newValue ->
+                            userViewModel.selectRecipe(recipe.copy(portions = newValue.toInt()))
+                        }
+                    )
+
+                    SliderSelector(
+                        label = stringResource(R.string.prep_time),
+                        value = recipe.prepTime.toFloat(),
+                        valueRange = 1f..120f,
+                        onValueChange = { newValue ->
+                            userViewModel.selectRecipe(recipe.copy(prepTime = newValue.toInt()))
+                        }
+                    )
                 }
             }
-        }
-        //FAB
-        Column(
-            Modifier
-                .fillMaxSize()
-                .padding(horizontal = 24.dp, vertical = 48.dp),
-            horizontalAlignment = Alignment.End,
-            verticalArrangement = Arrangement.Bottom
-        ) {
-            FAB(
-                onNavigate = { onNavigate(NavigationRoutes.ITEM_RECIPE_SCREEN) }
-            )
+
+            // FAB
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 24.dp, vertical = 48.dp),
+                horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.Bottom
+            ) {
+                FAB(
+                    onNavigate = {
+                        scope.launch {
+                            val newModRecipe = recipe.copy(
+                                id = recipe.id + "_mod",
+                                title = recipe.title + " (Mod)"
+                            )
+                            userViewModel.saveModifiedRecipe(newModRecipe)
+                            onNavigate(NavigationRoutes.ITEM_RECIPE_SCREEN)
+                        }
+                    }
+                )
+            }
         }
     }
 }
@@ -213,72 +199,149 @@ fun ModifyRecipeScreen(
 @Composable
 fun ModifyItemIngredients(
     ingredientList: List<Ingredient>,
-    onIngredientChange: (Ingredient) -> Unit
+    onIngredientListChange: (List<Ingredient>) -> Unit
 ) {
-
-    var unit by remember { mutableStateOf(UnitsTypeEnum.GRAM) }
-
-
-    Column(
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        ingredientList.forEach { ingredient ->
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        ingredientList.forEachIndexed { index, ingredient ->
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth()
+            ) {
 
-                ) {
-                //Edit quantity
+                //Quantity
                 TextField(
                     value = ingredient.quantity,
-                    onValueChange = { newQty: String ->
-                        onIngredientChange(ingredient.copy(quantity = newQty))
+                    onValueChange = { newQty ->
+                        val updated = ingredient.copy(quantity = newQty)
+                        val newList = ingredientList.toMutableList().also { it[index] = updated }
+                        onIngredientListChange(newList)
                     },
-
-                    modifier = Modifier.weight(.75f),
-                    shape = MaterialTheme.shapes.small,
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = MaterialTheme.colorScheme.surface,
-                        unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                        focusedTextColor = MaterialTheme.colorScheme.onSurface,
-                        unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
-                    ),
-                    textStyle = MaterialTheme.typography.bodySmall
-
+                    modifier = Modifier.width(60.dp),
+                    singleLine = true,
+                    textStyle = MaterialTheme.typography.labelSmall
                 )
 
                 Spacer(Modifier.width(8.dp))
 
-                // Choose unit from selector
-                //TODO: me selecciona en todas las referencias el mismo tipo, al seleccionarlo en una
+                // Units
                 DropDownMenuSelector(
                     options = UnitsTypeEnum.entries.toTypedArray(),
-                    selected = unit,
-                    onSelect = { unit = it },
-                    placeholder = UnitsTypeEnum.GRAM.toString(),
-                    modifier = Modifier.weight(1f)
+                    selected = ingredient.unit,
+                    onSelect = { newUnit ->
+                        val updated = ingredient.copy(unit = newUnit)
+                        val newList = ingredientList.toMutableList().also { it[index] = updated }
+                        onIngredientListChange(newList)
+                    },
+                    placeholder = ingredient.unit.toString(),
+                    modifier = Modifier.width(110.dp)
                 )
 
                 Spacer(Modifier.width(8.dp))
 
-                // Ingredient name (read only)
-                Text(
-                    text = ingredient.name,
-                    modifier = Modifier.weight(1.5f),
-                    style = MaterialTheme.typography.bodyMedium
+                // Name
+                TextField(
+                    value = ingredient.name,
+                    onValueChange = { newName ->
+                        val updated = ingredient.copy(name = newName)
+                        val newList = ingredientList.toMutableList().also { it[index] = updated }
+                        onIngredientListChange(newList)
+                    },
+                    modifier = Modifier.width(150.dp),
+                    singleLine = true,
+                    textStyle = MaterialTheme.typography.labelSmall
                 )
+
+                Spacer(Modifier.width(8.dp))
+
+                // If 0 at quantity
+                if (ingredient.quantity.trim() == "0" || ingredient.quantity.isEmpty()){
+                    Button(
+                        onClick = {
+                            val newList = ingredientList.toMutableList().also { it.removeAt(index) }
+                            onIngredientListChange(newList)
+                        },
+                        shape = MaterialTheme.shapes.large,
+                        modifier = Modifier.background(MaterialTheme.colorScheme.primary)
+                            .width(50.dp),
+
+                    ) {
+                        Text(
+                            text = stringResource(R.string.deleteX),
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            style = MaterialTheme.typography.labelSmall,
+                            )
+                    }
+                }
             }
         }
     }
-
 }
 
+@Composable
+fun ModifySteps(
+    steps: List<String>,
+    onStepsChange: (List<String>) -> Unit
+) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        steps.forEachIndexed { index, step ->
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    "${index + 1}.",
+                    modifier = Modifier.padding(end = 8.dp),
+                    style = MaterialTheme.typography.bodySmall
+                )
 
-//@Preview(showBackground = true)
-//@Composable
-//fun PreviewModifyRecipeScreen() {
-//    CocinaConCatalinaTheme(darkTheme = false) {
-//        ModifyRecipeScreen(onNavigate = {})
-//    }
-//}
+                TextField(
+                    value = step,
+                    onValueChange = { newText ->
+                        val newList = steps.toMutableList().also { it[index] = newText }
+                        onStepsChange(newList)
+                    },
+                    modifier = Modifier.weight(1f),
+                    textStyle = MaterialTheme.typography.bodySmall
+                )
+
+                Spacer(Modifier.width(8.dp))
+
+                //For deleting a step
+                Button(
+                    onClick = {
+                        val newList = steps.toMutableList().also { it.removeAt(index) }
+                        onStepsChange(newList)
+                    },
+                    modifier = Modifier.background(MaterialTheme.colorScheme.primary),
+                    shape = MaterialTheme.shapes.large
+                ) {
+                    Text(
+                        text = stringResource(R.string.deleteX),
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        style = MaterialTheme.typography.labelSmall,
+                    )
+                }
+            }
+        }
+
+        //For adding a step
+        Button(
+            onClick = { onStepsChange(steps + "") },
+            modifier = Modifier
+                .padding(top = 8.dp)
+                .background(MaterialTheme.colorScheme.primary),
+            shape = MaterialTheme.shapes.large
+        ) {
+            Text(
+                text = stringResource(R.string.new_step),
+                color = MaterialTheme.colorScheme.onPrimary,
+                style = MaterialTheme.typography.labelSmall,
+
+                )
+        }
+    }
+}

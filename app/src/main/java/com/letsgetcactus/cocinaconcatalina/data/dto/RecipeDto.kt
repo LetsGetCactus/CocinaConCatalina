@@ -1,4 +1,5 @@
-package com.letsgetcactus.cocinaconcatalina.model.database.dto
+package com.letsgetcactus.cocinaconcatalina.data.dto
+
 
 import com.letsgetcactus.cocinaconcatalina.model.Origin
 

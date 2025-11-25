@@ -17,17 +17,19 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.letsgetcactus.cocinaconcatalina.R
 import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
 import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonRound
-import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
+import com.letsgetcactus.cocinaconcatalina.viewmodel.RecipeViewModel
+import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
 
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    onNavigate: (String) -> Unit
+    onNavigate: (String) -> Unit,
+    userViewModel: UserViewModel,
+    recipeViewModel: RecipeViewModel
 ) {
     val orientation = LocalConfiguration.current
     val isLight = !isSystemInDarkTheme()
@@ -43,11 +45,11 @@ fun HomeScreen(
                 painter = painterResource(if (isLight) R.drawable.banner_blanco else R.drawable.banner_gris),
                 contentDescription = stringResource(R.string.image_description),
                 contentScale = ContentScale.FillWidth,
-                modifier = Modifier.fillMaxWidth() // 👈 aquí usamos Modifier, no modifier
+                modifier = Modifier.fillMaxWidth()
             )
         }
 
-        Spacer(modifier = Modifier.size(64.dp)) // 👈 igual aquí
+        Spacer(modifier = Modifier.size(64.dp))
 
         ButtonRound(
             buttonText = stringResource(R.string.allRecipes),
@@ -57,23 +59,21 @@ fun HomeScreen(
         Spacer(modifier = Modifier.size(32.dp))
 
         ButtonRound(
-            buttonText = stringResource(R.string.sweetRecipes),
-            onNavigate = { onNavigate(NavigationRoutes.LIST_RECIPES_HOST_SCREEN)}
+            buttonText = stringResource(R.string.recipes_five_ingr),
+            onNavigate = {
+                onNavigate(NavigationRoutes.LIST_RECIPES_HOST_SCREEN)
+            //TODO filter by ingredients
+        }
         )
 
         Spacer(modifier = Modifier.size(32.dp))
 
         ButtonRound(
-            buttonText = stringResource(R.string.savouryRecipes),
-            onNavigate = { onNavigate(NavigationRoutes.LIST_RECIPES_HOST_SCREEN)}
+            buttonText = stringResource(R.string.recipes_high_rating),
+            onNavigate = {
+                onNavigate(NavigationRoutes.LIST_RECIPES_HOST_SCREEN)
+            //TODO filter by avgRating > 4
+            }
         )
-    }
-}
-
-@Composable
-@Preview
-fun PreviewHomeScreen() {
-    CocinaConCatalinaTheme(darkTheme = false) {
-        HomeScreen(onNavigate = {})
     }
 }

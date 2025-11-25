@@ -2,29 +2,36 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.letsgetcactus.cocinaconcatalina.R
 import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
 import com.letsgetcactus.cocinaconcatalina.ui.components.menuDrawer.DrawerItem
 import com.letsgetcactus.cocinaconcatalina.ui.components.menuDrawer.DrawerSwitchItem
-import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
-import com.letsgetcactus.cocinaconcatalina.ui.theme.LightGrey
 import com.letsgetcactus.cocinaconcatalina.ui.theme.menuDColor
+import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun MenuDrawerComponent(
-    onNavigate: (String) -> Unit,
-    modifier: Modifier = Modifier
+    navController: NavController,
+    userViewModel: UserViewModel,
+    modifier: Modifier = Modifier,
+    drawerState: DrawerState
 ) {
+    //To close de drawer when navigatin to other screen
+    val scope= rememberCoroutineScope()
+
     CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSecondary)
     {
         Column(
@@ -48,24 +55,34 @@ fun MenuDrawerComponent(
             DrawerItem(
                 icon = R.drawable.tori_gate,
                 label = stringResource(R.string.home),
-                onClick = { onNavigate(NavigationRoutes.HOME_SCREEN) }
+                onClick = {
+                    navController.navigate(NavigationRoutes.HOME_SCREEN)
+                   scope.launch{ drawerState.close()}
+                }
             )
 
             DrawerItem(
                 icon = R.drawable.favs,
                 label = stringResource(R.string.favs),
-                onClick = { onNavigate(NavigationRoutes.FAVS_SCREEN) }
+                onClick = {
+                    navController.navigate(NavigationRoutes.FAVS_SCREEN)
+                    scope.launch{ drawerState.close()}}
             )
 
             DrawerItem(
-                icon = R.drawable.icon,
+                icon = R.drawable.food,
                 label = stringResource(R.string.modified),
-                onClick = { onNavigate(NavigationRoutes.MODIFIED_SCREEN) }
+                onClick = {
+                    //navigate to list item filterd by only modified
+                    scope.launch{ drawerState.close()}
+                }
             )
-            DrawerItem( //TODO: only admin
-                icon = R.drawable.icon,
+            DrawerItem(
+                icon = R.drawable.add,
                 label = stringResource(R.string.add_recipe),
-                onClick = { onNavigate(NavigationRoutes.ADD_RECIPE_SCREEN) }
+                onClick = {
+                    navController.navigate(NavigationRoutes.ADD_RECIPE_SCREEN)
+                    scope.launch{ drawerState.close()}}
             )
 
 
@@ -75,29 +92,44 @@ fun MenuDrawerComponent(
             )
 
             DrawerItem(
-                icon = R.drawable.icon,
+                icon = R.drawable.translate,
                 label = stringResource(R.string.language),
                 onClick = { /* acción de idioma */ }
             )
 
             DrawerSwitchItem(
-                icon = R.drawable.icon,
+                icon = R.drawable.moon,
                 label = stringResource(R.string.mode),
                 checked = false,
-                onCheckedChange = { }
+                onCheckedChange = {}//TODO
             )
 
 
             DrawerItem(
-                icon = R.drawable.icon,
+                icon = R.drawable.exit,
                 label = stringResource(R.string.close_session),
-                onClick = { /* cerrar sesión */ }
+                onClick = {
+                    userViewModel.logOut()
+                navController.navigate(NavigationRoutes.LOGIN_SCREEN){
+                popUpTo(0)}
+                    scope.launch{ drawerState.close()}
+                },
+
             )
 
             DrawerItem(
-                icon = R.drawable.icon,
+                icon = R.drawable.korean_user,
                 label = stringResource(R.string.delete_user_data),
-                onClick = { /* borrar datos */ }
+                onClick = {
+                    userViewModel.currentUser.value?.let {
+                        user ->
+                    // TODO: agregar eliminación de datos en Firestore
+                    userViewModel.logOut()
+                    navController.navigate(NavigationRoutes.LOGIN_SCREEN) {
+                        popUpTo(0)
+                    }
+                        scope.launch{ drawerState.close()}
+                }}
             )
 
 
@@ -106,25 +138,19 @@ fun MenuDrawerComponent(
                 color = MaterialTheme.colorScheme.onSecondary
             )
             DrawerItem(
-                icon = R.drawable.icon,
+                icon = R.drawable.contact,
                 label = stringResource(R.string.contact),
-                onClick = { /* enviar mail */ }
+                onClick = { /* enviar mail */ } //Todo
             )
 
             DrawerItem(
-                icon = R.drawable.icon,
+                icon = R.drawable.question,
                 label = stringResource(R.string.faq),
-                onClick = { /* ir a FAQ */ }
+                onClick = { /* ir a FAQ */
+                    scope.launch{ drawerState.close()}} //TODO
             )
         }
     }
 }
 
 
-@Preview
-@Composable
-fun PreviewMenuDrawer() {
-    CocinaConCatalinaTheme(darkTheme = false) {
-        MenuDrawerComponent(onNavigate = {})
-    }
-}

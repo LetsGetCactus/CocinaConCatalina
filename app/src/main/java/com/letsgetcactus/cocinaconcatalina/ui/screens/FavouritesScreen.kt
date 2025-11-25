@@ -1,5 +1,6 @@
 package com.letsgetcactus.cocinaconcatalina.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -12,18 +13,17 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,34 +32,52 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.vector.DefaultTintColor
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.letsgetcactus.cocinaconcatalina.R
+import com.letsgetcactus.cocinaconcatalina.data.mapper.OriginMapper
 import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
-import com.letsgetcactus.cocinaconcatalina.model.enum.DificultyEnum
-import com.letsgetcactus.cocinaconcatalina.model.enum.DishTypeEnum
+import com.letsgetcactus.cocinaconcatalina.model.Recipe
 import com.letsgetcactus.cocinaconcatalina.model.enum.OriginEnum
 import com.letsgetcactus.cocinaconcatalina.ui.components.BackStackButton
-import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonMain
 import com.letsgetcactus.cocinaconcatalina.ui.components.filters.ChipSelector
-import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
+import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
 
 @Composable
 fun FavouritesScreen(
     modifier: Modifier = Modifier,
-    onNavigate: (String) -> Unit
+    onNavigate: (String) -> Unit,
+    userViewModel: UserViewModel,
+    navController: NavController
+
 ) {
 
-    //For chipset:
-    var selectedOrigin: OriginEnum? by remember { mutableStateOf(null) }
+    //User's state
+    val favouriteRecipes by userViewModel.favouriteRecipe.collectAsState()
+    Log.i("FavouriteScreen", "Showing ${favouriteRecipes.size} recipes from user's favs")
 
-    Column(modifier= modifier.background(MaterialTheme.colorScheme.background)) {
+    //Selected chipset
+    var selectedOrigin: OriginEnum? by remember { mutableStateOf(null) }
+    Log.i("FavouriteScreen", "$selectedOrigin")
+    val filteredFavourites = remember(favouriteRecipes, selectedOrigin) {
+        if (selectedOrigin == null) favouriteRecipes
+        else favouriteRecipes.filter { recipe ->
+            Log.i("FavouriteScreen", "$recipe")
+            val recipeOriginEnum = OriginMapper.mapOriginToEnum(recipe.origin.country)
+            recipeOriginEnum == selectedOrigin
+        }
+    }
+    //For the viewmodel to apply whenever a chip is selected
+    LaunchedEffect(selectedOrigin) {
+        userViewModel.filterByChipOnFavourites(selectedOrigin)
+    }
+
+    //UI
+    Column(modifier = modifier.background(MaterialTheme.colorScheme.background)) {
         ChipSelector(
             modifier = Modifier
                 .fillMaxWidth()
@@ -89,9 +107,8 @@ fun FavouritesScreen(
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                //TODO: No funciona!!!
                 BackStackButton(
-                    navController = rememberNavController(),
+                    navController = navController
                 )
                 Text(
                     text = stringResource(R.string.favs),
@@ -99,87 +116,101 @@ fun FavouritesScreen(
                     color = MaterialTheme.colorScheme.tertiary
                 )
             }
+
             LazyColumn(
                 modifier = Modifier.fillMaxWidth(),
                 contentPadding = PaddingValues(vertical = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(2) {
-                    FavCard(onNavigate = onNavigate)
+
+                if (filteredFavourites.isEmpty()) {
+                    item {
+                        Text(
+                            text = "No tienes recetas favoritas todavía",
+                            style = MaterialTheme.typography.labelSmall,
+                            modifier = Modifier.padding(16.dp),
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                } else {
+                    items(filteredFavourites.size) { index ->
+                        val recipe = filteredFavourites[index]
+                        FavCard(
+                            recipe = recipe,
+                            userViewModel = userViewModel,
+                            onNavigate = onNavigate
+
+
+                        )
+                    }
                 }
             }
         }
     }
 }
 
-    @Composable
-    fun FavCard(
-        onNavigate: (String) -> Unit
+@Composable
+fun FavCard(
+    recipe: Recipe,
+    userViewModel: UserViewModel,
+    onNavigate: (String) -> Unit
+) {
+
+    Log.i("FavouriteScreen- FavCard", "$recipe")
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .widthIn(min = 400.dp, max = 800.dp)
+            .heightIn(min = 160.dp, max = 200.dp)
+            .shadow(8.dp, shape = MaterialTheme.shapes.small)
+            .background(
+                color = MaterialTheme.colorScheme.primary,
+                shape = MaterialTheme.shapes.small
+            )
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .clickable {
+                userViewModel.selectRecipe(recipe)
+                onNavigate(NavigationRoutes.ITEM_RECIPE_SCREEN + "?recipe=${recipe.id}")
+            }
     ) {
-        Box(
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .widthIn(min = 400.dp, max = 800.dp)
-                .heightIn(min = 160.dp, max = 200.dp)
-                .shadow(8.dp, shape = MaterialTheme.shapes.small)
-                .background(
-                    color = MaterialTheme.colorScheme.primary,
-                    shape = MaterialTheme.shapes.small
-                )
-                .padding(horizontal = 16.dp, vertical = 8.dp)
-                .clickable { onNavigate(NavigationRoutes.ITEM_RECIPE_SCREEN) }
+                .padding(top = 16.dp, bottom = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp, bottom = 8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.recipe),
-                    contentDescription = stringResource(R.string.image_description),
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .widthIn(min = 120.dp, max = 220.dp)
-                        .heightIn(min = 100.dp, max = 160.dp)
-                        .clip(MaterialTheme.shapes.small)
-                        .weight(1f)
-                )
-
-                Spacer(modifier = Modifier.size(8.dp))
-
-                Column(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = stringResource(R.string.insert_recipe_name),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onPrimary
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = stringResource(R.string.insert_description),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onPrimary
-                    )
-                }
-            }
-
-            Image(
-                painter = painterResource(R.drawable.broken_heart),
+            AsyncImage(
+                model = recipe.img,
                 contentDescription = stringResource(R.string.image_description),
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .size(32.dp)
+                    .widthIn(min = 120.dp, max = 220.dp)
+                    .heightIn(min = 100.dp, max = 160.dp)
+                    .clip(MaterialTheme.shapes.small)
+                    .weight(1f)
             )
-        }
-    }
 
-@Composable
-@Preview()
-fun PreviewFavourites() {
-    CocinaConCatalinaTheme(darkTheme = false) {
-        FavouritesScreen(onNavigate = {})
+            Spacer(modifier = Modifier.size(8.dp))
+
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = recipe.title,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
+            }
+        }
+
+        Image(
+            painter = painterResource(R.drawable.broken_heart),
+            contentDescription = stringResource(R.string.image_description),
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .size(32.dp)
+                .clickable { userViewModel.changeFavourite(recipe) }
+        )
     }
 }

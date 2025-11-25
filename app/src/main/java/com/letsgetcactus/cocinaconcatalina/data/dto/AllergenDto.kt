@@ -1,4 +1,4 @@
-package com.letsgetcactus.cocinaconcatalina.model.database.dto
+package com.letsgetcactus.cocinaconcatalina.data.dto
 
 /**
 Data class with simple types so Firebase can deserialize directly from the db

@@ -22,23 +22,23 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.letsgetcactus.cocinaconcatalina.R
+import com.letsgetcactus.cocinaconcatalina.data.mapper.OriginMapper
 import com.letsgetcactus.cocinaconcatalina.model.Allergen
 import com.letsgetcactus.cocinaconcatalina.model.Ingredient
 import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
 import com.letsgetcactus.cocinaconcatalina.ui.components.BackStackButton
 import com.letsgetcactus.cocinaconcatalina.ui.components.RecipeRatingSelector
 import com.letsgetcactus.cocinaconcatalina.viewmodel.RecipeViewModel
+import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
 import java.util.Locale
 
 @Composable
@@ -46,38 +46,30 @@ fun ItemRecipeScreen(
     modifier: Modifier = Modifier,
     onNavigate: (String) -> Unit,
     navController: NavHostController,
+    userViewModel: UserViewModel,
+    recipeViewModel: RecipeViewModel,
 
-) {
+    ) {
 
+    //Combine both
+    val recipeSelected = userViewModel.selectedRecipe.collectAsState().value ?: recipeViewModel.selectedRecipe.collectAsState().value
 
-    // Shared ViewModel from ListRecipeHostScreen
-    val parentEntry = remember(navController.currentBackStackEntry) {
-        navController.getBackStackEntry(NavigationRoutes.LIST_RECIPES_HOST_SCREEN)
-    }
-    val viewModel: RecipeViewModel = viewModel(parentEntry)
+    recipeSelected?.let { currentRecipe ->
 
-    val recipe by viewModel.selectedRecipe.collectAsState()
-
-
-    //To obtain the drawable form the origin
-    fun getFlagForCountry(origin: String): Int {
-        return when (origin.uppercase()) {
-            "JAPAN" -> R.drawable.japan_flag
-            "KOREA" -> R.drawable.korea_flag
-            "CHINA" -> R.drawable.china_flag
-            "THAILAND" -> R.drawable.thailand_flag
-            "VIETNAM" -> R.drawable.vietnam_flag
-            else -> R.drawable.chef_flag
-        }
-    }
-
-
-    recipe?.let { currentRecipe ->
+        //To change favs button whether a recipe is in favs or not
+        val favRecepies by userViewModel.favouriteRecipe.collectAsState()
+        val isRecipeFav = favRecepies.any { it.id == currentRecipe.id }
+        Log.i("ItemRecipeScreen", "Existen ${favRecepies.size} recetas favoritas")
 
         //Flag
-        val flagForRecipe = getFlagForCountry(currentRecipe.origin.country)
+        val originEnum = OriginMapper.mapOriginToEnum(currentRecipe.origin.country)
+        val flagForRecipe = originEnum.flag
 
-        Log.i("ItemRecipeScreen", "Entrando en la pantalla para mostrar ${currentRecipe.title}, in ${Locale.getDefault().language}")
+
+        Log.i(
+            "ItemRecipeScreen",
+            "Entrando en la pantalla para mostrar ${currentRecipe.title}, in ${Locale.getDefault().language}"
+        )
 
         Column(
             modifier = modifier
@@ -85,7 +77,7 @@ fun ItemRecipeScreen(
                 .background(MaterialTheme.colorScheme.background)
                 .padding(24.dp, 40.dp),
 
-        ) {
+            ) {
             Spacer(modifier = Modifier.size(56.dp))
 
             LazyColumn(
@@ -129,7 +121,14 @@ fun ItemRecipeScreen(
                             // Edit
                             Box(
                                 Modifier.clickable(true) {
+                                    userViewModel.selectRecipe(recipeSelected)
+                                    recipeViewModel.selectRecipe(recipeSelected)
+
                                     onNavigate(NavigationRoutes.MODIFIED_SCREEN)
+                                    Log.i(
+                                        "ItemRecipeScreen",
+                                        "To Navigate into Modify for $recipeSelected"
+                                    )
                                 }
                             ) {
                                 Image(
@@ -149,15 +148,20 @@ fun ItemRecipeScreen(
                             }
 
                             // Favs
-                            Box {
+                            Box(
+                                Modifier.clickable { userViewModel.changeFavourite(currentRecipe) }
+                            ) {
                                 Image(
                                     painter = painterResource(R.drawable.circle),
-                                    contentDescription = null,
+                                    contentDescription = stringResource(R.string.favs),
                                     contentScale = ContentScale.Fit,
                                     modifier = Modifier.size(48.dp)
                                 )
                                 Image(
-                                    painter = painterResource(R.drawable.set_fav),
+                                    painter = painterResource(
+                                        if (isRecipeFav) R.drawable.lotus
+                                        else R.drawable.set_fav
+                                    ),
                                     contentDescription = stringResource(R.string.favs),
                                     modifier = Modifier
                                         .align(Alignment.Center)
@@ -178,6 +182,7 @@ fun ItemRecipeScreen(
                                 modifier = Modifier
                                     .align(Alignment.TopEnd)
                                     .size(40.dp)
+                                    .offset(x= -24.dp, y=-4.dp)
 
                             )
                         }
@@ -223,16 +228,11 @@ fun ItemRecipeScreen(
                 }
 
                 item {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp)
-                    ) {
-                        ItemIngredients(currentRecipe.ingredientList)
-                    }
+                    ItemIngredients(currentRecipe.ingredientList)
                     Spacer(Modifier.size(16.dp))
                 }
 
+                //Steps
                 item {
                     Text(
                         text = stringResource(R.string.steps),
@@ -240,18 +240,11 @@ fun ItemRecipeScreen(
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.weight(1f)
                     )
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp)
-                    ) {
-
-                        ItemSteps(currentRecipe.steps)
-
-                    }
+                     ItemSteps(currentRecipe.steps)
                 }
 
-                item { //TODO puntuacion seleccionable
+                //rating
+                item { //TODO puntuacion seleccionable, actualizar ratings
                     Spacer(modifier = Modifier.size(24.dp))
                     Column(
                         modifier = Modifier.fillMaxWidth(),
@@ -264,7 +257,22 @@ fun ItemRecipeScreen(
                             color = MaterialTheme.colorScheme.primary,
                             style = MaterialTheme.typography.bodySmall
                         )
-                        RecipeRatingSelector(3)
+                        Row(
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "(4.8)",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                            RecipeRatingSelector(3)
+                            Text(
+                                text = "(342 ratings)",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
                     }
                 }
             }
@@ -360,14 +368,3 @@ fun IconAndText(
     }
 }
 
-
-//@Composable
-//@Preview
-//fun PreviewItemRecipe() {
-//    CocinaConCatalinaTheme(darkTheme = true) {
-//        ItemRecipeScreen(
-//            onNavigate = {},
-//            modifier = Modifier
-//        )
-//    }
-//}
