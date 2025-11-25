@@ -51,10 +51,8 @@ fun ItemRecipeScreen(
 
     ) {
 
-    val userSelected by userViewModel.selectedRecipe.collectAsState() //Selected fav or mod recipes
-    val originalSelected by recipeViewModel.selectedRecipe.collectAsState() //Selected from asian
     //Combine both
-    val recipeSelected = userSelected ?: originalSelected
+    val recipeSelected = userViewModel.selectedRecipe.collectAsState().value ?: recipeViewModel.selectedRecipe.collectAsState().value
 
     recipeSelected?.let { currentRecipe ->
 
