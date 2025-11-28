@@ -1,12 +1,13 @@
 package com.letsgetcactus.cocinaconcatalina.data
 
+
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import com.google.firebase.Firebase
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.firestore
 import com.google.firebase.functions.FirebaseFunctions
+import com.google.firebase.storage.FirebaseStorage
 import com.letsgetcactus.cocinaconcatalina.data.dto.RecipeDto
 import com.letsgetcactus.cocinaconcatalina.data.mapper.toMap
 import com.letsgetcactus.cocinaconcatalina.data.mapper.toRecipe
@@ -20,7 +21,10 @@ import com.letsgetcactus.cocinaconcatalina.model.enum.AllergenEnum
 import com.letsgetcactus.cocinaconcatalina.model.enum.DificultyEnum
 import com.letsgetcactus.cocinaconcatalina.model.enum.UnitsTypeEnum
 import kotlinx.coroutines.tasks.await
+import java.util.Base64
 import java.util.Locale
+import java.util.UUID
+
 
 /**
  * Singleton to connect with Firebase
@@ -124,6 +128,33 @@ object FirebaseConnection {
         }
     }
 
+
+    /**
+     * To upload an image ti Firestore and get it's uri to save on a Recipe in db
+     * @param img Uri from the image to upload
+     */
+    suspend fun imgToFirestore(img: String): String {
+        try {
+            val storage = FirebaseStorage.getInstance().reference.child("${UUID.randomUUID()}.jpg")
+            //need to be converted cause it only works with uri or ByteArray
+            val imgBytes: ByteArray = android.util.Base64.decode(img, android.util.Base64.DEFAULT)
+            storage.putBytes(imgBytes).await()
+
+            val imgUrl= storage.downloadUrl.await()
+
+            Log.i(
+                "FirebaseConnection",
+                "Uploading recipe image to obtain its url (String) on Storage"
+            )
+            return imgUrl.toString()
+
+        } catch (e: Exception) {
+            Log.i("FirebaseConnection", "Error on upoading to Storage recipe's img")
+            throw e
+        }
+    }
+
+
     /**
      * To upload to Firebase a recipe to the asianOriginalRecipe collection
      * Google Cloud Translation API will translate it before saving it
@@ -193,7 +224,6 @@ object FirebaseConnection {
             null
         }
     }
-
 
     /**
      * Adds an User to the DB
@@ -414,6 +444,7 @@ object FirebaseConnection {
      * @param language to get the recipes in that language
      * @return a list of his fav recipes or empty list if there's none
      */
+    @RequiresApi(Build.VERSION_CODES.O)
     suspend fun getUserFavouriteRecipes(
         userId: String,
         language: String = Locale.getDefault().language

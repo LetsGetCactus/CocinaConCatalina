@@ -137,4 +137,18 @@ object RecipeRepository {
             Log.e("RecipeRepository","Error trying to save a new recipe to the db",e)
         }
     }
+
+    /**
+     * Adds a new asian original recipe to the db
+     * @param recipe to be uploaded
+     */
+    @RequiresApi(Build.VERSION_CODES.O)
+    suspend fun addRecipeToDB(recipe: Recipe): Boolean{
+        var img=recipe.img
+        var urlFromStorage= FirebaseConnection.imgToFirestore(img)
+        recipe.img=urlFromStorage
+
+        FirebaseConnection.uploadRecipeAndTranslations(recipe, Locale.getDefault().language)
+        return true
+    }
 }

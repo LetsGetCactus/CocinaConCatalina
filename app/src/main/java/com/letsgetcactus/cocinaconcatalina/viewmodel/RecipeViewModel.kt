@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.letsgetcactus.cocinaconcatalina.model.Recipe
 import com.letsgetcactus.cocinaconcatalina.data.FirebaseConnection
+import com.letsgetcactus.cocinaconcatalina.data.repository.RecipeRepository
 import com.letsgetcactus.cocinaconcatalina.model.enum.AllergenEnum
 import com.letsgetcactus.cocinaconcatalina.model.enum.DificultyEnum
 import com.letsgetcactus.cocinaconcatalina.model.enum.DishTypeEnum
@@ -24,7 +25,9 @@ import java.util.Locale
 /**
 This class will load the data from Firebase and export it in the UI, updating them whenever they change
  */
-class RecipeViewModel(): ViewModel() {
+class RecipeViewModel(
+    private val recipeRepository: RecipeRepository
+): ViewModel() {
     //All recipes
     private val _asianOgRecipes = MutableStateFlow<List<Recipe>>(emptyList())
     val asianOgRecipes: StateFlow<List<Recipe>> = _asianOgRecipes.asStateFlow()
@@ -55,7 +58,7 @@ class RecipeViewModel(): ViewModel() {
      */
     fun loadAsianOgRecipes(language: String = Locale.getDefault().language ) {
         viewModelScope.launch {
-            val result = FirebaseConnection.getAsianOriginalRecipes(language)
+            val result = recipeRepository.getAllAsianOriginalRecipes(language)
             _asianOgRecipes.value = result.sortedBy { it.title.lowercase() }
             filterRecipes()
 
@@ -151,9 +154,8 @@ class RecipeViewModel(): ViewModel() {
      * @param recipe to be uploaded
      */
     @RequiresApi(Build.VERSION_CODES.O)
-    suspend fun addRecipe(recipe: Recipe): Boolean{
-        FirebaseConnection.uploadRecipeAndTranslations(recipe, Locale.getDefault().language)
-        return true
+    suspend fun addRecipe(recipe: Recipe){
+        recipeRepository.addRecipeToDB(recipe)
     }
 
 

@@ -15,6 +15,8 @@ import com.letsgetcactus.cocinaconcatalina.data.repository.UserRepository
 import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
 import com.letsgetcactus.cocinaconcatalina.ui.AppNavigation
 import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
+import com.letsgetcactus.cocinaconcatalina.viewmodel.RecipeViewModel
+import com.letsgetcactus.cocinaconcatalina.viewmodel.RecipeViewModelFactory
 import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
 import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModelFactory
 
@@ -32,6 +34,7 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
 
                 val userViewModel : UserViewModel= viewModel( factory = UserViewModelFactory(userSessionRepo))
+                val recipeViewModel: RecipeViewModel=viewModel(factory = RecipeViewModelFactory())
 
                 AppNavigation(
                     navController=navController,

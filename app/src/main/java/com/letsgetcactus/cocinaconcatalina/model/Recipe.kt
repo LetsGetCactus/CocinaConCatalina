@@ -15,6 +15,6 @@ data class Recipe(
     val origin: Origin = Origin(),
     val portions: Int,
     val active: Boolean,
-    val img: String,
+    var img: String,
     val video: String?
 )
