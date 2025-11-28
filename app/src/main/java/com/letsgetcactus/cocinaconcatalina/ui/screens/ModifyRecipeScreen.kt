@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.letsgetcactus.cocinaconcatalina.R
+import com.letsgetcactus.cocinaconcatalina.model.Allergen
 import com.letsgetcactus.cocinaconcatalina.model.Ingredient
 import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
 import com.letsgetcactus.cocinaconcatalina.model.enum.AllergenEnum
@@ -50,13 +51,17 @@ fun ModifyRecipeScreen(
 
     currentRecipe?.let { recipe ->
 
-        var selectedAllergens by remember(recipe) {
-            mutableStateOf(
-                AllergenEnum.entries.associateWith { allergen ->
+        var selectedAllergens by remember { mutableStateOf(emptyMap<AllergenEnum, Boolean>()) }
+
+        // Inicializamos selectedAllergens al cargar la receta
+        LaunchedEffect(currentRecipe?.id) {
+            currentRecipe?.let { recipe ->
+                selectedAllergens = AllergenEnum.entries.associateWith { allergen ->
                     recipe.allergenList.any { it.img == allergen }
                 }
-            )
+            }
         }
+
 
         Box(modifier = Modifier.padding(vertical = 48.dp)) {
             LazyColumn(
@@ -181,10 +186,10 @@ fun ModifyRecipeScreen(
                 FAB(
                     onNavigate = {
                         scope.launch {
-                            val newModRecipe = recipe.copy(
-                                id = recipe.id + "_mod",
-                                title = recipe.title + " (Mod)"
-                            )
+                            val allergenList = selectedAllergens.filter { it.value }.map { Allergen(name=it.key.name, img = it.key) }
+                            val newModRecipe = recipe.copy(allergenList = allergenList)
+
+                            Log.i("ModifyRecipeScreen","$newModRecipe")
                             userViewModel.saveModifiedRecipe(newModRecipe)
                             onNavigate(NavigationRoutes.ITEM_RECIPE_SCREEN)
                         }

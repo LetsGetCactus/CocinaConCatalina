@@ -54,16 +54,16 @@ class UserViewModel(
     private val _currentUser = MutableStateFlow<User?>(null)
     val currentUser = _currentUser.asStateFlow()
 
-    //For favs and mod Recipes
+    //For mod and favs Recipes
+    private val _modifiedRecipes = MutableStateFlow<List<Recipe>>(emptyList())
+    val modifiedRecipes = _modifiedRecipes.asStateFlow()
+
     private val _favouriteRecipes = MutableStateFlow<List<Recipe>>(emptyList())
     val favouriteRecipe = _favouriteRecipes.asStateFlow()
 
     // Favs filtered by chip
     private val _filteredFavourites = MutableStateFlow<List<Recipe>>(emptyList())
     val filteredFavourites = _filteredFavourites.asStateFlow()
-
-    private val _modifiedRecipes = MutableStateFlow<List<Recipe>>(emptyList())
-    val modifiedRecipes = _modifiedRecipes.asStateFlow()
 
     // Both user recipes (favs + mod)
     private val _userRecipes = MutableStateFlow<List<Recipe>>(emptyList())
@@ -86,6 +86,7 @@ class UserViewModel(
 
     init {
         restoreSessionFromDataStore()
+
     }
 
     /**
@@ -328,6 +329,20 @@ class UserViewModel(
     suspend fun saveModifiedRecipe(recipe: Recipe){
         val user= _currentUser.value?.id ?: return
         userRepo.addModifiedRecipe(user,recipe)
+
+        //actualizamos ListRecipe sin duplicar
+        val currentList = _modifiedRecipes.value.toMutableList()
+        val index = currentList.indexOfFirst { it.id == recipe.id }
+
+        if (index >= 0) {
+            // Reemplazar receta existente
+            currentList[index] = recipe
+        } else {
+            // Añadir nueva receta
+            currentList.add(recipe)
+        }
+
+        _modifiedRecipes.value = currentList
     }
 
 
@@ -335,9 +350,9 @@ class UserViewModel(
      * To get all modified recipes from user's subcollection
      */
     private suspend fun loadModified() {
-        val user = _currentUser.value ?: return
+        val user = _currentUser.value?.id ?: return
 
-        val modifiedRecipes = UserRepository.getAllModifiedRecipes(user.id)
+        val modifiedRecipes = UserRepository.getAllModifiedRecipes(user)
         _modifiedRecipes.value = modifiedRecipes.sortedBy { it.title }
         Log.i("UserViewModel","Loaded ${modifiedRecipes.size} recipes from modifiedRecipes")
 

@@ -68,7 +68,6 @@ object UserRepository {
                 id = userUid,
                 name = name,
                 email = email,
-                password = "",
                 registeredInDate = Instant.now().toString(),
                 isActive = true,
                 role = "USER",
@@ -152,7 +151,7 @@ object UserRepository {
      * @param userId Id from the user
      */
     suspend fun addModifiedRecipe(userId: String, recipe: Recipe){
-        FirebaseConnection.saveUserModifiedRecipe(userId,recipe)
+        FirebaseConnection.addModifiedRecipe(userId,recipe)
         Log.i("UserRepository","Saved ${recipe.title} on user: $userId")
     }
 

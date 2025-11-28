@@ -42,9 +42,11 @@ fun ListRecipeHostScreen(
     recipeViewModel : RecipeViewModel,
 ) {
 
-    val recipesVModel by recipeViewModel.asianOgRecipes.collectAsState()
-    val userRecipesVModel by userViewModel.userRecipes.collectAsState()
+    val allRecipes = userViewModel.modifiedRecipes.collectAsState().value + recipeViewModel.asianOgRecipes.collectAsState().value
 
+    Log.i("ListRecipeHostScreen"," Mostrando ${allRecipes.size} recetas:\n" +
+            "${recipeViewModel.asianOgRecipes.collectAsState().value.size}  originales " +
+            "\n${userViewModel.modifiedRecipes.collectAsState().value.size} modificadas")
 
     Column(
         modifier = modifier,
@@ -55,9 +57,10 @@ fun ListRecipeHostScreen(
             onNavigate = { selected ->
                 Log.i("ListRecipeHostScreen", "Clicked recipe: ${selected.title}")
                 recipeViewModel.selectRecipe(selected)
+                userViewModel.selectRecipe(selected)
                 onNavigate()
             },
-            recipes = recipesVModel + userRecipesVModel
+            recipes = allRecipes
         )
     }
 }

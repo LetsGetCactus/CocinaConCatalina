@@ -286,7 +286,7 @@ fun RegisterScreen(
                         } else {
 
                             val success = userViewModel.register(name, email, pass)
-                            if (success) {
+                            if (success != null) {
                                 navController.navigate(NavigationRoutes.HOME_SCREEN) {
                                     popUpTo(NavigationRoutes.REGISTER_SCREEN) { inclusive = true }
                                 }

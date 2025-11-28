@@ -2,6 +2,8 @@ package com.letsgetcactus.cocinaconcatalina.data.mapper
 
 
 import com.letsgetcactus.cocinaconcatalina.data.dto.RecipeDto
+import com.letsgetcactus.cocinaconcatalina.model.Allergen
+import com.letsgetcactus.cocinaconcatalina.model.Ingredient
 import com.letsgetcactus.cocinaconcatalina.model.Origin
 import com.letsgetcactus.cocinaconcatalina.model.Recipe
 import com.letsgetcactus.cocinaconcatalina.model.enum.DificultyEnum
@@ -39,7 +41,7 @@ fun RecipeDto.toRecipe(language: String = Locale.getDefault().language): Recipe 
 
 
 /**
- * Mapps a Recipe object to Firebase
+ * Maps a Recipe object to Firebase
  */
 fun Recipe.toMap(): Map<String, Any?> {
     return mapOf(
@@ -49,31 +51,37 @@ fun Recipe.toMap(): Map<String, Any?> {
         "steps" to steps,
         "ingredientList" to ingredientList.map { ing ->
             mapOf(
-                "name" to ing.name,
+                "name" to ing.name ,
                 "quantity" to ing.quantity,
                 "unit" to ing.unit.name
             )
         },
         "allergenList" to allergenList.map { all ->
             mapOf(
-                "name" to all.name,
+                "name" to all.name ,
                 "img" to all.img.name
             )
         },
-        "categoryList" to categoryList.map { it },
+        "categoryList" to categoryList.map { cat ->
+            mapOf(
+                "id" to cat.id ,
+                "name" to cat.name
+            )
+        },
         "prepTime" to prepTime,
-        "dificulty" to (dificulty?.name ?: DificultyEnum.EASY.name),
+        "dificulty" to dificulty?.name,
         "origin" to mapOf(
-            "id" to origin.id,
+            "id" to origin.id ,
             "country" to origin.country,
-            "flag" to origin.flag
-        ),
+            "flag" to origin.flag ,
         "portions" to portions,
-        "active" to active,
-        "img" to img,
-        "video" to video
-    )
+        "active" to active ,
+        "img" to img ,
+        "video" to (video ?: "")
+        ))
+
 }
+
 
 /**
  * Translates the strings properties in a Recipe

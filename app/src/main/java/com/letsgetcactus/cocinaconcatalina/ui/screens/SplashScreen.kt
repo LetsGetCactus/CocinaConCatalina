@@ -34,17 +34,19 @@ fun SplashScreen(
     userViewModel: UserViewModel
 ) {
     val isLoggedIn by userViewModel.isLoggedIn.collectAsState()
+    Log.i("SplashScreen","$isLoggedIn")
 
 
     LaunchedEffect(isLoggedIn,) {
         delay(3000)
 
         if (isLoggedIn) {
-            Log.i("SplashScreen","Persisting user: ${userViewModel.currentUser.value}")
+            Log.i("SplashScreen","Persisting user: ${userViewModel.currentUser}")
             navController.navigate(NavigationRoutes.HOME_SCREEN) {
                 popUpTo(NavigationRoutes.SPLASH_SCREEN) { inclusive = true }
             }
         } else {
+            Log.i("SplashScreen","User not found")
             navController.navigate(NavigationRoutes.LOGIN_SCREEN) {
                 popUpTo(NavigationRoutes.SPLASH_SCREEN) { inclusive = true }
             }
