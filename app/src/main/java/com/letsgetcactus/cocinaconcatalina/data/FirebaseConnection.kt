@@ -390,8 +390,6 @@ object FirebaseConnection {
      */
     suspend fun addModifiedRecipe(userId: String, recipe: Recipe) {
         try {
-            //Add (Mod) to title
-            if(recipe.title.trim().endsWith("(Mod)",ignoreCase = true)) recipe.title else recipe.title + "(Mod)"
 
             Log.i("FirebaseConnection","receta a subir $recipe")
 

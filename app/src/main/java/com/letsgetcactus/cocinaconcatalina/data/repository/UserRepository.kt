@@ -22,7 +22,7 @@ import java.time.Instant
  */
 object UserRepository {
 
-    private val firebaseAuth : FirebaseAuth = Firebase.auth
+    private val firebaseAuth: FirebaseAuth = Firebase.auth
 
     //AUTH
     /**
@@ -88,7 +88,7 @@ object UserRepository {
      * @param userId Id from the user
      * @return the User itself or null
      */
-    suspend fun getUserById(userId: String): User?{
+    suspend fun getUserById(userId: String): User? {
         return FirebaseConnection.getUserById(userId)
     }
 
@@ -96,12 +96,12 @@ object UserRepository {
      * To get Firebase's current user
      */
     fun getCurrentFirebaseUser(): FirebaseUser? {
-        val user=firebaseAuth.currentUser
-        if(user != null) {
+        val user = firebaseAuth.currentUser
+        if (user != null) {
             Log.i("UserRepository", "Obtained user from Firebase: ${user}")
 
             return user
-        }else Log.i("UserRepository","Could not load FirebaseUser")
+        } else Log.i("UserRepository", "Could not load FirebaseUser")
         return null
     }
 
@@ -111,7 +111,7 @@ object UserRepository {
      * @param userId Id from the user to add the recipe to his favourites subcollection
      */
     suspend fun addRecipeToFavourites(userId: String, recipeId: String) {
-        FirebaseConnection.addRecipeToUsersFavorites(userId,recipeId)
+        FirebaseConnection.addRecipeToUsersFavorites(userId, recipeId)
         Log.i("UserRepository", "Added $recipeId to favs on user $userId")
     }
 
@@ -121,8 +121,8 @@ object UserRepository {
      * @param userId Id from the user to remove the recipe from his favourites subcollection
      */
     suspend fun removeRecipeFromFavourites(userId: String, recipeId: String) {
-        FirebaseConnection.removeUsersFavouriteRecipe(userId,recipeId)
-        Log.i("UserRepository", "Removed ${recipeId }from favs on user $userId ")
+        FirebaseConnection.removeUsersFavouriteRecipe(userId, recipeId)
+        Log.i("UserRepository", "Removed ${recipeId}from favs on user $userId ")
     }
 
 
@@ -132,12 +132,11 @@ object UserRepository {
      * @return a list of Recipes
      */
     suspend fun getAllFavouriteRecipeIds(userId: String): List<Recipe> {
-       val favs= FirebaseConnection.getUserFavouriteRecipes(userId).map { it.id }
+        val favs = FirebaseConnection.getUserFavouriteRecipes(userId).map { it.id }
         Log.i("UserRepository", "Getting ${favs.size} recipes from user $userId")
 
-        val favsToObjectRecipe = favs.mapNotNull {
-            recipeId ->
-            FirebaseConnection.getRecipeById(userId,recipeId)
+        val favsToObjectRecipe = favs.mapNotNull { recipeId ->
+            FirebaseConnection.getRecipeById(userId, recipeId)
         }
 
 
@@ -150,9 +149,15 @@ object UserRepository {
      * Uploads a modified recipe from the user to his subcollection on Firebase
      * @param userId Id from the user
      */
-    suspend fun addModifiedRecipe(userId: String, recipe: Recipe){
-        FirebaseConnection.addModifiedRecipe(userId,recipe)
-        Log.i("UserRepository","Saved ${recipe.title} on user: $userId")
+    suspend fun addModifiedRecipe(userId: String, recipe: Recipe) {
+        //Add (Mod) to title
+        val modTitle = if (recipe.title.trim()
+                .endsWith("(Mod)", ignoreCase = true)
+        ) recipe.title else recipe.title + "(Mod)"
+        recipe.title = modTitle
+
+        FirebaseConnection.addModifiedRecipe(userId, recipe)
+        Log.i("UserRepository", "Saved ${recipe.title} on user: $userId")
     }
 
 
@@ -161,10 +166,10 @@ object UserRepository {
      * @param userId Id from the user to obtains his modified recipes from
      * @return a list of modified recipes by the user
      */
-    suspend fun getAllModifiedRecipes(userId: String): List<Recipe>{
-       val mods= FirebaseConnection.getUserModifiedRecipes(userId)
+    suspend fun getAllModifiedRecipes(userId: String): List<Recipe> {
+        val mods = FirebaseConnection.getUserModifiedRecipes(userId)
         Log.i("UserRepository", "Loaded ${mods.size} modified recipes for $userId")
         return mods
     }
 
-  }
+}

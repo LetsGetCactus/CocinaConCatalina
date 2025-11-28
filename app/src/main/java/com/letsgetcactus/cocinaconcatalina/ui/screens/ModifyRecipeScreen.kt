@@ -187,11 +187,11 @@ fun ModifyRecipeScreen(
                     onNavigate = {
                         scope.launch {
                             val allergenList = selectedAllergens.filter { it.value }.map { Allergen(name=it.key.name, img = it.key) }
-                            val newModRecipe = recipe.copy(allergenList = allergenList)
+                            val newModRecipe = recipe.copy(allergenList = allergenList, img = recipe.img)
 
                             Log.i("ModifyRecipeScreen","$newModRecipe")
                             userViewModel.saveModifiedRecipe(newModRecipe)
-                            onNavigate(NavigationRoutes.ITEM_RECIPE_SCREEN)
+                            onNavigate(NavigationRoutes.ITEM_RECIPE_SCREEN) //Mostrar la receta modificada?
                         }
                     }
                 )
