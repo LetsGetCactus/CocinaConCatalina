@@ -159,13 +159,7 @@ fun AddRecipeScreen(
                         .background(MaterialTheme.colorScheme.background)
                 )
 
-//                Spacer(Modifier.size(8.dp))
-//
-//                ButtonMain(
-//                    buttonText = stringResource(R.string.add),
-//                    onNavigate = { },
-//                    modifier = Modifier.fillMaxHeight()
-//                )
+
             }
 
             Spacer(Modifier.size(32.dp))
@@ -177,7 +171,7 @@ fun AddRecipeScreen(
                 style = MaterialTheme.typography.bodyLarge
             )
             ButtonMain(
-                buttonText = if(img==null) stringResource(R.string.img_selector) else img.toString(),
+                buttonText = img?.toString() ?: stringResource(R.string.img_selector),
                 onNavigate = {launcher.launch("image/*") },
                 modifier = Modifier.fillMaxWidth()
             )
@@ -488,7 +482,7 @@ fun AddRecipeScreen(
                         portions = portions.toInt(),
                         active = active,
                         origin = origin,
-                        img = img?.toString() ?: "",
+                        img = img.toString(),
                         avgRating = 5,
                         video = null
                     )
@@ -496,7 +490,7 @@ fun AddRecipeScreen(
                         try{
                             recipeViewModel.addRecipe(newRecipe)
                             LoadingIndicator(context) //TODO
-                            Toast.makeText(context,context.getString(R.string.recipe_saved),Toast.LENGTH_SHORT).show()
+
                             onNavigate(NavigationRoutes.HOME_SCREEN)
 
                         }catch(e: Exception) {
