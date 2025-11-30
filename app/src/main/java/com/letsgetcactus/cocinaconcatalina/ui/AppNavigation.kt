@@ -3,7 +3,6 @@ package com.letsgetcactus.cocinaconcatalina.ui
 import MenuDrawerComponent
 import android.annotation.SuppressLint
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -17,7 +16,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -51,14 +49,15 @@ import kotlinx.coroutines.launch
 fun AppNavigation(
     navController: NavHostController,
     startDestination: String,
-    userViewModel: UserViewModel
+    userViewModel: UserViewModel,
+    recipeViewModel: RecipeViewModel
 ) {
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
-    val recipeViewModel: RecipeViewModel=viewModel()
+
 
     ModalNavigationDrawer(
         drawerState = drawerState,

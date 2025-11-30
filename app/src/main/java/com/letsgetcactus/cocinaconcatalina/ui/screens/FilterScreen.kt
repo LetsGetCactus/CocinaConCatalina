@@ -22,11 +22,14 @@ import com.letsgetcactus.cocinaconcatalina.ui.components.filters.AllergenIconsSe
 import com.letsgetcactus.cocinaconcatalina.ui.components.filters.ChipSelector
 import com.letsgetcactus.cocinaconcatalina.ui.components.filters.SliderSelector
 import com.letsgetcactus.cocinaconcatalina.viewmodel.RecipeViewModel
+import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
 
 @Composable
 fun FilterScreen(
+    source: String,
     onSearchClick: () -> Unit,
-    recipeViewModel: RecipeViewModel
+    recipeViewModel: RecipeViewModel,
+    userViewModel: UserViewModel
 ) {
     // States
     var selectedOrigin: OriginEnum? by remember { mutableStateOf(null) }
@@ -151,15 +154,43 @@ fun FilterScreen(
                 ButtonMain(
                     buttonText = stringResource(R.string.search),
                     onNavigate = {
-                        recipeViewModel.setFilters(
-                            origin = selectedOrigin,
-                            dishType = selectedDishType,
-                            difficulty = selectedDifficulty,
-                            prepTime = prepTime.toInt(),
-                            maxIngredients = maxIngredients.toInt(),
-                            rating = rating.toInt(),
-                            allergens = selectedAllergens.filter { it.value }.keys.toList()
-                        )
+                        when (source) {
+                            "original" -> {
+                                recipeViewModel.setFilters(
+                                    origin = selectedOrigin,
+                                    dishType = selectedDishType,
+                                    difficulty = selectedDifficulty,
+                                    prepTime = prepTime.toInt(),
+                                    maxIngredients = maxIngredients.toInt(),
+                                    rating = rating.toInt(),
+                                    allergens = selectedAllergens.filter { it.value }.keys.toList()
+                                )
+                            }
+
+                            "modified" -> {
+                                userViewModel.setFilters(
+                                    origin = selectedOrigin,
+                                    dishType = selectedDishType,
+                                    difficulty = selectedDifficulty,
+                                    prepTime = prepTime.toInt(),
+                                    maxIngredients = maxIngredients.toInt(),
+                                    rating = rating.toInt(),
+                                    allergens = selectedAllergens.filter { it.value }.keys.toList()
+                                )
+                            }
+
+                            "favourites" -> {
+                                userViewModel.setFilters(
+                                    origin = selectedOrigin,
+                                    dishType = selectedDishType,
+                                    difficulty = selectedDifficulty,
+                                    prepTime = prepTime.toInt(),
+                                    maxIngredients = maxIngredients.toInt(),
+                                    rating = rating.toInt(),
+                                    allergens = selectedAllergens.filter { it.value }.keys.toList()
+                                )
+                            }
+                        }
                         onSearchClick()
                     },
                     modifier = Modifier.weight(1f)
@@ -174,7 +205,11 @@ fun FilterScreen(
                         maxIngredients = 0f
                         rating = 0f
                         selectedAllergens = AllergenEnum.entries.associateWith { false }
-                        recipeViewModel.resetFilters()
+
+                        when (source) {
+                            "original" -> recipeViewModel.resetFilters()
+                            "modified", "favourites" -> userViewModel.resetFilters()
+                        }
                     },
                     modifier = Modifier.weight(1f)
                 )

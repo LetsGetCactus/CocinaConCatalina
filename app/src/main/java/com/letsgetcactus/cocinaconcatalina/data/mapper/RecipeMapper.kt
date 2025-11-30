@@ -2,8 +2,6 @@ package com.letsgetcactus.cocinaconcatalina.data.mapper
 
 
 import com.letsgetcactus.cocinaconcatalina.data.dto.RecipeDto
-import com.letsgetcactus.cocinaconcatalina.model.Allergen
-import com.letsgetcactus.cocinaconcatalina.model.Ingredient
 import com.letsgetcactus.cocinaconcatalina.model.Origin
 import com.letsgetcactus.cocinaconcatalina.model.Recipe
 import com.letsgetcactus.cocinaconcatalina.model.enum.DificultyEnum
@@ -73,12 +71,13 @@ fun Recipe.toMap(): Map<String, Any?> {
         "origin" to mapOf(
             "id" to origin.id ,
             "country" to origin.country,
-            "flag" to origin.flag ,
+            "flag" to origin.flag
+        ),
         "portions" to portions,
         "active" to active ,
         "img" to img ,
         "video" to (video ?: "")
-        ))
+        )
 
 }
 

@@ -1,6 +1,7 @@
 package com.letsgetcactus.cocinaconcatalina.data
 
 
+import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -21,7 +22,6 @@ import com.letsgetcactus.cocinaconcatalina.model.enum.AllergenEnum
 import com.letsgetcactus.cocinaconcatalina.model.enum.DificultyEnum
 import com.letsgetcactus.cocinaconcatalina.model.enum.UnitsTypeEnum
 import kotlinx.coroutines.tasks.await
-import java.util.Base64
 import java.util.Locale
 import java.util.UUID
 
@@ -133,24 +133,27 @@ object FirebaseConnection {
      * To upload an image ti Firestore and get it's uri to save on a Recipe in db
      * @param img Uri from the image to upload
      */
-    suspend fun imgToFirestore(img: String): String {
+    suspend fun imgToFirestore(img: Uri?): String? {
         try {
-            val storage = FirebaseStorage.getInstance().reference.child("${UUID.randomUUID()}.jpg")
+            val storage = FirebaseStorage.getInstance().reference.child("${UUID.randomUUID()}")
             //need to be converted cause it only works with uri or ByteArray
-            val imgBytes: ByteArray = android.util.Base64.decode(img, android.util.Base64.DEFAULT)
-            storage.putBytes(imgBytes).await()
+            if (img != null) {
+                storage.putFile(img).await()
 
-            val imgUrl= storage.downloadUrl.await()
+                val imgUrl = storage.downloadUrl.await()
 
-            Log.i(
-                "FirebaseConnection",
-                "Uploading recipe image to obtain its url (String) on Storage"
-            )
-            return imgUrl.toString()
-
+                Log.i(
+                    "FirebaseConnection",
+                    "Uploading recipe image to obtain its url (String) on Storage"
+                )
+                return imgUrl.toString()
+            } else {
+                Log.i("FirebaseConnection", "Image is null. Coul not upload")
+                return null
+            }
         } catch (e: Exception) {
-            Log.i("FirebaseConnection", "Error on upoading to Storage recipe's img")
-            throw e
+            Log.i("FirebaseConnection", "Error on upolading to Storage recipe's img",e)
+            return e.message
         }
     }
 
@@ -168,25 +171,27 @@ object FirebaseConnection {
         originalLanguage: String? = null
     ): Boolean {
         return try {
-            val functions = FirebaseFunctions.Companion.getInstance("europe-southwest1")
-
+            val functions = FirebaseFunctions.Companion.getInstance("us-central1")
+            Log.i("FirebaseConnection", "Obtained $recipe to upload")
 
             // If there's not a language passed on originalLanguage, it detects it by the system language
             val language = originalLanguage ?: Locale.getDefault().language
-
+            Log.i("FirebaseConnection", "Recipe is in: $language language")
             val data = mapOf(
                 "receta" to recipe.toMap(),
                 "idiomaOriginal" to language
             )
 
+            Log.i("FirebaseConnection", "mapped recite to: $data")
             // Calls Cloud Function: call()
             val result = functions
-                .getHttpsCallable("traducirReceta") //Method for calling the API (script in javascript)
+                .getHttpsCallable("uploadOriginalRecipe") //Cloud function
                 .call(data)
                 .await()
 
-
+            Log.i("FirebaseConnection","resultado de la subida= $result")
             val response = result.data as? Map<*, *>
+            Log.i("FirebaseConnection","response= $response")
             val success = response?.get("success") as? Boolean ?: false
 
             if (!success) {
@@ -253,7 +258,7 @@ object FirebaseConnection {
     suspend fun getUserModifiedRecipes(
         userId: String,
         language: String = Locale.getDefault().language
-    ):List<Recipe> {
+    ): List<Recipe> {
         return try {
             val result = db.collection("users")
                 .document(userId)
@@ -275,7 +280,9 @@ object FirebaseConnection {
                 val steps = (data["steps"] as? List<*>)?.map { step ->
                     when (step) {
                         is String -> step
-                        is Map<*, *> -> (step[Locale.getDefault().language] ?: step["en"] ?: "") as String
+                        is Map<*, *> -> (step[Locale.getDefault().language] ?: step["en"]
+                        ?: "") as String
+
                         else -> ""
                     }
                 } ?: emptyList()
@@ -370,7 +377,7 @@ object FirebaseConnection {
 //        }
 //        try {
 //
-//            val functions = FirebaseFunctions.Companion.getInstance("europe-southwest1")
+//            val functions = FirebaseFunctions.Companion.getInstance("us-central1")
 //
 //            val language = language ?: Locale.getDefault().language
 //
@@ -421,7 +428,7 @@ object FirebaseConnection {
     suspend fun addModifiedRecipe(userId: String, recipe: Recipe) {
         try {
 
-            Log.i("FirebaseConnection","receta a subir $recipe")
+            Log.i("FirebaseConnection", "receta a subir $recipe")
 
             db.collection("users")
                 .document(userId)
@@ -430,12 +437,11 @@ object FirebaseConnection {
                 .set(recipe.toMap())
                 .await()
 
-            Log.i("FirebaseConnection", "${recipe.title} correctly saved for user")
+            Log.i("FirebaseConnection", "Recipe:${recipe.toMap()} correctly saved for user")
         } catch (e: Exception) {
             Log.e("FirebaseConnection", "Error saving modified recipe: ${recipe.title}", e)
         }
     }
-
 
 
     /**

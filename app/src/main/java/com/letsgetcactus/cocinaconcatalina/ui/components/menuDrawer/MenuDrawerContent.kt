@@ -73,7 +73,7 @@ fun MenuDrawerComponent(
                 icon = R.drawable.food,
                 label = stringResource(R.string.modified),
                 onClick = {
-                    //navigate to list item filterd by only modified
+                    navController.navigate("${NavigationRoutes.LIST_RECIPES_HOST_SCREEN}?source=modified?model=user")
                     scope.launch{ drawerState.close()}
                 }
             )

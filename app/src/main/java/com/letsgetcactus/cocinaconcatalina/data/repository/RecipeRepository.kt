@@ -1,5 +1,7 @@
 package com.letsgetcactus.cocinaconcatalina.data.repository
 
+import android.annotation.SuppressLint
+import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -142,13 +144,17 @@ object RecipeRepository {
      * Adds a new asian original recipe to the db
      * @param recipe to be uploaded
      */
+    @SuppressLint("SuspiciousIndentation")
     @RequiresApi(Build.VERSION_CODES.O)
-    suspend fun addRecipeToDB(recipe: Recipe): Boolean{
-        var img=recipe.img
+    suspend fun addRecipeToDB(recipe: Recipe, img: Uri?): Boolean{
         var urlFromStorage= FirebaseConnection.imgToFirestore(img)
+        Log.i("recipeRepository","Got url from storage: $urlFromStorage")
+        if(urlFromStorage!=null)
         recipe.img=urlFromStorage
+        Log.i("recipeRepository","Sending prepared recipe to firebase $recipe")
 
         FirebaseConnection.uploadRecipeAndTranslations(recipe, Locale.getDefault().language)
+        //Si no funciona usamos addmodifiedrecipe()
         return true
     }
 }

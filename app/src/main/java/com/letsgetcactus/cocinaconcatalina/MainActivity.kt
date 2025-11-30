@@ -8,10 +8,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
+import com.google.firebase.FirebaseApp
+import com.google.firebase.appcheck.FirebaseAppCheck
+import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory
+import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
 import com.letsgetcactus.cocinaconcatalina.data.local.DataStoreManagment
 import com.letsgetcactus.cocinaconcatalina.data.repository.UserSessionRepository
-import com.letsgetcactus.cocinaconcatalina.data.repository.RecipeRepository
-import com.letsgetcactus.cocinaconcatalina.data.repository.UserRepository
 import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
 import com.letsgetcactus.cocinaconcatalina.ui.AppNavigation
 import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
@@ -24,6 +26,15 @@ class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        //Init Firebase
+        FirebaseApp.initializeApp(this)
+        //App Check Provider for Firebase
+        val firebaseAppCheck = FirebaseAppCheck.getInstance()
+        firebaseAppCheck.installAppCheckProviderFactory(
+          //PARA PROD:  PlayIntegrityAppCheckProviderFactory.getInstance()
+            DebugAppCheckProviderFactory.getInstance()
+        )
         enableEdgeToEdge()
 
         val dataStore= DataStoreManagment(applicationContext)
@@ -39,7 +50,8 @@ class MainActivity : ComponentActivity() {
                 AppNavigation(
                     navController=navController,
                     startDestination= NavigationRoutes.SPLASH_SCREEN,
-                    userViewModel= userViewModel
+                    userViewModel= userViewModel,
+                    recipeViewModel = recipeViewModel
                 )
 
             }

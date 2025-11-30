@@ -1,12 +1,12 @@
 package com.letsgetcactus.cocinaconcatalina.viewmodel
 
+import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.letsgetcactus.cocinaconcatalina.model.Recipe
-import com.letsgetcactus.cocinaconcatalina.data.FirebaseConnection
 import com.letsgetcactus.cocinaconcatalina.data.repository.RecipeRepository
 import com.letsgetcactus.cocinaconcatalina.model.enum.AllergenEnum
 import com.letsgetcactus.cocinaconcatalina.model.enum.DificultyEnum
@@ -154,8 +154,9 @@ class RecipeViewModel(
      * @param recipe to be uploaded
      */
     @RequiresApi(Build.VERSION_CODES.O)
-    suspend fun addRecipe(recipe: Recipe){
-        recipeRepository.addRecipeToDB(recipe)
+    suspend fun addRecipe(recipe: Recipe, img: Uri?){
+        recipeRepository.addRecipeToDB(recipe,img)
+        Log.i("REcipeViewModel","Sent recipe $recipe to Repo")
     }
 
 

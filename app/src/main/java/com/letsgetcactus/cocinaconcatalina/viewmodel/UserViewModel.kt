@@ -3,27 +3,25 @@ package com.letsgetcactus.cocinaconcatalina.viewmodel
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.letsgetcactus.cocinaconcatalina.data.repository.UserSessionRepository
-import com.letsgetcactus.cocinaconcatalina.data.repository.UserRepository
 import com.letsgetcactus.cocinaconcatalina.data.mapper.OriginMapper
+import com.letsgetcactus.cocinaconcatalina.data.repository.UserRepository
+import com.letsgetcactus.cocinaconcatalina.data.repository.UserSessionRepository
+import com.letsgetcactus.cocinaconcatalina.data.searchFilters.RecipeFiltersEngine
+import com.letsgetcactus.cocinaconcatalina.data.searchFilters.RecipeSearchFilters
 import com.letsgetcactus.cocinaconcatalina.model.Recipe
 import com.letsgetcactus.cocinaconcatalina.model.User
 import com.letsgetcactus.cocinaconcatalina.model.enum.AllergenEnum
 import com.letsgetcactus.cocinaconcatalina.model.enum.DificultyEnum
 import com.letsgetcactus.cocinaconcatalina.model.enum.DishTypeEnum
 import com.letsgetcactus.cocinaconcatalina.model.enum.OriginEnum
-import com.letsgetcactus.cocinaconcatalina.data.searchFilters.RecipeFiltersEngine
-import com.letsgetcactus.cocinaconcatalina.data.searchFilters.RecipeSearchFilters
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.util.Locale
 
 /**
  * Controls login(), logout() and register()
@@ -293,7 +291,7 @@ class UserViewModel(
             }
 
             _favouriteRecipes.value = currentFavs //Updates StateFLow
-            allTogetherUserRecipes()
+            allTogetherUserRecipes() //deberia ser loadFavorites?
         }
 
 

@@ -1,79 +1,128 @@
-const functions = require("firebase-functions");
-const admin = require("firebase-admin");
-const {v2: Translate} = require("@google-cloud/translate");
+const functions = require('firebase-functions');
+const admin = require('firebase-admin');
+const fs = require('fs');
+const {Translate} = require('@google-cloud/translate').v2;
+require('dotenv').config();
 
-admin.initializeApp();
+const KEY = process.env.DB_KEY_PATH;
+const serviceAccount = JSON.parse(fs.readFileSync(KEY, 'utf8'));
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
+
 const db = admin.firestore();
-const translate = new Translate
-    .Translate({projectId: "cocinaconcatarina-f6667"});
+const translate = new Translate({projectId: process.env.GOOGLE_PROJECT_ID});
+
+const LANGUAGES = ['es', 'gl', 'en'];
 
 /**
- * Traduce un texto a un idioma objetivo.
- * @param {string} text - Texto a traducir
- * @param {string} target - Idioma destino ("es", "gl", "en")
- * @param {string} idiomaOriginal - Idioma original
- * @return {Promise<string>} Texto traducido
+ * Funciones de traducción
+ * @param {String} texto
+ * @param {String} idioma
  */
-async function traducir(text, target, idiomaOriginal) {
-  if (target === idiomaOriginal) return text;
-  const [translation] = await translate.translate(text, target);
-  return translation;
+async function traducirTexto(texto, idioma) {
+  if (!texto || idioma === 'es') return texto;
+  try {
+    const [translation] = await translate.translate(texto, idioma);
+    return translation;
+  } catch (error) {
+    console.error(`Error traduciendo "${texto}" a ${idioma}:`, error);
+    return texto;
+  }
 }
 
 /**
- * Función Cloud Function para traducir y guardar recetas en Firestore
+ * Traduce un texto
+ * @param {String} textoOriginal
  */
-exports.traducirReceta = functions.https.onCall(async (data, context) => {
-  try {
-    const receta = data.receta; // receta enviada desde la app
-    const idiomaOriginal = data.idiomaOriginal; // "es", "gl", "en"
-    const idiomas = ["es", "gl", "en"];
-
-    // Traducir título
-    const titleMap = {};
-    for (const lang of idiomas) {
-      titleMap[lang] = await traducir(receta.title, lang, idiomaOriginal);
-    }
-
-    // Traducir pasos
-    const stepsList = [];
-    for (const step of receta.steps) {
-      const stepMap = {};
-      for (const lang of idiomas) {
-        stepMap[lang] = await traducir(step, lang, idiomaOriginal);
-      }
-      stepsList.push(stepMap);
-    }
-
-    // Traducir ingredientes
-    const ingredientList = [];
-    for (const ing of receta.ingredientList) {
-      const nameMap = {};
-      for (const lang of idiomas) {
-        nameMap[lang] = await traducir(ing.name, lang, idiomaOriginal);
-      }
-      ingredientList.push({
-        ...ing,
-        name: nameMap,
-      });
-    }
-
-    // Construir la receta multilenguaje
-    const recetaMultilang = {
-      ...receta,
-      title: titleMap,
-      steps: stepsList,
-      ingredientList: ingredientList,
-    };
-
-    // Guardar en Firestore
-    await db.collection("asianOriginalRecipes")
-        .doc(receta.id)
-        .set(recetaMultilang);
-
-    return {success: true, receta: recetaMultilang};
-  } catch (error) {
-    console.error(error);
-    return {success: false, error: error.message};
+async function crearMultilenguaje(textoOriginal) {
+  const obj = {};
+  for (const lang of LANGUAGES) {
+    obj[lang] = await traducirTexto(textoOriginal, lang);
   }
-});
+  return obj;
+}
+
+/**
+ * Conviertes RecipeDto a formato multilanguage
+ * @param {Object} recipeDto
+ */
+async function convertirRecipeDtoMultilenguaje(recipeDto) {
+  const ingredientList = await Promise.all(
+      recipeDto.ingredientList.map(async (ing) => ({
+        name: await crearMultilenguaje(ing.name['es'] || ''),
+        quantity: ing.quantity,
+        unit: ing.unit,
+      })),
+  );
+
+  const allergenList = await Promise.all(
+      recipeDto.allergenList.map(async (all) => ({
+        name: await crearMultilenguaje(all.name['es'] || ''),
+        img: all.img,
+      })),
+  );
+
+  const categoryList = await Promise.all(
+      recipeDto.categoryList.map(async (cat) => ({
+        id: cat.id,
+        name: await crearMultilenguaje(cat.name['es'] || ''),
+      })),
+  );
+
+  const steps = await Promise.all(
+      recipeDto.steps.map(async (stepMap) =>
+        crearMultilenguaje(stepMap['es'] || '')),
+  );
+
+  return {
+    id: recipeDto.id,
+    title: await crearMultilenguaje(recipeDto.title['es'] || ''),
+    avgRating: recipeDto.avgRating,
+    steps: steps,
+    ingredientList: ingredientList,
+    allergenList: allergenList,
+    categoryList: categoryList,
+    prepTime: recipeDto.prepTime,
+    dificulty: recipeDto.dificulty,
+    origin: recipeDto.origin,
+    portions: recipeDto.portions,
+    active: recipeDto.active,
+    img: recipeDto.img,
+    video: recipeDto.video || '',
+  };
+}
+
+// Cloud Functions
+exports.uploadOriginalRecipe = functions
+    .https.onCall(async (data, context) => {
+      try {
+        const multilanguageRecipe = await convertirRecipeDtoMultilenguaje(data);
+        await db.collection('asianOriginalRecipes')
+            .doc(multilanguageRecipe.id)
+            .set(multilanguageRecipe);
+        return {success: true, message: 'Receta Og subida correctamente.'};
+      } catch (error) {
+        console.error('Error subiendo receta original:', error);
+        return {success: false, message: error.message};
+      }
+    });
+
+exports.uploadModifiedRecipe = functions
+    .https.onCall(async (data, context) => {
+      try {
+        if (!context.auth) throw new Error('Usuario no autenticado');
+        const userId = context.auth.uid;
+        const multilanguageRecipe = await convertirRecipeDtoMultilenguaje(data);
+        await db.collection('users')
+            .doc(userId)
+            .collection('modifiedRecipes')
+            .doc(multilanguageRecipe.id)
+            .set(multilanguageRecipe);
+        return {success: true, message: 'Receta mod subida correctamente'};
+      } catch (error) {
+        console.error('Error subiendo receta modificada:', error);
+        return {success: false, message: error.message};
+      }
+    });

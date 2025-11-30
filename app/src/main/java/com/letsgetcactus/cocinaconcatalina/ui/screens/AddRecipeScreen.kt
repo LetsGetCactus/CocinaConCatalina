@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -28,7 +27,6 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -171,7 +169,7 @@ fun AddRecipeScreen(
                 style = MaterialTheme.typography.bodyLarge
             )
             ButtonMain(
-                buttonText = img?.toString() ?: stringResource(R.string.img_selector),
+                buttonText = img.toString() ?: stringResource(R.string.img_selector),
                 onNavigate = {launcher.launch("image/*") },
                 modifier = Modifier.fillMaxWidth()
             )
@@ -211,8 +209,8 @@ fun AddRecipeScreen(
                 ) {
                     TextField(
                         modifier = Modifier
-                            .background(MaterialTheme.colorScheme.background)
-                            .weight(1f),
+                            .background(MaterialTheme.colorScheme.background),
+//                            .weight(1f),
                         value = quantity,
                         onValueChange = { quantity = it },
                         label = {
@@ -230,7 +228,7 @@ fun AddRecipeScreen(
                         selected = unit,
                         onSelect = { unit = it },
                         placeholder = UnitsTypeEnum.GRAM.toString(),
-                        modifier = Modifier.weight(1f)
+//                        modifier = Modifier.weight(1f)
                     )
                 }
                 Row() {
@@ -282,7 +280,7 @@ fun AddRecipeScreen(
 
             Text(
                 text = listIngredients.joinToString("\n") {
-                    "${it.quantity} ${it.unit.enumId}. ${it.name}"
+                    "${it.quantity} ${it.unit}. ${it.name}"
                 },
                 color = MaterialTheme.colorScheme.onBackground,
                 style = MaterialTheme.typography.bodySmall,
@@ -316,7 +314,7 @@ fun AddRecipeScreen(
                         },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .weight(0.75f)
+//                            .weight(0.75f)
                             .background(MaterialTheme.colorScheme.background),
 
                         )
@@ -393,7 +391,7 @@ fun AddRecipeScreen(
                         },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .weight(0.75f)
+//                            .weight(0.75f)
                             .background(MaterialTheme.colorScheme.background),
 
                         )
@@ -423,7 +421,7 @@ fun AddRecipeScreen(
 
                 Row() {
                     Text(
-                        text = categories.joinToString(",") ,
+                        text = categories.joinToString(",") {it.name},
                         color = MaterialTheme.colorScheme.onBackground,
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier
@@ -482,13 +480,13 @@ fun AddRecipeScreen(
                         portions = portions.toInt(),
                         active = active,
                         origin = origin,
-                        img = img.toString(),
-                        avgRating = 5,
+                        img ="",
+                        avgRating = 0,
                         video = null
                     )
                     coroutineToAddRecipe.launch {
                         try{
-                            recipeViewModel.addRecipe(newRecipe)
+                            recipeViewModel.addRecipe(newRecipe,img)
                             LoadingIndicator(context) //TODO
 
                             onNavigate(NavigationRoutes.HOME_SCREEN)
