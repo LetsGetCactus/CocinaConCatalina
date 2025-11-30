@@ -25,27 +25,76 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
+import com.letsgetcactus.cocinaconcatalina.data.searchFilters.Source
 import com.letsgetcactus.cocinaconcatalina.model.Recipe
 import com.letsgetcactus.cocinaconcatalina.model.enum.DificultyEnum
 import com.letsgetcactus.cocinaconcatalina.ui.components.ImageAndTextComponent
 import com.letsgetcactus.cocinaconcatalina.ui.components.RecipeRating
-import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
 import com.letsgetcactus.cocinaconcatalina.viewmodel.RecipeViewModel
-import java.util.Locale
+import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
+
 
 @Composable
 fun ListRecipeHostScreen(
     modifier: Modifier = Modifier,
+    recipeSource: Source,
+    filterShortCut: String = "",
     onNavigate: () -> Unit,
-    viewModel: RecipeViewModel = viewModel()
+    userViewModel: UserViewModel,
+    recipeViewModel: RecipeViewModel,
 ) {
-    Log.i("ListRecipeScreen", "Mostrando el listado de recetas en ${Locale.getDefault().language}")
 
-    val recipesVModel by viewModel.recipes.collectAsState()
+    //All possible lists:
+    val asianOgRecipes by recipeViewModel.asianOgRecipes.collectAsState()
+    val modifiedRecipes by userViewModel.modifiedRecipes.collectAsState()
+    val allFiltered =
+        recipeViewModel.filteredRecipes.collectAsState().value + userViewModel.filteredUserRecipes.collectAsState().value
+
+
+    //When to be shown (by source demand)
+    val recipesToShow: List<Recipe> =
+        when (recipeSource) {
+            Source.ALL -> {
+                (modifiedRecipes + asianOgRecipes).sortedBy { it.title.lowercase() }
+            }
+
+            Source.ASIAN_OG -> {
+                asianOgRecipes.sortedBy { it.title.lowercase() }
+            }
+
+            Source.FILTERED -> {
+                if (filterShortCut.isNotEmpty()) {
+                    when (filterShortCut) {
+                        "less_five_ingredients" -> allFiltered.filter { it.ingredientList.size <= 5 }
+                        "highest_ranked" -> allFiltered.filter { it.avgRating >= 4 }
+                        "seen_on_tv" -> allFiltered.filter {
+                            it.categoryList.any { category ->
+                                category.name.equals(
+                                    "tv",
+                                    true
+                                )
+                            }
+                        }
+
+                        else -> allFiltered
+                    }
+                } else modifiedRecipes.sortedBy { it.title.lowercase() }
+            }
+
+            Source.MODIFIED -> {
+                modifiedRecipes.sortedBy { it.title.lowercase() }
+            }
+        }
+
+
+    Log.i(
+        "ListRecipeHostScreen", " Listing ${recipesToShow.size} recipes from : $recipeSource \n" +
+                "${recipeViewModel.asianOgRecipes.collectAsState().value.size}  originals " +
+                "\n${userViewModel.modifiedRecipes.collectAsState().value.size} modified"
+    )
+
 
 
     Column(
@@ -56,10 +105,12 @@ fun ListRecipeHostScreen(
         ListRecipeContent(
             onNavigate = { selected ->
                 Log.i("ListRecipeHostScreen", "Clicked recipe: ${selected.title}")
-                viewModel.selectRecipe(selected)
+                recipeViewModel.selectRecipe(selected)
+                userViewModel.selectRecipe(selected)
                 onNavigate()
+
             },
-            recipes = recipesVModel
+            recipes = recipesToShow
         )
     }
 }
@@ -129,13 +180,14 @@ private fun RecipeCard(
                 )
                 RecipeRating(
                     recipe.avgRating,
-                    difficulty = recipe.dificulty
+                    difficulty = recipe.dificulty ?: DificultyEnum.EASY
                 )
             }
         }
     }
 }
 
+//Explains color on recipes ranking
 @Composable
 fun LegendComposable() {
     Row(
@@ -156,17 +208,5 @@ fun LegendComposable() {
             )
             Spacer(Modifier.size(16.dp))
         }
-    }
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewListRecipeHost() {
-    CocinaConCatalinaTheme(darkTheme = false) {
-        ListRecipeHostScreen(
-            onNavigate = {},
-            modifier = Modifier
-        )
     }
 }

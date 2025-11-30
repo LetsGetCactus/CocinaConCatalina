@@ -11,6 +11,7 @@ composeBomVersion = "2025.11.00"
 datastorePreferences = "1.1.7"
 firebaseBom = "34.5.0"
 firebaseBomVersion = "34.4.0"
+firebaseStorageKtx = "21.2.0"
 googleServices = "4.4.4"
 gradle = "8.13.0"
 kotlin = "2.2.21"
@@ -38,6 +39,8 @@ uiToolingPreviewVersion = "1.9.4"
 uiToolingVersion = "1.9.4"
 uiVersion = "1.9.4"
 firebaseFunctionsKtx = "22.1.0"
+firebaseAppcheckPlayintegrity = "19.0.1"
+firebaseAppcheckDebug = "19.0.1"
 
 [libraries]
 activity-compose-v190 = { module = "androidx.activity:activity-compose", version.ref = "androidxActivityCompose" }
@@ -59,6 +62,7 @@ androidx-ui-v160 = { module = "androidx.compose.ui:ui", version.ref = "androidxC
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 coil-compose-v240 = { module = "io.coil-kt:coil-compose", version.ref = "coilComposeVersion" }
 coil-gif = { module = "io.coil-kt:coil-gif", version.ref = "coilGif" }
+com-google-firebase-firebase-storage-ktx = { module = "com.google.firebase:firebase-storage-ktx", version.ref = "firebaseStorageKtx" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-auth = { module = "com.google.firebase:firebase-auth" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
@@ -96,6 +100,8 @@ translate = { module = "com.google.mlkit:translate", version.ref = "translate" }
 ui = { group = "androidx.compose.ui", name = "ui", version.ref = "uiVersion" }
 ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "uiToolingVersion" }
 firebase-functions-ktx = { group = "com.google.firebase", name = "firebase-functions-ktx", version.ref = "firebaseFunctionsKtx" }
+firebase-appcheck-playintegrity = { group = "com.google.firebase", name = "firebase-appcheck-playintegrity", version.ref = "firebaseAppcheckPlayintegrity" }
+firebase-appcheck-debug = { group = "com.google.firebase", name = "firebase-appcheck-debug", version.ref = "firebaseAppcheckDebug" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

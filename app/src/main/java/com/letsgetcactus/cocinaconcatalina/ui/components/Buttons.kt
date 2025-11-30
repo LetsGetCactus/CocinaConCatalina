@@ -132,7 +132,7 @@ fun ButtonRound(
     ) {
         Text(
             text = buttonText,
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.bodyMedium
         )
     }
 }
@@ -152,14 +152,14 @@ fun ButtonPair(
     ) {
         ButtonMain(
             buttonText = textLeft,
-            onNavigate = { onNavigateLeft},
+            onNavigate = { onNavigateLeft()},
             modifier = Modifier.weight(1f)
         )
 
         Spacer(Modifier.size(24.dp))
         ButtonSecondary(
             buttonText =textRight,
-            onNavigate = { onNavigateRight},
+            onNavigate = { onNavigateRight()},
             modifier = Modifier.weight(1f)
         )
     }

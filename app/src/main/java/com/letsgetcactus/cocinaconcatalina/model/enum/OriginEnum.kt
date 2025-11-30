@@ -2,7 +2,7 @@ package com.letsgetcactus.cocinaconcatalina.model.enum
 
 import com.letsgetcactus.cocinaconcatalina.R
 
-enum class OriginEnum(override val enumId: Int, flag: Int): TranslatableEnum {
+enum class OriginEnum(override val enumId: Int, val flag: Int): TranslatableEnum {
     JAPAN(
         R.string.japan,
         R.drawable.japan_flag),
