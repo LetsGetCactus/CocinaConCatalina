@@ -234,8 +234,7 @@ fun AppNavigation(
                             navController.navigate(route)
 
                         },
-                        userViewModel = userViewModel,
-                        recipeViewModel = recipeViewModel,
+
                     )
                 }
 

@@ -68,7 +68,7 @@ object RecipeRepository {
             val ogRecipes = FirebaseConnection.getAsianOriginalRecipes(language)
             val modRecipes = if (!userId.isNullOrBlank()) FirebaseConnection.getUserModifiedRecipes(
                 userId,
-                language
+
             ) else emptyList()
 
             (ogRecipes + modRecipes).sortedBy { it.title.lowercase() }

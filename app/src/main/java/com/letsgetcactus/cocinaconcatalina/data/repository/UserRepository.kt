@@ -98,7 +98,7 @@ object UserRepository {
     fun getCurrentFirebaseUser(): FirebaseUser? {
         val user = firebaseAuth.currentUser
         if (user != null) {
-            Log.i("UserRepository", "Obtained user from Firebase: ${user}")
+            Log.i("UserRepository", "Obtained user from Firebase: $user")
 
             return user
         } else Log.i("UserRepository", "Could not load FirebaseUser")
