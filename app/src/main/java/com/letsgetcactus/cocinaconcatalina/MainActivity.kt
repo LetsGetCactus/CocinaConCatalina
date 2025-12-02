@@ -6,6 +6,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.FirebaseApp
@@ -40,11 +42,18 @@ class MainActivity : ComponentActivity() {
         val userSessionRepo = UserSessionRepository(dataStore)
 
         setContent {
-            CocinaConCatalinaTheme {
-                val navController = rememberNavController()
+            val userViewModel : UserViewModel= viewModel( factory = UserViewModelFactory(userSessionRepo))
+            val recipeViewModel: RecipeViewModel=viewModel(factory = RecipeViewModelFactory())
 
-                val userViewModel : UserViewModel= viewModel( factory = UserViewModelFactory(userSessionRepo))
-                val recipeViewModel: RecipeViewModel=viewModel(factory = RecipeViewModelFactory())
+            CocinaConCatalinaTheme(
+                darkTheme =
+                    when (userViewModel.theme.collectAsState().value) {
+                        "light" -> false
+                        "dark" -> true
+                        else -> isSystemInDarkTheme() // "system"
+                    }
+            ) {
+                val navController = rememberNavController()
 
                 AppNavigation(
                     navController=navController,

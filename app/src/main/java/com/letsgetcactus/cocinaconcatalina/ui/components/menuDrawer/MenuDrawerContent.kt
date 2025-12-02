@@ -9,6 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -101,8 +102,16 @@ fun MenuDrawerComponent(
             DrawerSwitchItem(
                 icon = R.drawable.moon,
                 label = stringResource(R.string.mode),
-                checked = false,
-                onCheckedChange = {}//TODO
+                checked =  when (userViewModel.theme.collectAsState().value){
+                    "dark" -> true
+                    else -> false
+                },
+                onCheckedChange = {
+                    isChecked ->
+                    val newTheme = if (isChecked) "dark" else "light"
+                    userViewModel.uploadUserTheme(newTheme)
+
+                }
             )
 
 

@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -29,10 +30,12 @@ import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
 fun HomeScreen(
     modifier: Modifier = Modifier,
     onNavigate: (String) -> Unit,
+    userViewModel: UserViewModel
 
 ) {
     val orientation = LocalConfiguration.current
-    val isLight = !isSystemInDarkTheme()
+    val isDarkTheme = userViewModel.theme.collectAsState().value
+
 
     Column(
         modifier = modifier
@@ -42,7 +45,7 @@ fun HomeScreen(
     ) {
         if (orientation.orientation == Configuration.ORIENTATION_PORTRAIT) {
             Image(
-                painter = painterResource(if (isLight) R.drawable.banner_blanco else R.drawable.banner_gris),
+                painter = painterResource(if (isDarkTheme == "light") R.drawable.banner_blanco else R.drawable.banner_gris),
                 contentDescription = stringResource(R.string.image_description),
                 contentScale = ContentScale.FillWidth,
                 modifier = Modifier.fillMaxWidth()

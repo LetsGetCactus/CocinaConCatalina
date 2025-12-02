@@ -216,10 +216,10 @@ fun AppNavigation(
                     val sourceName =
                         backStackEntry.arguments?.getString("source") ?: Source.ALL.name
                     val source = try {
-                            Source.valueOf(sourceName)
-                        } catch (e: Exception) {
-                            Source.ALL
-                        }
+                        Source.valueOf(sourceName)
+                    } catch (e: Exception) {
+                        Source.ALL
+                    }
                     val filterShortCut = backStackEntry.arguments?.getString("filter") ?: ""
 
                     ListRecipeHostScreen(
@@ -252,8 +252,8 @@ fun AppNavigation(
                         modifier = Modifier.padding(innerPadding),
                         onNavigate = { route ->
                             navController.navigate(route)
-
                         },
+                        userViewModel = userViewModel
 
                     )
                 }
