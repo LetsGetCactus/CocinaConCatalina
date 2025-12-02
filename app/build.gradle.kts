@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.letsgetcactus.cocinaconcatalina"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
@@ -56,6 +56,8 @@ dependencies {
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.material3)
     implementation(libs.ui)
+    implementation(libs.firebase.appcheck.playintegrity)
+    implementation(libs.firebase.appcheck.debug)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -96,11 +98,14 @@ dependencies {
     debugImplementation(libs.ui.tooling)
 
     //Firebase
-    implementation(platform(libs.firebase.bom.v3440))
-    implementation(libs.firebase.analytics)
-    implementation(libs.firebase.auth)
-    implementation(libs.firebase.firestore)
+    implementation(platform("com.google.firebase:firebase-bom:34.5.0"))
+    implementation("com.google.firebase:firebase-storage")
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore")
     implementation(libs.firebase.functions)
+    implementation(libs.firebase.analytics)
+    implementation("com.google.firebase:firebase-storage")
+
 
     //Coroutines
     implementation(libs.kotlinx.coroutines.play.services)

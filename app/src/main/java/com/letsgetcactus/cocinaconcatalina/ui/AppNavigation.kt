@@ -3,7 +3,6 @@ package com.letsgetcactus.cocinaconcatalina.ui
 import MenuDrawerComponent
 import android.annotation.SuppressLint
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -17,12 +16,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
+import androidx.navigation.navArgument
+import com.letsgetcactus.cocinaconcatalina.data.searchFilters.Source
+import com.letsgetcactus.cocinaconcatalina.data.searchFilters.onSearchSubmit
 import com.letsgetcactus.cocinaconcatalina.ui.components.bars.BottomBarComposable
 import com.letsgetcactus.cocinaconcatalina.ui.screens.AddRecipeScreen
 import com.letsgetcactus.cocinaconcatalina.ui.screens.FavouritesScreen
@@ -41,24 +41,25 @@ import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
 
 
-/*
-* AppNavigation contains NAvHost which establishes the possible routes (NavigationRoutes) each screen could go
-* also integrates the TopAppBar and BottomAppBar in the screens that need them
-*/
+/**
+ * AppNavigation contains NAvHost which establishes the possible routes (NavigationRoutes) each screen could go
+ * also integrates the TopAppBar and BottomAppBar in the screens that need them
+ */
 @SuppressLint("ConfigurationScreenWidthHeight")
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppNavigation(
     navController: NavHostController,
     startDestination: String,
-    userViewModel: UserViewModel
+    userViewModel: UserViewModel,
+    recipeViewModel: RecipeViewModel
 ) {
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
-    val recipeViewModel: RecipeViewModel=viewModel()
+
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -68,7 +69,7 @@ fun AppNavigation(
                 navController = navController,
                 userViewModel = userViewModel,
                 modifier = Modifier.width(LocalConfiguration.current.screenWidthDp.dp * 0.7f),
-                drawerState= drawerState
+                drawerState = drawerState
             )
 
         }
@@ -91,7 +92,45 @@ fun AppNavigation(
                                 drawerState.open()
                             }
                         },
-                        onSearchChanged = {}
+                        onSearchChanged = { query ->
+                            val currentRoute = navBackStackEntry?.destination?.route
+                            //This will gt the actual screen and send the query of the Searchbar to the view models
+                            when (currentRoute) {
+                                NavigationRoutes.LIST_RECIPES_HOST_SCREEN -> {
+                                    val sourceName =
+                                        navBackStackEntry?.arguments?.getString("source")
+                                            ?: Source.ALL.name
+                                    val source = try {
+                                        Source.valueOf(sourceName)
+                                    } catch (e: Exception) {
+                                        Source.ALL
+                                    }
+                                    onSearchSubmit(query, source, recipeViewModel, userViewModel)
+                                }
+
+                                NavigationRoutes.FAVS_SCREEN -> userViewModel.search(query)
+                                NavigationRoutes.HOME_SCREEN -> {
+                                    onSearchSubmit(
+                                        query,
+                                        Source.ALL,
+                                        recipeViewModel,
+                                        userViewModel
+                                    )
+                                }
+
+                                NavigationRoutes.ITEM_RECIPE_SCREEN -> {
+                                    navController.popBackStack()
+                                    onSearchSubmit(
+                                        query,
+                                        Source.ALL,
+                                        recipeViewModel,
+                                        userViewModel
+                                    )
+                                }
+                            }
+                        },
+                        userViewModel = userViewModel,
+                        recipeViewModel = recipeViewModel
                     )
                 }
             },
@@ -134,7 +173,7 @@ fun AppNavigation(
                 composable(NavigationRoutes.REGISTER_SCREEN) {
                     RegisterScreen(
                         navController = navController,
-                        userViewModel=userViewModel
+                        userViewModel = userViewModel
                     )
                 }
                 composable(NavigationRoutes.ADD_RECIPE_SCREEN) {
@@ -144,8 +183,8 @@ fun AppNavigation(
                             navController.navigate(route)
 
                         },
-                        userViewModel= userViewModel,
-                        recipeViewModel=recipeViewModel
+                        userViewModel = userViewModel,
+                        recipeViewModel = recipeViewModel
                     )
 
                 }
@@ -153,8 +192,7 @@ fun AppNavigation(
                     FavouritesScreen(
                         modifier = Modifier.padding(innerPadding),
                         userViewModel = userViewModel,
-                        onNavigate = {
-                            route ->
+                        onNavigate = { route ->
                             navController.navigate(route)
                         },
                         navController = navController
@@ -166,24 +204,40 @@ fun AppNavigation(
                         onNavigate = { route -> navController.navigate(route) },
                         navController = navController,
                         userViewModel = userViewModel,
-                        recipeViewModel= recipeViewModel,
+                        recipeViewModel = recipeViewModel,
                     )
                 }
-                composable(NavigationRoutes.LIST_RECIPES_HOST_SCREEN) {
+                composable(
+                    route = NavigationRoutes.LIST_RECIPES_HOST_SCREEN + "?source={source}&filter={filter}",
+                    arguments = listOf(
+                        navArgument("source") { defaultValue = Source.ALL.name },
+                        navArgument("filter") { defaultValue = "ALL" })
+                ) { backStackEntry ->
+                    val sourceName =
+                        backStackEntry.arguments?.getString("source") ?: Source.ALL.name
+                    val source = try {
+                        Source.valueOf(sourceName)
+                    } catch (e: Exception) {
+                        Source.ALL
+                    }
+                    val filterShortCut = backStackEntry.arguments?.getString("filter") ?: ""
+
                     ListRecipeHostScreen(
                         modifier = Modifier.padding(innerPadding),
                         onNavigate = { navController.navigate(NavigationRoutes.ITEM_RECIPE_SCREEN) },
                         userViewModel = userViewModel,
-                        recipeViewModel= recipeViewModel,
+                        recipeViewModel = recipeViewModel,
+                        recipeSource = source,
+                        filterShortCut = filterShortCut
                     )
                 }
                 composable(NavigationRoutes.MODIFIED_SCREEN) {
                     ModifyRecipeScreen(
                         userViewModel = userViewModel,
-                        recipeViewModel= recipeViewModel,
+                        recipeViewModel = recipeViewModel,
                         onNavigate = { route -> navController.navigate(route) },
                         navController = navController
-                        )
+                    )
                 }
                 composable(NavigationRoutes.TERMS_CONDITIONS_SCREEN) {
                     TermsAndConditionsScreen(
@@ -198,17 +252,18 @@ fun AppNavigation(
                         modifier = Modifier.padding(innerPadding),
                         onNavigate = { route ->
                             navController.navigate(route)
-
                         },
-                        userViewModel = userViewModel,
-                        recipeViewModel= recipeViewModel,
-                        )
+                        userViewModel = userViewModel
+
+                    )
                 }
 
                 composable(NavigationRoutes.FILTER_SCREEN) {
                     FilterScreen(
-                        onSearchClick = { },
-                        recipeViewModel= recipeViewModel
+                        recipeViewModel = recipeViewModel,
+                        userViewModel = userViewModel,
+                        recipeSource = Source.ALL,
+                        navControler = navController
                     )
                 }
 

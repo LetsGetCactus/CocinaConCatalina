@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
+import com.letsgetcactus.cocinaconcatalina.data.searchFilters.Source
 import com.letsgetcactus.cocinaconcatalina.model.Recipe
 import com.letsgetcactus.cocinaconcatalina.model.enum.DificultyEnum
 import com.letsgetcactus.cocinaconcatalina.ui.components.ImageAndTextComponent
@@ -34,16 +35,67 @@ import com.letsgetcactus.cocinaconcatalina.ui.components.RecipeRating
 import com.letsgetcactus.cocinaconcatalina.viewmodel.RecipeViewModel
 import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
 
+
 @Composable
 fun ListRecipeHostScreen(
     modifier: Modifier = Modifier,
+    recipeSource: Source,
+    filterShortCut: String = "",
     onNavigate: () -> Unit,
-    userViewModel : UserViewModel,
-    recipeViewModel : RecipeViewModel,
+    userViewModel: UserViewModel,
+    recipeViewModel: RecipeViewModel,
 ) {
 
-    val recipesVModel by recipeViewModel.asianOgRecipes.collectAsState()
-    val userRecipesVModel by userViewModel.userRecipes.collectAsState()
+    //All possible lists:
+    val searchQuery by recipeViewModel.searchQuery.collectAsState()
+    val userSearchQuery by userViewModel.searchQuery.collectAsState()
+
+    val asianOgRecipesFiltered = if (searchQuery.isNotBlank()) recipeViewModel.filteredRecipes.collectAsState().value else recipeViewModel.asianOgRecipes.collectAsState().value
+    val modifiedRecipesFiltered = if (userSearchQuery.isNotBlank()) userViewModel.filteredUserRecipes.collectAsState().value else userViewModel.modifiedRecipes.collectAsState().value
+    val allFiltered = asianOgRecipesFiltered + modifiedRecipesFiltered
+
+    //When to be shown (by source demand)
+    val recipesToShow: List<Recipe> =
+        when (recipeSource) {
+            Source.ALL -> {
+                allFiltered.sortedBy { it.title.lowercase() }
+            }
+
+            Source.ASIAN_OG -> {
+                asianOgRecipesFiltered.sortedBy { it.title.lowercase() }
+            }
+
+            Source.FILTERED -> {
+                if (filterShortCut.isNotEmpty()) {
+                    when (filterShortCut) {
+                        "less_five_ingredients" -> allFiltered.filter { it.ingredientList.size <= 5 }
+                        "highest_ranked" -> allFiltered.filter { it.avgRating >= 4 }
+                        "seen_on_tv" -> allFiltered.filter {
+                            it.categoryList.any { category ->
+                                category.name.equals(
+                                    "tv",
+                                    true
+                                )
+                            }
+                        }
+
+                        else -> allFiltered
+                    }
+                } else allFiltered.sortedBy { it.title.lowercase() }
+            }
+
+            Source.MODIFIED -> {
+                modifiedRecipesFiltered.sortedBy { it.title.lowercase() }
+            }
+        }
+
+
+    Log.i(
+        "ListRecipeHostScreen", " Listing ${recipesToShow.size} recipes from : $recipeSource \n" +
+                "${recipeViewModel.asianOgRecipes.collectAsState().value.size}  originals " +
+                "\n${userViewModel.modifiedRecipes.collectAsState().value.size} modified"
+    )
+
 
 
     Column(
@@ -55,9 +107,11 @@ fun ListRecipeHostScreen(
             onNavigate = { selected ->
                 Log.i("ListRecipeHostScreen", "Clicked recipe: ${selected.title}")
                 recipeViewModel.selectRecipe(selected)
+                userViewModel.selectRecipe(selected)
                 onNavigate()
+
             },
-            recipes = recipesVModel + userRecipesVModel
+            recipes = recipesToShow
         )
     }
 }

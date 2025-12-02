@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -19,7 +20,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.letsgetcactus.cocinaconcatalina.R
-import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
+import com.letsgetcactus.cocinaconcatalina.ui.NavigationRoutes
+import com.letsgetcactus.cocinaconcatalina.data.searchFilters.Source
 import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonRound
 import com.letsgetcactus.cocinaconcatalina.viewmodel.RecipeViewModel
 import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
@@ -28,11 +30,12 @@ import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
 fun HomeScreen(
     modifier: Modifier = Modifier,
     onNavigate: (String) -> Unit,
-    userViewModel: UserViewModel,
-    recipeViewModel: RecipeViewModel
+    userViewModel: UserViewModel
+
 ) {
     val orientation = LocalConfiguration.current
-    val isLight = !isSystemInDarkTheme()
+    val isDarkTheme = userViewModel.theme.collectAsState().value
+
 
     Column(
         modifier = modifier
@@ -42,7 +45,7 @@ fun HomeScreen(
     ) {
         if (orientation.orientation == Configuration.ORIENTATION_PORTRAIT) {
             Image(
-                painter = painterResource(if (isLight) R.drawable.banner_blanco else R.drawable.banner_gris),
+                painter = painterResource(if (isDarkTheme == "light") R.drawable.banner_blanco else R.drawable.banner_gris),
                 contentDescription = stringResource(R.string.image_description),
                 contentScale = ContentScale.FillWidth,
                 modifier = Modifier.fillMaxWidth()
@@ -53,7 +56,7 @@ fun HomeScreen(
 
         ButtonRound(
             buttonText = stringResource(R.string.allRecipes),
-            onNavigate = { onNavigate(NavigationRoutes.LIST_RECIPES_HOST_SCREEN)}
+            onNavigate = { onNavigate(NavigationRoutes.LIST_RECIPES_HOST_SCREEN+"?source=${Source.ALL.name}")}
         )
 
         Spacer(modifier = Modifier.size(32.dp))
@@ -61,8 +64,8 @@ fun HomeScreen(
         ButtonRound(
             buttonText = stringResource(R.string.recipes_five_ingr),
             onNavigate = {
-                onNavigate(NavigationRoutes.LIST_RECIPES_HOST_SCREEN)
-            //TODO filter by ingredients
+                onNavigate(NavigationRoutes.LIST_RECIPES_HOST_SCREEN + "?source=${Source.FILTERED.name}&filter=less_five_ingredients")
+
         }
         )
 
@@ -71,8 +74,17 @@ fun HomeScreen(
         ButtonRound(
             buttonText = stringResource(R.string.recipes_high_rating),
             onNavigate = {
-                onNavigate(NavigationRoutes.LIST_RECIPES_HOST_SCREEN)
-            //TODO filter by avgRating > 4
+                onNavigate(NavigationRoutes.LIST_RECIPES_HOST_SCREEN+"?source=${Source.FILTERED.name}&filter=highest_ranked")
+
+            }
+        )
+
+        Spacer(modifier = Modifier.size(32.dp))
+
+        ButtonRound(
+            buttonText = stringResource(R.string.seen_on_tv),
+            onNavigate = {
+                onNavigate(NavigationRoutes.LIST_RECIPES_HOST_SCREEN+"?source=${Source.FILTERED.name}&filter=seen_on_tv")
             }
         )
     }

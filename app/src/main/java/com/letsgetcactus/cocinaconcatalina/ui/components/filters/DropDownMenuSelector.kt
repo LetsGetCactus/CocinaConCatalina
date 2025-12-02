@@ -72,7 +72,7 @@ fun PreviewDropDownMenu() {
     var selected by remember { mutableStateOf<DificultyEnum?>(null) }
 
     DropDownMenuSelector(
-        options = DificultyEnum.values(),
+        options = DificultyEnum.entries.toTypedArray(),
         selected = selected,
         onSelect = { selected = it },
         placeholder = "Choose here"

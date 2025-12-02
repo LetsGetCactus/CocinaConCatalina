@@ -1,12 +1,13 @@
 package com.letsgetcactus.cocinaconcatalina.viewmodel
 
+import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.letsgetcactus.cocinaconcatalina.model.Recipe
-import com.letsgetcactus.cocinaconcatalina.data.FirebaseConnection
+import com.letsgetcactus.cocinaconcatalina.data.repository.RecipeRepository
 import com.letsgetcactus.cocinaconcatalina.model.enum.AllergenEnum
 import com.letsgetcactus.cocinaconcatalina.model.enum.DificultyEnum
 import com.letsgetcactus.cocinaconcatalina.model.enum.DishTypeEnum
@@ -22,10 +23,14 @@ import java.util.Locale
 
 
 /**
-This class will load the data from Firebase and export it in the UI, updating them whenever they change
+ * This class will load the data from Firebase asianOriginalRecipies
+ * and export it in the UI, updating them whenever they change
+ * Filters, searchs, selects and resets on asianOriginals
  */
-class RecipeViewModel(): ViewModel() {
-    //All recipes
+class RecipeViewModel(
+    private val recipeRepository: RecipeRepository
+): ViewModel() {
+    //All recipes (og)
     private val _asianOgRecipes = MutableStateFlow<List<Recipe>>(emptyList())
     val asianOgRecipes: StateFlow<List<Recipe>> = _asianOgRecipes.asStateFlow()
 
@@ -41,7 +46,7 @@ class RecipeViewModel(): ViewModel() {
     private val _selectedRecipe = MutableStateFlow<Recipe?>(null)
     val selectedRecipe: StateFlow<Recipe?> = _selectedRecipe.asStateFlow() //This will read the ItemRecipeScreen
 
-    //For filters to be applied
+    //For active filters
     private val _activeFilter = MutableStateFlow(RecipeSearchFilters())
     val activeFilter = _activeFilter.asStateFlow()
 
@@ -55,24 +60,16 @@ class RecipeViewModel(): ViewModel() {
      */
     fun loadAsianOgRecipes(language: String = Locale.getDefault().language ) {
         viewModelScope.launch {
-            val result = FirebaseConnection.getAsianOriginalRecipes(language)
+            val result = recipeRepository.getAllAsianOriginalRecipes(language)
             _asianOgRecipes.value = result.sortedBy { it.title.lowercase() }
-            filterRecipes()
+
+            if (result.isNotEmpty()) filterRecipes()
 
             Log.i(
                 "RecipeViewModel",
                 "Obtained ${result.size}} recipes in ${Locale.getDefault().language}"
             )
         }
-    }
-
-    /**
-     * Gets query from searchBar and applyes it to filterRecipes to obtain recipes from it
-     * @param query to search for on Recipes
-     */
-    fun setSearchBar(query: String){
-        _searchQuery.value=query
-        filterRecipes()
     }
 
     /**
@@ -119,12 +116,17 @@ class RecipeViewModel(): ViewModel() {
      * (Filter engine)
      */
     private fun filterRecipes(){
+
+        Log.i("RecipeViewModel", "Filtering with: ${_activeFilter.value}")
         val filteredResultRecipes = RecipeFiltersEngine.applyFilters(
             recipes = _asianOgRecipes.value,
             filter = _activeFilter.value
         ).sortedBy { it.title.lowercase() }
 
         _filteredRecipes.value = filteredResultRecipes
+        Log.i(
+            "RecipeViewModel","Filtered result count: ${filteredResultRecipes.size}"
+        )
     }
 
     /**
@@ -151,9 +153,9 @@ class RecipeViewModel(): ViewModel() {
      * @param recipe to be uploaded
      */
     @RequiresApi(Build.VERSION_CODES.O)
-    suspend fun addRecipe(recipe: Recipe): Boolean{
-        FirebaseConnection.uploadRecipeAndTranslations(recipe, Locale.getDefault().language)
-        return true
+    suspend fun addRecipe(recipe: Recipe, img: Uri?){
+        recipeRepository.addRecipeToDB(recipe,img)
+        Log.i("REcipeViewModel","Sent recipe $recipe to Repo")
     }
 
 

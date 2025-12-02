@@ -2,31 +2,48 @@ package com.letsgetcactus.cocinaconcatalina.ui.screens
 
 import DropDownMenuSelector
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.letsgetcactus.cocinaconcatalina.R
 import com.letsgetcactus.cocinaconcatalina.model.enum.AllergenEnum
 import com.letsgetcactus.cocinaconcatalina.model.enum.DificultyEnum
 import com.letsgetcactus.cocinaconcatalina.model.enum.DishTypeEnum
 import com.letsgetcactus.cocinaconcatalina.model.enum.OriginEnum
+import com.letsgetcactus.cocinaconcatalina.data.searchFilters.Source
+import com.letsgetcactus.cocinaconcatalina.ui.NavigationRoutes
 import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonMain
 import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonSecondary
 import com.letsgetcactus.cocinaconcatalina.ui.components.filters.AllergenIconsSelector
 import com.letsgetcactus.cocinaconcatalina.ui.components.filters.ChipSelector
 import com.letsgetcactus.cocinaconcatalina.ui.components.filters.SliderSelector
 import com.letsgetcactus.cocinaconcatalina.viewmodel.RecipeViewModel
+import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
 
 @Composable
 fun FilterScreen(
-    onSearchClick: () -> Unit,
-    recipeViewModel: RecipeViewModel
+    recipeSource: Source,
+    navControler: NavController,
+    recipeViewModel: RecipeViewModel,
+    userViewModel: UserViewModel
 ) {
     // States
     var selectedOrigin: OriginEnum? by remember { mutableStateOf(null) }
@@ -60,7 +77,7 @@ fun FilterScreen(
 
             // Origin
             DropDownMenuSelector(
-                options = OriginEnum.values(),
+                options = OriginEnum.entries.toTypedArray(),
                 selected = selectedOrigin,
                 onSelect = { selectedOrigin = it },
                 placeholder = stringResource(R.string.origin),
@@ -84,11 +101,11 @@ fun FilterScreen(
             ChipSelector(
                 modifier = Modifier.fillMaxWidth(),
                 title = stringResource(R.string.level_dif),
-                options = DificultyEnum.values().map { it.name },
+                options = DificultyEnum.entries.map { it.name },
                 selectedOptions = selectedDifficulty?.let { setOf(it.name) } ?: emptySet(),
                 onSelectionChanged = { selectedNames ->
                     selectedDifficulty =
-                        DificultyEnum.values().firstOrNull { it.name in selectedNames }
+                        DificultyEnum.entries.firstOrNull { it.name in selectedNames }
                 },
                 singleSelection = true
             )
@@ -151,16 +168,60 @@ fun FilterScreen(
                 ButtonMain(
                     buttonText = stringResource(R.string.search),
                     onNavigate = {
-                        recipeViewModel.setFilters(
-                            origin = selectedOrigin,
-                            dishType = selectedDishType,
-                            difficulty = selectedDifficulty,
-                            prepTime = prepTime.toInt(),
-                            maxIngredients = maxIngredients.toInt(),
-                            rating = rating.toInt(),
-                            allergens = selectedAllergens.filter { it.value }.keys.toList()
-                        )
-                        onSearchClick()
+                        val allergenSelected = selectedAllergens.filter { it.value }.keys.toList()
+                        when (recipeSource) {
+                            Source.ASIAN_OG -> {
+                                recipeViewModel.setFilters(
+                                    origin = selectedOrigin,
+                                    dishType = selectedDishType,
+                                    difficulty = selectedDifficulty,
+                                    prepTime = prepTime.toInt(),
+                                    maxIngredients = maxIngredients.toInt(),
+                                    rating = rating.toInt(),
+                                    allergens = allergenSelected
+                                )
+                                recipeViewModel.search(recipeViewModel.searchQuery.value)
+                            }
+
+                            Source.MODIFIED -> {
+                                userViewModel.setFilters(
+                                    origin = selectedOrigin,
+                                    dishType = selectedDishType,
+                                    difficulty = selectedDifficulty,
+                                    prepTime = prepTime.toInt(),
+                                    maxIngredients = maxIngredients.toInt(),
+                                    rating = rating.toInt(),
+                                    allergens = allergenSelected
+                                )
+                                userViewModel.search(userViewModel.searchQuery.value)
+                            }
+
+                            Source.ALL, Source.FILTERED -> {
+                                userViewModel.setFilters(
+                                    origin = selectedOrigin,
+                                    dishType = selectedDishType,
+                                    difficulty = selectedDifficulty,
+                                    prepTime = prepTime.toInt(),
+                                    maxIngredients = maxIngredients.toInt(),
+                                    rating = rating.toInt(),
+                                    allergens = allergenSelected
+                                )
+                                userViewModel.search(userViewModel.searchQuery.value)
+
+                                recipeViewModel.setFilters(
+                                    origin = selectedOrigin,
+                                    dishType = selectedDishType,
+                                    difficulty = selectedDifficulty,
+                                    prepTime = prepTime.toInt(),
+                                    maxIngredients = maxIngredients.toInt(),
+                                    rating = rating.toInt(),
+                                    allergens = allergenSelected
+                                )
+                                recipeViewModel.search(recipeViewModel.searchQuery.value)
+                            }
+                        }
+
+                        navControler.navigate(NavigationRoutes.LIST_RECIPES_HOST_SCREEN+"?source=FILTERED")
                     },
                     modifier = Modifier.weight(1f)
                 )
@@ -174,7 +235,15 @@ fun FilterScreen(
                         maxIngredients = 0f
                         rating = 0f
                         selectedAllergens = AllergenEnum.entries.associateWith { false }
-                        recipeViewModel.resetFilters()
+
+                        when (recipeSource) {
+                            Source.ASIAN_OG -> recipeViewModel.resetFilters()
+                            Source.MODIFIED -> userViewModel.resetFilters()
+                            Source.ALL, Source.FILTERED -> {
+                                userViewModel.resetFilters()
+                                recipeViewModel.resetFilters()
+                            }
+                        }
                     },
                     modifier = Modifier.weight(1f)
                 )

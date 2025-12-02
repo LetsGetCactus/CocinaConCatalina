@@ -40,7 +40,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.letsgetcactus.cocinaconcatalina.R
 import com.letsgetcactus.cocinaconcatalina.data.mapper.OriginMapper
-import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
+import com.letsgetcactus.cocinaconcatalina.ui.NavigationRoutes
 import com.letsgetcactus.cocinaconcatalina.model.Recipe
 import com.letsgetcactus.cocinaconcatalina.model.enum.OriginEnum
 import com.letsgetcactus.cocinaconcatalina.ui.components.BackStackButton
