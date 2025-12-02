@@ -13,3 +13,16 @@
 .externalNativeBuild
 .cxx
 local.properties
+/secret/.env
+/functions/.env.bak
+/secret/.env.bak
+/functions/.gcloudignore
+/functions/.gcloudignore.bak
+/functions/.gitignore
+/functions/.gitignore.bak
+/.gitignore.bak
+/functions/cocinaconcatarina-f6667-c8582abcf99c.json
+/secret/cocinaconcatarina-f6667-c8582abcf99c.json
+/firebase.json.bak
+/functions/index.js.bak
+/functions/package.json.bak
