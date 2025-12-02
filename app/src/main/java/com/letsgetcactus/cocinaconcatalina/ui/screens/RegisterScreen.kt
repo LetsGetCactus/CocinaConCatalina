@@ -39,7 +39,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.letsgetcactus.cocinaconcatalina.R
-import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
+import com.letsgetcactus.cocinaconcatalina.ui.NavigationRoutes
 import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonGoogle
 import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonMain
 import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonSecondary
@@ -286,7 +286,7 @@ fun RegisterScreen(
                         } else {
 
                             val success = userViewModel.register(name, email, pass)
-                            if (success) {
+                            if (success != null) {
                                 navController.navigate(NavigationRoutes.HOME_SCREEN) {
                                     popUpTo(NavigationRoutes.REGISTER_SCREEN) { inclusive = true }
                                 }

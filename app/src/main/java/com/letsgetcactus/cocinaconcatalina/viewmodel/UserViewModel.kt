@@ -3,27 +3,25 @@ package com.letsgetcactus.cocinaconcatalina.viewmodel
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.letsgetcactus.cocinaconcatalina.data.repository.UserSessionRepository
-import com.letsgetcactus.cocinaconcatalina.data.repository.UserRepository
 import com.letsgetcactus.cocinaconcatalina.data.mapper.OriginMapper
+import com.letsgetcactus.cocinaconcatalina.data.repository.UserRepository
+import com.letsgetcactus.cocinaconcatalina.data.repository.UserSessionRepository
+import com.letsgetcactus.cocinaconcatalina.data.searchFilters.RecipeFiltersEngine
+import com.letsgetcactus.cocinaconcatalina.data.searchFilters.RecipeSearchFilters
 import com.letsgetcactus.cocinaconcatalina.model.Recipe
 import com.letsgetcactus.cocinaconcatalina.model.User
 import com.letsgetcactus.cocinaconcatalina.model.enum.AllergenEnum
 import com.letsgetcactus.cocinaconcatalina.model.enum.DificultyEnum
 import com.letsgetcactus.cocinaconcatalina.model.enum.DishTypeEnum
 import com.letsgetcactus.cocinaconcatalina.model.enum.OriginEnum
-import com.letsgetcactus.cocinaconcatalina.data.searchFilters.RecipeFiltersEngine
-import com.letsgetcactus.cocinaconcatalina.data.searchFilters.RecipeSearchFilters
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.util.Locale
 
 /**
  * Controls login(), logout() and register()
@@ -54,16 +52,16 @@ class UserViewModel(
     private val _currentUser = MutableStateFlow<User?>(null)
     val currentUser = _currentUser.asStateFlow()
 
-    //For favs and mod Recipes
+    //For mod and favs Recipes
+    private val _modifiedRecipes = MutableStateFlow<List<Recipe>>(emptyList())
+    val modifiedRecipes = _modifiedRecipes.asStateFlow()
+
     private val _favouriteRecipes = MutableStateFlow<List<Recipe>>(emptyList())
     val favouriteRecipe = _favouriteRecipes.asStateFlow()
 
     // Favs filtered by chip
     private val _filteredFavourites = MutableStateFlow<List<Recipe>>(emptyList())
     val filteredFavourites = _filteredFavourites.asStateFlow()
-
-    private val _modifiedRecipes = MutableStateFlow<List<Recipe>>(emptyList())
-    val modifiedRecipes = _modifiedRecipes.asStateFlow()
 
     // Both user recipes (favs + mod)
     private val _userRecipes = MutableStateFlow<List<Recipe>>(emptyList())
@@ -86,6 +84,7 @@ class UserViewModel(
 
     init {
         restoreSessionFromDataStore()
+
     }
 
     /**
@@ -148,7 +147,6 @@ class UserViewModel(
      * @param password: user's password
      * @return boolean whether the user has being succesfully registered or not
      */
-    @RequiresApi(Build.VERSION_CODES.O)
     suspend fun register(name: String, email: String, password: String): Boolean {
         val newUser = UserRepository.register(name, email, password)
 
@@ -231,6 +229,38 @@ class UserViewModel(
         }
     }
 
+    /**
+     * To call for deleting user's data in the whole app
+     * @return True if user was correctly deleted, False if not
+     */
+    fun deleteUser(onSuccess: (Boolean) -> Unit = {}) {
+        val userId = _currentUser.value?.id ?: run {
+            onSuccess(false)
+            return
+        }
+
+        viewModelScope.launch {
+            try {
+                val deleted = userRepo.deleteUserCompletely(userId)
+                if (deleted) {
+                    userRepo.logOut()
+                    userSessionRepo.clearUserSession()
+
+                    clearAllUserData()
+                    _isLoggedIn.value = false
+
+                    onSuccess(true)
+                } else {
+                    onSuccess(false)
+                }
+            } catch (e: Exception) {
+                Log.e("UserViewModel", "Error deleting user", e)
+                onSuccess(false)
+            }
+        }
+
+    }
+
     //Updates for lang and theme
     /**
      * Saves a new language for the user
@@ -265,7 +295,7 @@ class UserViewModel(
 
         val favs = UserRepository.getAllFavouriteRecipeIds(user.id)
         _favouriteRecipes.value = favs.sortedBy { it.title }
-        Log.i("UserViewModel","Loaded ${favs.size} recipes from favourites: \n $favs")
+        Log.i("UserViewModel", "Loaded ${favs.size} recipes from favourites: \n $favs")
     }
 
 
@@ -284,15 +314,15 @@ class UserViewModel(
             if (isFavourite(recipe.id)) {
                 UserRepository.removeRecipeFromFavourites(user.id, recipe.id)
                 currentFavs.removeAll { it.id == recipe.id }
-                Log.i("UserViewModel","Removed from favourites")
+                Log.i("UserViewModel", "Removed from favourites")
             } else {
                 UserRepository.addRecipeToFavourites(user.id, recipe.id)
                 currentFavs.add(recipe)
-                Log.i("UserViewModel","Saved in favourites")
+                Log.i("UserViewModel", "Saved in favourites")
             }
 
             _favouriteRecipes.value = currentFavs //Updates StateFLow
-            allTogetherUserRecipes()
+            allTogetherUserRecipes() //deberia ser loadFavorites?
         }
 
 
@@ -309,7 +339,7 @@ class UserViewModel(
      * For applying the filter by chips on FavouriteScreen
      * @param origin for the recipes to have for being shown
      */
-    fun filterByChipOnFavourites(origin: OriginEnum?){
+    fun filterByChipOnFavourites(origin: OriginEnum?) {
         _filteredFavourites.value = if (origin == null) {
             _favouriteRecipes.value
         } else {
@@ -325,9 +355,23 @@ class UserViewModel(
      * To upload a new modified recipe to user's subcollection
      * @param recipe for the new modified Recipe to save
      */
-    suspend fun saveModifiedRecipe(recipe: Recipe){
-        val user= _currentUser.value?.id ?: return
-        userRepo.addModifiedRecipe(user,recipe)
+    suspend fun saveModifiedRecipe(recipe: Recipe) {
+        val user = _currentUser.value?.id ?: return
+        userRepo.addModifiedRecipe(user, recipe)
+
+        //actualizamos ListRecipe sin duplicar
+        val currentList = _modifiedRecipes.value.toMutableList()
+        val index = currentList.indexOfFirst { it.id == recipe.id }
+
+        if (index >= 0) {
+            // Reemplazar receta existente
+            currentList[index] = recipe
+        } else {
+            // Añadir nueva receta
+            currentList.add(recipe)
+        }
+
+        _modifiedRecipes.value = currentList
     }
 
 
@@ -335,11 +379,11 @@ class UserViewModel(
      * To get all modified recipes from user's subcollection
      */
     private suspend fun loadModified() {
-        val user = _currentUser.value ?: return
+        val user = _currentUser.value?.id ?: return
 
-        val modifiedRecipes = UserRepository.getAllModifiedRecipes(user.id)
+        val modifiedRecipes = UserRepository.getAllModifiedRecipes(user)
         _modifiedRecipes.value = modifiedRecipes.sortedBy { it.title }
-        Log.i("UserViewModel","Loaded ${modifiedRecipes.size} recipes from modifiedRecipes")
+        Log.i("UserViewModel", "Loaded ${modifiedRecipes.size} recipes from modifiedRecipes")
 
     }
 
@@ -360,7 +404,7 @@ class UserViewModel(
 
         _userRecipes.value = allUserRecipes
         filterRecipes()
-        Log.i("UserViewModel","Loaded ${allUserRecipes.size} recipes from users subcollection")
+        Log.i("UserViewModel", "Loaded ${allUserRecipes.size} recipes from users subcollection")
     }
 
 
@@ -388,7 +432,7 @@ class UserViewModel(
             query = _searchQuery.value
         )
         filterRecipes()
-        Log.i("UserViewModel","Set filters in search")
+        Log.i("UserViewModel", "Set filters in search")
     }
 
     /**
@@ -411,7 +455,7 @@ class UserViewModel(
         _searchQuery.value = query
         _activeFilter.value = _activeFilter.value.copy(query = query)
         filterRecipes()
-        Log.i("UserViewModel","Searching..")
+        Log.i("UserViewModel", "Searching..")
     }
 
     /**
@@ -421,7 +465,7 @@ class UserViewModel(
         _activeFilter.value = RecipeSearchFilters()
         _searchQuery.value = ""
         filterRecipes()
-        Log.i("UserViewModel","Reseting search filters")
+        Log.i("UserViewModel", "Reseting search filters")
     }
 
 

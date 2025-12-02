@@ -1,5 +1,7 @@
 package com.letsgetcactus.cocinaconcatalina.data.repository
 
+import android.annotation.SuppressLint
+import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -14,10 +16,9 @@ object RecipeRepository {
 
 
     /**
-     * Gets all modified recipes from the user
-     * This method id called from the menu drawer
-     * @param userId Id from user to obtain his subcollection
-     * @return a list of the user's modified recipes
+     * Gets all original recipes from the db
+     * @param language language to obtain Recipes in
+     * @return a list of all the asian original recipes
      */
     suspend fun getAllAsianOriginalRecipes(language: String): List<Recipe> =
         withContext(Dispatchers.IO) {
@@ -67,7 +68,7 @@ object RecipeRepository {
             val ogRecipes = FirebaseConnection.getAsianOriginalRecipes(language)
             val modRecipes = if (!userId.isNullOrBlank()) FirebaseConnection.getUserModifiedRecipes(
                 userId,
-                language
+
             ) else emptyList()
 
             (ogRecipes + modRecipes).sortedBy { it.title.lowercase() }
@@ -136,5 +137,23 @@ object RecipeRepository {
         }catch (e: Exception){
             Log.e("RecipeRepository","Error trying to save a new recipe to the db",e)
         }
+    }
+
+    /**
+     * Adds a new asian original recipe to the db
+     * @param recipe to be uploaded
+     */
+    @SuppressLint("SuspiciousIndentation")
+    @RequiresApi(Build.VERSION_CODES.O)
+    suspend fun addRecipeToDB(recipe: Recipe, img: Uri?): Boolean{
+        var urlFromStorage= FirebaseConnection.imgToFirestore(img)
+        Log.i("recipeRepository","Got url from storage: $urlFromStorage")
+        if(urlFromStorage!=null)
+        recipe.img=urlFromStorage
+        Log.i("recipeRepository","Sending prepared recipe to firebase $recipe")
+
+        FirebaseConnection.uploadRecipeAndTranslations(recipe, Locale.getDefault().language)
+        //Si no funciona usamos addmodifiedrecipe()
+        return true
     }
 }

@@ -1,7 +1,6 @@
 package com.letsgetcactus.cocinaconcatalina.ui.screens
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -19,14 +18,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.letsgetcactus.cocinaconcatalina.R
-import com.letsgetcactus.cocinaconcatalina.model.NavigationRoutes
+import com.letsgetcactus.cocinaconcatalina.ui.NavigationRoutes
 import com.letsgetcactus.cocinaconcatalina.ui.components.SearchBarComponent
-import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
+import com.letsgetcactus.cocinaconcatalina.viewmodel.RecipeViewModel
+import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -35,6 +33,8 @@ fun TopBarComposable(
     navController: NavController,
     onMenu: () -> Unit,
     onSearchChanged: (String) -> Unit,
+    userViewModel: UserViewModel,
+    recipeViewModel: RecipeViewModel
 
 
     ) {
@@ -67,14 +67,17 @@ fun TopBarComposable(
                     searchQuery = searchQuery,
                     onSearchQueryChange = { query ->
                         searchQuery = query
-                        onSearchChanged(query)
+                        onSearchChanged(query) //This will decide which VMod to use on each screen
                     },
                     onFilterClick = { navController.navigate(NavigationRoutes.FILTER_SCREEN) },
                     onCloseClick = {
                         searchQuery = ""
                         isSearchActive = false
                         onSearchChanged("")
-                    }
+                    },
+                    recipeViewModel = recipeViewModel,
+                    userViewModel = userViewModel,
+                    navController = navController
                 )
             }
         },
@@ -92,18 +95,4 @@ fun TopBarComposable(
             }
         }
     )
-}
-
-@Preview
-@Composable
-fun PreviewTopAppBarComponent() {
-    CocinaConCatalinaTheme(darkTheme = false) {
-        var navController = rememberNavController()
-
-        TopBarComposable(
-            onMenu = {},
-            onSearchChanged = {},
-            navController = navController
-        )
-    }
 }

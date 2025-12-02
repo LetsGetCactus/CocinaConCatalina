@@ -1,4 +1,4 @@
-package com.letsgetcactus.cocinaconcatalina.model
+package com.letsgetcactus.cocinaconcatalina.ui
 
 object NavigationRoutes{
     const val LOGIN_SCREEN = "LoginScreen"
