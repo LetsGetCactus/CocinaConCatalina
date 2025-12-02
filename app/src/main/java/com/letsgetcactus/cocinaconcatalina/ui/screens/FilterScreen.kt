@@ -22,12 +22,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.letsgetcactus.cocinaconcatalina.R
 import com.letsgetcactus.cocinaconcatalina.model.enum.AllergenEnum
 import com.letsgetcactus.cocinaconcatalina.model.enum.DificultyEnum
 import com.letsgetcactus.cocinaconcatalina.model.enum.DishTypeEnum
 import com.letsgetcactus.cocinaconcatalina.model.enum.OriginEnum
 import com.letsgetcactus.cocinaconcatalina.data.searchFilters.Source
+import com.letsgetcactus.cocinaconcatalina.ui.NavigationRoutes
 import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonMain
 import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonSecondary
 import com.letsgetcactus.cocinaconcatalina.ui.components.filters.AllergenIconsSelector
@@ -39,7 +41,7 @@ import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
 @Composable
 fun FilterScreen(
     recipeSource: Source,
-    onSearchClick: () -> Unit,
+    navControler: NavController,
     recipeViewModel: RecipeViewModel,
     userViewModel: UserViewModel
 ) {
@@ -176,8 +178,9 @@ fun FilterScreen(
                                     prepTime = prepTime.toInt(),
                                     maxIngredients = maxIngredients.toInt(),
                                     rating = rating.toInt(),
-                                    allergens = selectedAllergens.filter { it.value }.keys.toList()
+                                    allergens = allergenSelected
                                 )
+                                recipeViewModel.search(recipeViewModel.searchQuery.value)
                             }
 
                             Source.MODIFIED -> {
@@ -188,8 +191,9 @@ fun FilterScreen(
                                     prepTime = prepTime.toInt(),
                                     maxIngredients = maxIngredients.toInt(),
                                     rating = rating.toInt(),
-                                    allergens = selectedAllergens.filter { it.value }.keys.toList()
+                                    allergens = allergenSelected
                                 )
+                                userViewModel.search(userViewModel.searchQuery.value)
                             }
 
                             Source.ALL, Source.FILTERED -> {
@@ -200,8 +204,10 @@ fun FilterScreen(
                                     prepTime = prepTime.toInt(),
                                     maxIngredients = maxIngredients.toInt(),
                                     rating = rating.toInt(),
-                                    allergens = selectedAllergens.filter { it.value }.keys.toList()
+                                    allergens = allergenSelected
                                 )
+                                userViewModel.search(userViewModel.searchQuery.value)
+
                                 recipeViewModel.setFilters(
                                     origin = selectedOrigin,
                                     dishType = selectedDishType,
@@ -209,11 +215,13 @@ fun FilterScreen(
                                     prepTime = prepTime.toInt(),
                                     maxIngredients = maxIngredients.toInt(),
                                     rating = rating.toInt(),
-                                    allergens = selectedAllergens.filter { it.value }.keys.toList()
+                                    allergens = allergenSelected
                                 )
+                                recipeViewModel.search(recipeViewModel.searchQuery.value)
                             }
                         }
-                        onSearchClick()
+
+                        navControler.navigate(NavigationRoutes.LIST_RECIPES_HOST_SCREEN+"?source=FILTERED")
                     },
                     modifier = Modifier.weight(1f)
                 )

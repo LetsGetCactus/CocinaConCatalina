@@ -47,21 +47,22 @@ fun ListRecipeHostScreen(
 ) {
 
     //All possible lists:
-    val asianOgRecipes by recipeViewModel.asianOgRecipes.collectAsState()
-    val modifiedRecipes by userViewModel.modifiedRecipes.collectAsState()
-    val allFiltered =
-        recipeViewModel.filteredRecipes.collectAsState().value + userViewModel.filteredUserRecipes.collectAsState().value
+    val searchQuery by recipeViewModel.searchQuery.collectAsState()
+    val userSearchQuery by userViewModel.searchQuery.collectAsState()
 
+    val asianOgRecipesFiltered = if (searchQuery.isNotBlank()) recipeViewModel.filteredRecipes.collectAsState().value else recipeViewModel.asianOgRecipes.collectAsState().value
+    val modifiedRecipesFiltered = if (userSearchQuery.isNotBlank()) userViewModel.filteredUserRecipes.collectAsState().value else userViewModel.modifiedRecipes.collectAsState().value
+    val allFiltered = asianOgRecipesFiltered + modifiedRecipesFiltered
 
     //When to be shown (by source demand)
     val recipesToShow: List<Recipe> =
         when (recipeSource) {
             Source.ALL -> {
-                (modifiedRecipes + asianOgRecipes).sortedBy { it.title.lowercase() }
+                allFiltered.sortedBy { it.title.lowercase() }
             }
 
             Source.ASIAN_OG -> {
-                asianOgRecipes.sortedBy { it.title.lowercase() }
+                asianOgRecipesFiltered.sortedBy { it.title.lowercase() }
             }
 
             Source.FILTERED -> {
@@ -80,11 +81,11 @@ fun ListRecipeHostScreen(
 
                         else -> allFiltered
                     }
-                } else modifiedRecipes.sortedBy { it.title.lowercase() }
+                } else allFiltered.sortedBy { it.title.lowercase() }
             }
 
             Source.MODIFIED -> {
-                modifiedRecipes.sortedBy { it.title.lowercase() }
+                modifiedRecipesFiltered.sortedBy { it.title.lowercase() }
             }
         }
 

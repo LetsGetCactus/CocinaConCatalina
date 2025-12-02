@@ -94,7 +94,7 @@ fun AppNavigation(
                         },
                         onSearchChanged = { query ->
                             val currentRoute = navBackStackEntry?.destination?.route
-                            //This will gt the actual screen and send the query of the Searchar to the viewmodels
+                            //This will gt the actual screen and send the query of the Searchbar to the view models
                             when (currentRoute) {
                                 NavigationRoutes.LIST_RECIPES_HOST_SCREEN -> {
                                     val sourceName =
@@ -109,8 +109,28 @@ fun AppNavigation(
                                 }
 
                                 NavigationRoutes.FAVS_SCREEN -> userViewModel.search(query)
+                                NavigationRoutes.HOME_SCREEN -> {
+                                    onSearchSubmit(
+                                        query,
+                                        Source.ALL,
+                                        recipeViewModel,
+                                        userViewModel
+                                    )
+                                }
+
+                                NavigationRoutes.ITEM_RECIPE_SCREEN -> {
+                                    navController.popBackStack()
+                                    onSearchSubmit(
+                                        query,
+                                        Source.ALL,
+                                        recipeViewModel,
+                                        userViewModel
+                                    )
+                                }
                             }
-                        }
+                        },
+                        userViewModel = userViewModel,
+                        recipeViewModel = recipeViewModel
                     )
                 }
             },
@@ -191,7 +211,7 @@ fun AppNavigation(
                     route = NavigationRoutes.LIST_RECIPES_HOST_SCREEN + "?source={source}&filter={filter}",
                     arguments = listOf(
                         navArgument("source") { defaultValue = Source.ALL.name },
-                        navArgument("filter") { defaultValue = "" })
+                        navArgument("filter") { defaultValue = "ALL" })
                 ) { backStackEntry ->
                     val sourceName =
                         backStackEntry.arguments?.getString("source") ?: Source.ALL.name
@@ -240,10 +260,10 @@ fun AppNavigation(
 
                 composable(NavigationRoutes.FILTER_SCREEN) {
                     FilterScreen(
-                        onSearchClick = { },
                         recipeViewModel = recipeViewModel,
                         userViewModel = userViewModel,
-                        recipeSource = Source.ALL, //TODO
+                        recipeSource = Source.ALL,
+                        navControler = navController
                     )
                 }
 

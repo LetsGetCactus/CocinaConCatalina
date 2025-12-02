@@ -23,6 +23,8 @@ import androidx.navigation.NavController
 import com.letsgetcactus.cocinaconcatalina.R
 import com.letsgetcactus.cocinaconcatalina.ui.NavigationRoutes
 import com.letsgetcactus.cocinaconcatalina.ui.components.SearchBarComponent
+import com.letsgetcactus.cocinaconcatalina.viewmodel.RecipeViewModel
+import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -31,6 +33,8 @@ fun TopBarComposable(
     navController: NavController,
     onMenu: () -> Unit,
     onSearchChanged: (String) -> Unit,
+    userViewModel: UserViewModel,
+    recipeViewModel: RecipeViewModel
 
 
     ) {
@@ -70,7 +74,10 @@ fun TopBarComposable(
                         searchQuery = ""
                         isSearchActive = false
                         onSearchChanged("")
-                    }
+                    },
+                    recipeViewModel = recipeViewModel,
+                    userViewModel = userViewModel,
+                    navController = navController
                 )
             }
         },
