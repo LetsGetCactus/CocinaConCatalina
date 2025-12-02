@@ -20,6 +20,8 @@ local.properties
 /functions/.gcloudignore.bak
 /functions/.gitignore
 /functions/.gitignore.bak
+/functions
+
 /.gitignore.bak
 /functions/cocinaconcatarina-f6667-c8582abcf99c.json
 /secret/cocinaconcatarina-f6667-c8582abcf99c.json
