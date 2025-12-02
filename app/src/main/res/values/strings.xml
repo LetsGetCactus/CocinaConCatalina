@@ -99,5 +99,8 @@
     <string name="deleteX" translatable="false">X</string>
     <string name="new_step">New step</string>
     <string name="seen_on_tv">Seen on tv</string>
+    <string name="email_info_letsgetcactus">info.letsgetcactus@gmail.com</string>
+    <string name="email_subject">App Cocina con Catalina</string>
+    <string name="email_message">Hello there, Catalina!</string>
 
 </resources>

@@ -95,4 +95,8 @@
     <string name="recipes_five_ingr">Menos de cinco ingredientes</string>
     <string name="recipes_high_rating">Mejor puntutación</string>
     <string name="new_step">Añadir paso</string>
+    <string name="seen_on_tv">Vistos en la tv</string>
+    <string name="email_info_letsgetcactus">info.letsgetcactus@gmail.com</string>
+    <string name="email_subject">App Cocina con Catalina</string>
+    <string name="email_message">¡Hola Catalina!</string>
 </resources>
