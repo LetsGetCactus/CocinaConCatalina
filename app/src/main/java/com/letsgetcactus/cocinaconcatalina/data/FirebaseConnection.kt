@@ -2,10 +2,9 @@ package com.letsgetcactus.cocinaconcatalina.data
 
 
 import android.net.Uri
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.firestore
 import com.google.firebase.functions.FirebaseFunctions
 import com.google.firebase.storage.FirebaseStorage
@@ -152,7 +151,7 @@ object FirebaseConnection {
                 return null
             }
         } catch (e: Exception) {
-            Log.i("FirebaseConnection", "Error on upolading to Storage recipe's img",e)
+            Log.i("FirebaseConnection", "Error on upolading to Storage recipe's img", e)
             return e.message
         }
     }
@@ -165,7 +164,6 @@ object FirebaseConnection {
      * @param originalLanguage for the API to translate into the 2 others
      * @return boolean whether the upload has been successful or not
      */
-    @RequiresApi(Build.VERSION_CODES.O)
     suspend fun uploadRecipeAndTranslations(
         recipe: Recipe,
         originalLanguage: String? = null
@@ -189,9 +187,9 @@ object FirebaseConnection {
                 .call(data)
                 .await()
 
-            Log.i("FirebaseConnection","resultado de la subida= $result")
+            Log.i("FirebaseConnection", "resultado de la subida= $result")
             val response = result.data as? Map<*, *>
-            Log.i("FirebaseConnection","response= $response")
+            Log.i("FirebaseConnection", "response= $response")
             val success = response?.get("success") as? Boolean ?: false
 
             if (!success) {
@@ -248,11 +246,46 @@ object FirebaseConnection {
     }
 
 
+    /**
+     * Deletes all user data in Firebase users collection and Firebase Auth
+     * @param userId Id from the user collection to be deleted
+     * @return Boolean whether data was fully deleted or not
+     */
+    suspend fun deleteUserAccount(userId: String): Boolean {
+        return try {
+            val auth = FirebaseAuth.getInstance()
+
+            val currentUser = auth.currentUser
+            if (currentUser != null && currentUser.uid == userId) {
+
+                val userCollection = db.collection("users")
+                    .document(userId)
+
+                val favs = userCollection.collection("favouriteRecipes").get().await()
+                favs.documents.forEach { it.reference.delete().await() }
+
+                val mods = userCollection.collection("modifiedRecipes").get().await()
+                mods.documents.forEach { it.reference.delete().await() }
+
+
+                userCollection.delete().await()
+
+
+                currentUser.delete().await()
+                true
+            } else {
+                false
+            }
+        }catch (e: Exception){
+            Log.e("FirebaseConnection", "Error deleting user account $userId", e)
+            false
+        }
+    }
+
     //USER'S RECIPES: fav and mod
     /**
      * Gets all modified recipes from user
      * @param userId Id from the user to obtain his subcollection of modified recipes
-     * @param language to get the recipes in that language
      * @return a list of modified recipes by the user or an empty list
      */
     suspend fun getUserModifiedRecipes(
@@ -320,7 +353,7 @@ object FirebaseConnection {
                     Category(id, name)
                 } ?: emptyList()
 
-                // Dificulty
+                // Difficulty
                 val dificulty = (data["dificulty"] as? String)?.let { str ->
                     DificultyEnum.entries.find { it.name == str }
                 } ?: DificultyEnum.EASY
@@ -449,7 +482,6 @@ object FirebaseConnection {
      * @param language to get the recipes in that language
      * @return a list of his fav recipes or empty list if there's none
      */
-    @RequiresApi(Build.VERSION_CODES.O)
     suspend fun getUserFavouriteRecipes(
         userId: String,
         language: String = Locale.getDefault().language

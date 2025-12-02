@@ -1,8 +1,6 @@
 package com.letsgetcactus.cocinaconcatalina.data.repository
 
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -58,7 +56,6 @@ object UserRepository {
      * @param password: user's password that will be hashed to be securely saved into the db
      * @return a boolean describing if the User has been correctly saved or not
      */
-    @RequiresApi(Build.VERSION_CODES.O)
     suspend fun register(name: String, email: String, password: String): User? {
         return try {
             val authResult = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
@@ -103,6 +100,23 @@ object UserRepository {
             return user
         } else Log.i("UserRepository", "Could not load FirebaseUser")
         return null
+    }
+
+    /**
+     * Calls Firebaseconnection to delete all user data
+     * @return True if it deleted all data, false if  not
+     */
+    suspend fun deleteUserCompletely(userId: String): Boolean{
+        return try {
+            val deleted= FirebaseConnection.deleteUserAccount(userId)
+            Log.i("UserRepository","Deleted all user's data $deleted for user $userId")
+
+            true
+        }catch (e: Exception){
+            Log.i("UserRepository","Could not delete all user's data from user $userId",e)
+            false
+
+        }
     }
 
     //FAVS RECIPES

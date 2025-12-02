@@ -99,4 +99,8 @@
     <string name="email_info_letsgetcactus">info.letsgetcactus@gmail.com</string>
     <string name="email_subject">App Cocina con Catalina</string>
     <string name="email_message">¡Hola Catalina!</string>
+    <string name="delete_account_title">Borrar cuenta de usuario e información</string>
+    <string name="delete_account_message">Estás seguro/a de querer borrar tu cuenta de usuario y perder todas tus recetas modificadas? Esto no se puede deshacer</string>
+    <string name="continueWith">Continuar</string>
+    <string name="cancel">Cancelar</string>
 </resources>
