@@ -50,6 +50,16 @@ object UserRepository {
     }
 
     /**
+     * To get helo from Firebase Auth whenever the user forgets his password
+     * @param email from the user to get the help
+     * @return true or false whether the user could obtain a new password or not
+     */
+    suspend fun handleForgetPassword(email: String): Boolean{
+        val result= FirebaseConnection.getUserForgottenPassword(email)
+        return result
+    }
+
+    /**
      * Registers a new User in Firestore by FirebaseAuth (generates an uid)
      * @param name: user's name
      * @param email: user's email

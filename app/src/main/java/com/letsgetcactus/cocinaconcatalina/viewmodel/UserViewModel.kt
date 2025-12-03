@@ -1,10 +1,11 @@
 package com.letsgetcactus.cocinaconcatalina.viewmodel
 
-import android.os.Build
+import android.content.Context
 import android.util.Log
-import androidx.annotation.RequiresApi
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.letsgetcactus.cocinaconcatalina.R
 import com.letsgetcactus.cocinaconcatalina.data.mapper.OriginMapper
 import com.letsgetcactus.cocinaconcatalina.data.repository.UserRepository
 import com.letsgetcactus.cocinaconcatalina.data.repository.UserSessionRepository
@@ -26,7 +27,7 @@ import kotlinx.coroutines.launch
 /**
  * Controls login(), logout() and register()
  * Keeps the user's session (persistency)
- * Exposes Flows so the Composables can observe the user's state
+ * Exposes Flows so the Composable can observe the user's state
  */
 class UserViewModel(
     private val userRepo: UserRepository,
@@ -141,11 +142,25 @@ class UserViewModel(
 
 
     /**
+     * When a user forgets his password
+     * @param email to send the restore password
+     * @param context for the Toast
+     */
+    suspend fun forgotPassword( email: String, context: Context){
+        val result= userRepo.handleForgetPassword(email)
+
+        if(result) Toast.makeText(context,context.getString(R.string.chek_inbox), Toast.LENGTH_SHORT).show()
+        else Toast.makeText(context,context.getString(R.string.error_sending_to_inbox), Toast.LENGTH_SHORT).show()
+
+
+    }
+
+    /**
      * Registers an user on Firestore by Firebase Authentication
      * @param name: user's name
      * @param email: user's email, it has to be unique
      * @param password: user's password
-     * @return boolean whether the user has being succesfully registered or not
+     * @return boolean whether the user has being successfully registered or not
      */
     suspend fun register(name: String, email: String, password: String): Boolean {
         val newUser = UserRepository.register(name, email, password)
