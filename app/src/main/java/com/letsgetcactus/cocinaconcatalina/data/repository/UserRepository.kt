@@ -56,6 +56,7 @@ object UserRepository {
      */
     suspend fun handleForgetPassword(email: String): Boolean{
         val result= FirebaseConnection.getUserForgottenPassword(email)
+        Log.i("UserRepository"," Requested reset pass to URepo , status= $result")
         return result
     }
 

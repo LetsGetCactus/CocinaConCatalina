@@ -254,19 +254,17 @@ object FirebaseConnection {
      * @param email from the user to be used
      * @return true or false whether the user could obtain a new password or not
      */
-    suspend fun getUserForgottenPassword(email: String): Boolean =
-        suspendCoroutine {
-            result ->
+    suspend fun getUserForgottenPassword(email: String): Boolean {
+        return try {
             FirebaseAuth.getInstance()
                 .sendPasswordResetEmail(email)
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        result.resume(true)
-                    } else {
-                        result.resume(false)
-                    }
-                }
+                .await()
+            true
+        } catch (e: Exception) {
+            false
+
         }
+    }
 
         /**
          * Deletes all user data in Firebase users collection and Firebase Auth

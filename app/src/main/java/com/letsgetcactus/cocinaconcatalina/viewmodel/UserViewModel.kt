@@ -147,8 +147,13 @@ class UserViewModel(
      * @param context for the Toast
      */
     suspend fun forgotPassword( email: String, context: Context){
+        if (email.isBlank()) {
+            Toast.makeText(context, context.getString(R.string.emailError), Toast.LENGTH_SHORT).show()
+            return
+        }
         val result= userRepo.handleForgetPassword(email)
 
+        Log.i("UserViewModel"," Requested reset pass to URepo , status= $result")
         if(result) Toast.makeText(context,context.getString(R.string.chek_inbox), Toast.LENGTH_SHORT).show()
         else Toast.makeText(context,context.getString(R.string.error_sending_to_inbox), Toast.LENGTH_SHORT).show()
 

@@ -1,5 +1,6 @@
 package com.letsgetcactus.cocinaconcatalina.ui.screens
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -222,8 +223,10 @@ fun LoginScreen(
                 style = MaterialTheme.typography.labelSmall,
                 modifier = Modifier.clickable {
                     scope.launch {
+                        Log.i("loginScreen"," Requested reset pass ")
                         if(email.isEmpty()){
                             Toast.makeText(context, context.getString(R.string.emailError),Toast.LENGTH_SHORT).show()
+                            return@launch
                         }
                         userViewModel.forgotPassword(email, context)
                     }
