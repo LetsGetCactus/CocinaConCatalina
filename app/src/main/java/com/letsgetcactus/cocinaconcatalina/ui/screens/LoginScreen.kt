@@ -114,7 +114,8 @@ fun LoginScreen(
                 focusedTextColor = MaterialTheme.colorScheme.onSurface,
                 unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
             ),
-            shape = MaterialTheme.shapes.small
+            shape = MaterialTheme.shapes.small,
+            textStyle = MaterialTheme.typography.bodySmall
         )
 
 
@@ -139,7 +140,8 @@ fun LoginScreen(
                 focusedTextColor = MaterialTheme.colorScheme.onSurface,
                 unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
             ),
-            shape = MaterialTheme.shapes.small
+            shape = MaterialTheme.shapes.small,
+            textStyle = MaterialTheme.typography.bodySmall
         )
 
         Spacer(

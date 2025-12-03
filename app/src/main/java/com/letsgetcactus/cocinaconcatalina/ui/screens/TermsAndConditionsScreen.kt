@@ -28,9 +28,6 @@ fun TermsAndConditionsScreen(
     onNavigate: (String) -> Unit
 ){
 
-    //TODO: Crear terms and conditions con: plitica de privacidad, coockies, aviso legal,etc
-    //TODO: traducirlo!! Boton para select idioma?
-    
     val scrollState = rememberScrollState()
 
 
@@ -38,13 +35,14 @@ fun TermsAndConditionsScreen(
         Column(
             modifier = Modifier.fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
-                .padding(horizontal = 16.dp, vertical = 24.dp)
+                .padding(horizontal = 24.dp, vertical = 32.dp)
                 .verticalScroll(scrollState)
         ) {
             Image(
                 painterResource(R.drawable.icon),
                 contentDescription = stringResource(R.string.ccc_icon),
-                modifier=Modifier.align(Alignment.CenterHorizontally))
+                modifier=Modifier.align(Alignment.CenterHorizontally)
+                    .padding(bottom = 16.dp))
             Text(
             text = stringResource(R.string.termsAndConditionsExplained),
                 style = MaterialTheme.typography.bodySmall
@@ -59,7 +57,8 @@ fun TermsAndConditionsScreen(
             verticalArrangement = Arrangement.Bottom
         ) {
             FAB(
-                onNavigate = {onNavigate(NavigationRoutes.LOGIN_SCREEN)}
+                onNavigate = {
+                    onNavigate(NavigationRoutes.REGISTER_SCREEN)}
             )
         }
     }

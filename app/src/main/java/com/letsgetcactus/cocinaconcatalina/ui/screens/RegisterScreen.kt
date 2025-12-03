@@ -58,7 +58,6 @@ fun isValidEmail(email: String): Boolean {
 /**
  * Screen to register a new user of the app
  */
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun RegisterScreen(
     navController: NavController,
@@ -138,7 +137,8 @@ fun RegisterScreen(
                 focusedTextColor = MaterialTheme.colorScheme.onBackground,
                 unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
             ),
-            shape = MaterialTheme.shapes.small
+            shape = MaterialTheme.shapes.small,
+            textStyle = MaterialTheme.typography.bodySmall
 
         )
 
@@ -167,7 +167,8 @@ fun RegisterScreen(
                 focusedTextColor = MaterialTheme.colorScheme.onBackground,
                 unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
             ),
-            shape = MaterialTheme.shapes.small
+            shape = MaterialTheme.shapes.small,
+            textStyle = MaterialTheme.typography.bodySmall
         )
 
 
@@ -192,7 +193,8 @@ fun RegisterScreen(
                 focusedTextColor = MaterialTheme.colorScheme.onBackground,
                 unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
             ),
-            shape = MaterialTheme.shapes.small
+            shape = MaterialTheme.shapes.small,
+            textStyle = MaterialTheme.typography.bodySmall
         )
 
 
@@ -217,7 +219,8 @@ fun RegisterScreen(
                 focusedTextColor = MaterialTheme.colorScheme.onBackground,
                 unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
             ),
-            shape = MaterialTheme.shapes.small
+            shape = MaterialTheme.shapes.small,
+            textStyle = MaterialTheme.typography.bodySmall
         )
 
 
@@ -236,7 +239,9 @@ fun RegisterScreen(
             Text(
                 text = stringResource(R.string.termsAndConditions),
                 modifier = Modifier
-                    .clickable { navController.navigate(NavigationRoutes.TERMS_CONDITIONS_SCREEN) }
+                    .clickable {
+                        navController.navigate(NavigationRoutes.TERMS_CONDITIONS_SCREEN)
+                    }
                     .fillMaxWidth()
                     .padding(top = 16.dp),
                 style = MaterialTheme.typography.labelSmall,

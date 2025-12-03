@@ -13,7 +13,7 @@
     <string name="ingredient">ingrediente</string>
     <string name="insert_recipe_name">Introduzca el nombre de la receta</string>
     <string name="add_recipe">Añadir nueva receta (solo admin)</string>
-    <string name="termsAndConditions">He leído y acepto los términos y condiciones</string>
+    <string name="termsAndConditions">"Aviso Legal  Titular: LetsGetCactus Nombre comercial: Cocina con Catalina Correo de contacto: info.letsgetcactus@gmail.com   Sede: España  El presente Aviso Legal regula el uso de la aplicación móvil Cocina con Catalina (en adelante, la App), desarrollada y gestionada por LetsGetCactus. El acceso y uso de la App implica la aceptación plena y sin reservas de este Aviso Legal. Si el usuario no está de acuerdo con estas condiciones, deberá abstenerse de utilizar la App.  El Titular podrá modificar en cualquier momento la presentación, configuración, funcionalidades y condiciones de uso de la App. Las modificaciones se comunicarán a los usuarios por los medios disponibles.  Política de Privacidad      Responsable del tratamiento     Responsable: LetsGetCactus     Correo electrónico: info.letsgetcactus@gmail.com       Ubicación: España      Datos personales que se recogen     La App recoge los siguientes datos personales necesarios para su funcionamiento:      Nombre      Correo electrónico      Contraseña (almacenada de forma encriptada)  Opcionalmente, y siempre previo consentimiento, en el futuro podrían recopilarse datos como fotografía de perfil o contenido generado por el usuario (recetas, valoraciones, comentarios, etc.).      Finalidad del tratamiento     Los datos personales se utilizan para:      Crear y gestionar la cuenta de usuario.      Permitir el acceso a funcionalidades personalizadas.      Facilitar la creación, modificación y valoración de recetas.      Enviar comunicaciones relacionadas con el servicio (por ejemplo, recuperación de contraseña o avisos importantes).      Mejorar la calidad del servicio y la experiencia de usuario.  Si en el futuro se ofrecen servicios de pago o suscripción, se informará al usuario y se solicitará consentimiento explícito cuando corresponda.      Base legal del tratamiento     El tratamiento se realiza en base a:      Consentimiento del usuario al registrarse.      Ejecución del contrato derivado del uso de la App.      Cumplimiento de obligaciones legales aplicables.      Conservación de los datos     Los datos se conservarán mientras el usuario mantenga activa su cuenta o mientras sea necesario para las finalidades indicadas. El usuario puede solicitar la eliminación de su cuenta en cualquier momento.      Cesiones y encargados del tratamiento     Los datos no se cederán a terceros salvo obligación legal o cuando sea necesario para la prestación del servicio (por ejemplo, servicios de almacenamiento o envío de correo electrónico). Dichos terceros actuarán como encargados del tratamiento en cumplimiento del RGPD.      Derechos del usuario     El usuario puede ejercer sus derechos de acceso, rectificación, supresión, oposición, limitación y portabilidad enviando un correo a: info.letsgetcactus@gmail.com   El usuario también tiene derecho a presentar una reclamación ante la Agencia Española de Protección de Datos (www.aepd.es      ).      Seguridad de los datos     Los datos se almacenan utilizando medidas técnicas y organizativas adecuadas para evitar accesos no autorizados. Las contraseñas se guardan mediante procesos de cifrado.      Menores de edad     La App está dirigida a personas mayores de 14 años. Los menores de 14 años solo podrán utilizar la App con consentimiento verificable de sus padres o tutores.  Términos y Condiciones de Uso      Objeto     Estos términos regulan el acceso y uso de la App Cocina con Catalina, así como las responsabilidades derivadas de su uso.      Registro y cuenta de usuario     Para acceder a ciertas funciones, el usuario debe crear una cuenta proporcionando nombre, correo electrónico y contraseña.     El usuario se compromete a aportar datos veraces y a mantener la confidencialidad de su contraseña.      Contenido generado por el usuario     El usuario puede subir, modificar y valorar recetas.     Al publicar contenido, el usuario declara ser titular de los derechos correspondientes y autoriza a LetsGetCactus a mostrar dicho contenido dentro de la App.     El Titular podrá eliminar contenido que sea inapropiado, ofensivo, ilícito o que infrinja derechos de terceros.      Propiedad intelectual     Todos los derechos de propiedad intelectual sobre la App, diseño, logotipos, código y contenidos originales pertenecen a LetsGetCactus o a sus licenciantes.     El usuario no podrá copiar, distribuir o modificar la App sin autorización expresa.      Funcionamiento y disponibilidad     El Titular no garantiza la disponibilidad continua de la App, aunque intentará evitar interrupciones y mantener actualizaciones regulares.      Enlaces y contenidos de terceros     La App puede contener enlaces a servicios externos. LetsGetCactus no se hace responsable del contenido ni de las políticas de dichos sitios.      Servicios de pago     En caso de habilitarse funciones de pago, se informará previamente al usuario y se solicitará consentimiento expreso antes de realizar cualquier cargo.      Limitación de responsabilidad     El uso de la App es responsabilidad exclusiva del usuario. LetsGetCactus no se hace responsable de daños derivados de un uso inadecuado o de la publicación de contenidos ilícitos.      Modificaciones     El Titular podrá modificar estos Términos en cualquier momento. El uso continuado de la App implica la aceptación de las nuevas condiciones.      Legislación aplicable     Este contrato se rige por la legislación española. Las disputas se someterán a los tribunales competentes según la residencia del usuario.  Política de Cookies      Definición de cookies     Una cookie es un pequeño archivo que se almacena en el dispositivo del usuario con el fin de mejorar el funcionamiento y la experiencia de uso de la App.      Uso de cookies en la App     La App utiliza únicamente cookies técnicas necesarias para:      Mantener la sesión del usuario.      Recordar preferencias básicas.      Garantizar el funcionamiento adecuado de la App.  No se utilizan cookies publicitarias ni de seguimiento de terceros.      Aceptación o rechazo de cookies     Al utilizar la App, el usuario acepta el uso de las cookies estrictamente necesarias descritas en esta política.      Gestión de cookies     El usuario puede configurar su dispositivo para aceptar o rechazar cookies. En caso de desactivarlas, algunas funciones esenciales de la App podrían dejar de funcionar correctamente.      Cambios en la Política de Cookies     Las modificaciones de esta política se comunicarán al usuario a través de la App. "</string>
     <string name="googleRegister">Registrarse con Google</string>
     <string name="googleImg">Google</string>
     <string name="ccc_icon">icono deCocina con Catalina</string>
@@ -103,4 +103,91 @@
     <string name="delete_account_message">Estás seguro/a de querer borrar tu cuenta de usuario y perder todas tus recetas modificadas? Esto no se puede deshacer</string>
     <string name="continueWith">Continuar</string>
     <string name="cancel">Cancelar</string>
+    <string name="termsAndConditionsExplained"><![CDATA[
+AVISO LEGAL\n\n
+Titular: LetsGetCactus\n
+Nombre comercial: Cocina con Catalina\n
+Correo de contacto: info.letsgetcactus@gmail.com\n
+Sede: España\n\n
+El presente aviso legal regula el uso de la aplicación móvil Cocina con Catalina (en adelante, la App), propiedad de LetsGetCactus. El acceso y uso de la App implica la aceptación plena y sin reservas del presente Aviso Legal. Si el usuario no está de acuerdo con estas condiciones, deberá abstenerse de utilizar la App.\n\n
+El Titular se reserva el derecho de modificar en cualquier momento la presentación, configuración y contenidos de la App, así como las condiciones requeridas para su uso.\n\n
+
+POLÍTICA DE PRIVACIDAD\n\n
+1. Responsable del tratamiento\n
+LetsGetCactus. Contacto: info.letsgetcactus@gmail.com. Ubicación: España.\n\n
+
+2. Datos personales que se recogen\n
+La App recopila los siguientes datos:\n
+- Nombre\n
+- Correo electrónico\n
+- Contraseña (almacenada en forma cifrada)\n\n
+Opcionalmente, en el futuro podrán solicitarse otros datos como fotografía de perfil o contenido generado por el usuario (recetas, valoraciones, comentarios, etc.).\n\n
+
+3. Finalidad del tratamiento\n
+Los datos personales se utilizan para:\n
+- Crear y gestionar la cuenta de usuario.\n
+- Permitir el acceso a funciones personalizadas.\n
+- Facilitar la participación en la App (publicar o valorar recetas).\n
+- Enviar notificaciones o comunicaciones necesarias para el servicio.\n
+- Mejorar la experiencia de usuario y la calidad del servicio.\n\n
+Si en el futuro se añaden servicios de pago, se informará claramente del tratamiento de datos de pago.\n\n
+
+4. Base legal del tratamiento\n
+- Consentimiento del usuario.\n
+- Ejecución de la relación contractual (uso de la App).\n
+- Cumplimiento de obligaciones legales.\n\n
+
+5. Conservación de los datos\n
+Los datos se conservarán mientras la cuenta esté activa o sea necesario para cumplir con las finalidades descritas. El usuario puede solicitar la eliminación de su cuenta en cualquier momento.\n\n
+
+6. Comunicación de los datos\n
+Los datos no se cederán a terceros salvo obligación legal o cuando sea necesario para la prestación del servicio (por ejemplo, proveedores de almacenamiento o correo electrónico). En tales casos, dichos terceros actuarán como encargados del tratamiento conforme al RGPD.\n\n
+
+7. Derechos del usuario\n
+El usuario podrá ejercer los derechos de acceso, rectificación, supresión, oposición, limitación y portabilidad mediante solicitud a: info.letsgetcactus@gmail.com.\n
+También podrá presentar reclamación ante la Agencia Española de Protección de Datos.\n\n
+
+8. Seguridad de los datos\n
+Los datos se almacenan mediante medidas técnicas y organizativas adecuadas que garantizan la confidencialidad y seguridad, incluyendo el cifrado de contraseñas.\n\n
+
+9. Menores de edad\n
+La App está dirigida a mayores de 14 años. En caso de usuarios menores, se requerirá consentimiento de los padres o tutores.\n\n
+
+POLÍTICA DE COOKIES\n\n
+La App no utiliza cookies de terceros ni tecnologías de seguimiento con fines publicitarios. Únicamente puede emplear cookies técnicas estrictamente necesarias para garantizar el funcionamiento correcto de ciertos servicios internos, como la gestión de sesión.\n\n
+En caso de incorporarse cookies adicionales en el futuro (analíticas, preferencias o publicidad), se solicitará consentimiento expreso del usuario y se actualizará la presente política.\n\n
+
+TÉRMINOS Y CONDICIONES DE USO\n\n
+1. Objeto\n
+Los presentes Términos regulan el acceso y uso de la App Cocina con Catalina y las responsabilidades derivadas de su utilización.\n\n
+
+2. Registro y cuenta de usuario\n
+Para acceder a determinadas funciones, el usuario debe crear una cuenta con datos veraces y mantener la confidencialidad de su contraseña.\n\n
+
+3. Contenido generado por el usuario\n
+El usuario puede publicar, modificar o valorar recetas. Declara ser titular de los derechos sobre el contenido publicado y autoriza a LetsGetCactus a mostrarlo dentro de la App.\n
+El Titular podrá retirar contenido inapropiado, ofensivo o que infrinja derechos de terceros.\n\n
+
+4. Propiedad intelectual\n
+Todos los derechos de propiedad intelectual sobre la App, su diseño, código y contenidos originales corresponden a LetsGetCactus o a sus licenciantes. Queda prohibida la copia, distribución o modificación sin autorización.\n\n
+
+5. Funcionamiento y disponibilidad\n
+No se garantiza la disponibilidad continua del servicio, aunque se procurará minimizar interrupciones y mantener actualizaciones regulares.\n\n
+
+6. Enlaces a terceros\n
+La App puede incluir enlaces a sitios de terceros sobre los cuales el Titular no tiene control ni responsabilidad.\n\n
+
+7. Servicios de pago\n
+Si en el futuro se habilitan servicios de pago o suscripción, se informará previamente y se solicitará consentimiento expreso.\n\n
+
+8. Limitación de responsabilidad\n
+El uso de la App es responsabilidad del usuario. LetsGetCactus no se hará responsable de daños derivados del mal uso o de contenidos publicados por los usuarios.\n\n
+
+9. Modificaciones\n
+El Titular podrá modificar estos Términos en cualquier momento. El uso continuado de la App tras dichas modificaciones implica su aceptación.\n\n
+
+10. Legislación aplicable\n
+Este contrato se rige por la legislación española. Cualquier controversia se someterá a los tribunales de la ciudad de residencia del usuario.\n\n
+]]></string>
+
 </resources>
