@@ -2,6 +2,7 @@ package com.letsgetcactus.cocinaconcatalina.ui.screens
 
 import DropDownMenuSelector
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -30,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -38,7 +40,6 @@ import coil.compose.rememberAsyncImagePainter
 import com.letsgetcactus.cocinaconcatalina.R
 import com.letsgetcactus.cocinaconcatalina.model.Allergen
 import com.letsgetcactus.cocinaconcatalina.model.Ingredient
-import com.letsgetcactus.cocinaconcatalina.ui.NavigationRoutes
 import com.letsgetcactus.cocinaconcatalina.model.enum.AllergenEnum
 import com.letsgetcactus.cocinaconcatalina.model.enum.UnitsTypeEnum
 import com.letsgetcactus.cocinaconcatalina.ui.components.BackStackButton
@@ -51,7 +52,6 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun ModifyRecipeScreen(
-    onNavigate: (String) -> Unit,
     navController: NavHostController,
     userViewModel: UserViewModel,
     recipeViewModel: RecipeViewModel
@@ -62,6 +62,7 @@ fun ModifyRecipeScreen(
 
 
     val scope = rememberCoroutineScope()
+    val context= LocalContext.current
 
     currentRecipe?.let { recipe ->
 
@@ -69,7 +70,7 @@ fun ModifyRecipeScreen(
 
         // Inicializamos selectedAllergens al cargar la receta
         LaunchedEffect(currentRecipe.id) {
-            currentRecipe?.let { recipe ->
+            currentRecipe.let { recipe ->
                 selectedAllergens = AllergenEnum.entries.associateWith { allergen ->
                     recipe.allergenList.any { it.img == allergen }
                 }
@@ -200,15 +201,17 @@ fun ModifyRecipeScreen(
                 FAB(
                     onNavigate = {
                         scope.launch {
-                            val allergenList = selectedAllergens.filter { it.value }.map { Allergen(name=it.key.name, img = it.key) }
+                            val allergenList = selectedAllergens.filter { it.value }
+                                .map { Allergen(name = it.key.name, img = it.key) }
                             val newModRecipe = recipe.copy(
                                 allergenList = allergenList,
                                 avgRating = 0 //As a new recipe it should not save the current recipe's rating
                             )
 
-                            Log.i("ModifyRecipeScreen","$newModRecipe")
+                            Log.i("ModifyRecipeScreen", "$newModRecipe")
                             userViewModel.saveModifiedRecipe(newModRecipe)
-                            onNavigate(NavigationRoutes.ITEM_RECIPE_SCREEN) //Mostrar la receta modificada?
+                            navController.popBackStack()
+                            Toast.makeText(context, context.getString(R.string.recipe_saved),Toast.LENGTH_SHORT).show()
                         }
                     }
                 )
@@ -224,77 +227,88 @@ fun ModifyItemIngredients(
     onIngredientListChange: (List<Ingredient>) -> Unit
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+
         ingredientList.forEachIndexed { index, ingredient ->
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
+
+            Box(
                 modifier = Modifier.fillMaxWidth()
             ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
 
-                //Quantity
-                TextField(
-                    value = ingredient.quantity,
-                    onValueChange = { newQty ->
-                        val updated = ingredient.copy(quantity = newQty)
-                        val newList = ingredientList.toMutableList().also { it[index] = updated }
-                        onIngredientListChange(newList)
-                    },
-                    modifier = Modifier.width(60.dp),
-                    singleLine = true,
-                    textStyle = MaterialTheme.typography.labelSmall
-                )
-
-                Spacer(Modifier.width(8.dp))
-
-                // Units
-                DropDownMenuSelector(
-                    options = UnitsTypeEnum.entries.toTypedArray(),
-                    selected = ingredient.unit,
-                    onSelect = { newUnit ->
-                        val updated = ingredient.copy(unit = newUnit)
-                        val newList = ingredientList.toMutableList().also { it[index] = updated }
-                        onIngredientListChange(newList)
-                    },
-                    placeholder = ingredient.unit.toString(),
-                    modifier = Modifier.width(110.dp)
-                )
-
-                Spacer(Modifier.width(8.dp))
-
-                // Name
-                TextField(
-                    value = ingredient.name,
-                    onValueChange = { newName ->
-                        val updated = ingredient.copy(name = newName)
-                        val newList = ingredientList.toMutableList().also { it[index] = updated }
-                        onIngredientListChange(newList)
-                    },
-                    modifier = Modifier.width(150.dp),
-                    singleLine = true,
-                    textStyle = MaterialTheme.typography.labelSmall
-                )
-
-                Spacer(Modifier.width(8.dp))
-
-                // If 0 at quantity
-                if (ingredient.quantity.trim() == "0" || ingredient.quantity.isEmpty()){
-                    Button(
-                        onClick = {
-                            val newList = ingredientList.toMutableList().also { it.removeAt(index) }
+                    //Quantity
+                    TextField(
+                        value = ingredient.quantity,
+                        onValueChange = { newQty ->
+                            val updated = ingredient.copy(quantity = newQty)
+                            val newList =
+                                ingredientList.toMutableList().also { it[index] = updated }
                             onIngredientListChange(newList)
                         },
-                        shape = MaterialTheme.shapes.large,
-                        modifier = Modifier.background(MaterialTheme.colorScheme.primary)
-                            .width(50.dp),
+                        modifier = Modifier.width(60.dp),
+                        singleLine = true,
+                        textStyle = MaterialTheme.typography.labelSmall
+                    )
 
-                    ) {
+                    Spacer(Modifier.width(4.dp))
+
+                    // Units
+                    DropDownMenuSelector(
+                        options = UnitsTypeEnum.entries.toTypedArray(),
+                        selected = ingredient.unit,
+                        onSelect = { newUnit ->
+                            val updated = ingredient.copy(unit = newUnit)
+                            val newList =
+                                ingredientList.toMutableList().also { it[index] = updated }
+                            onIngredientListChange(newList)
+                        },
+                        placeholder = ingredient.unit.toString(),
+                        modifier = Modifier.width(110.dp)
+                    )
+
+                    Spacer(Modifier.width(4.dp))
+
+                    // Name
+                    TextField(
+                        value = ingredient.name,
+                        onValueChange = { newName ->
+                            val updated = ingredient.copy(name = newName)
+                            val newList =
+                                ingredientList.toMutableList().also { it[index] = updated }
+                            onIngredientListChange(newList)
+                        },
+                        modifier = Modifier.width(150.dp),
+                        singleLine = true,
+                        textStyle = MaterialTheme.typography.labelSmall
+                    )
+
+                }
+                // If 0 at quantity
+                if (ingredient.quantity.trim() == "0" || ingredient.quantity.isEmpty()) {
+                    Button(
+                        onClick = {
+                            val newList =
+                                ingredientList.toMutableList().also { it.removeAt(index) }
+                            onIngredientListChange(newList)
+                        },
+                        modifier = Modifier
+                            .align(Alignment.CenterEnd)
+                            .background(MaterialTheme.colorScheme.primary)
+                            .width(50.dp),
+                        shape = MaterialTheme.shapes.large
+                        ) {
                         Text(
                             text = stringResource(R.string.deleteX),
                             color = MaterialTheme.colorScheme.onPrimary,
                             style = MaterialTheme.typography.labelSmall,
-                            )
+                        )
                     }
+
                 }
+
             }
         }
     }

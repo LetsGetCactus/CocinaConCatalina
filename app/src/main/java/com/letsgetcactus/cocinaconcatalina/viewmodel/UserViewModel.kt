@@ -1,10 +1,11 @@
 package com.letsgetcactus.cocinaconcatalina.viewmodel
 
-import android.os.Build
+import android.content.Context
 import android.util.Log
-import androidx.annotation.RequiresApi
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.letsgetcactus.cocinaconcatalina.R
 import com.letsgetcactus.cocinaconcatalina.data.mapper.OriginMapper
 import com.letsgetcactus.cocinaconcatalina.data.repository.UserRepository
 import com.letsgetcactus.cocinaconcatalina.data.repository.UserSessionRepository
@@ -26,7 +27,7 @@ import kotlinx.coroutines.launch
 /**
  * Controls login(), logout() and register()
  * Keeps the user's session (persistency)
- * Exposes Flows so the Composables can observe the user's state
+ * Exposes Flows so the Composable can observe the user's state
  */
 class UserViewModel(
     private val userRepo: UserRepository,
@@ -48,7 +49,7 @@ class UserViewModel(
     private val _isLoggedIn = MutableStateFlow(false)
     val isLoggedIn: StateFlow<Boolean> = _isLoggedIn
 
-    //Curreny user
+    //Current user
     private val _currentUser = MutableStateFlow<User?>(null)
     val currentUser = _currentUser.asStateFlow()
 
@@ -141,11 +142,39 @@ class UserViewModel(
 
 
     /**
+     * When a user forgets his password
+     * @param email to send the restore password
+     * @param context for the Toast
+     */
+    suspend fun forgotPassword(email: String, context: Context) {
+        if (email.isBlank()) {
+            Toast.makeText(context, context.getString(R.string.emailError), Toast.LENGTH_SHORT)
+                .show()
+            return
+        }
+        val result = userRepo.handleForgetPassword(email)
+
+        Log.i("UserViewModel", " Requested reset pass to URepo , status= $result")
+        if (result) Toast.makeText(
+            context,
+            context.getString(R.string.chek_inbox),
+            Toast.LENGTH_SHORT
+        ).show()
+        else Toast.makeText(
+            context,
+            context.getString(R.string.error_sending_to_inbox),
+            Toast.LENGTH_SHORT
+        ).show()
+
+
+    }
+
+    /**
      * Registers an user on Firestore by Firebase Authentication
      * @param name: user's name
      * @param email: user's email, it has to be unique
      * @param password: user's password
-     * @return boolean whether the user has being succesfully registered or not
+     * @return boolean whether the user has being successfully registered or not
      */
     suspend fun register(name: String, email: String, password: String): Boolean {
         val newUser = UserRepository.register(name, email, password)
@@ -372,6 +401,8 @@ class UserViewModel(
         }
 
         _modifiedRecipes.value = currentList
+        loadModified()
+
     }
 
 
@@ -393,6 +424,26 @@ class UserViewModel(
     fun selectRecipe(recipe: Recipe) {
         _selectedRecipe.value = recipe
         Log.i("UserViewModel", "Selected recipe: ${recipe.title}")
+    }
+
+    /**
+     * To delete a modified recipe
+     * @param recipeId Id from the recipe to be deleted
+     * @param userId Id from the owner of the modified recipe
+     * @return boolean
+     */
+    suspend fun deleteModified(recipeId: String, userId: String?): Boolean {
+        return try {
+            if(!userId.isNullOrEmpty()) {
+                userRepo.deleteModifiedRecipe(recipeId, userId)
+                loadModified()
+                true
+            }else false
+        }catch (e: Exception){
+            throw e
+        }
+
+
     }
 
 

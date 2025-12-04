@@ -1,5 +1,6 @@
 package com.letsgetcactus.cocinaconcatalina.ui.screens
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -14,6 +15,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -27,10 +30,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -51,6 +57,7 @@ fun LoginScreen(
 
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
+    val focusManager = LocalFocusManager.current
 
     //States for the Text fields (email and password)
     var email by remember { mutableStateOf("") }
@@ -114,7 +121,12 @@ fun LoginScreen(
                 focusedTextColor = MaterialTheme.colorScheme.onSurface,
                 unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
             ),
-            shape = MaterialTheme.shapes.small
+            shape = MaterialTheme.shapes.small,
+            textStyle = MaterialTheme.typography.bodyMedium,
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+            keyboardActions = KeyboardActions(onNext = {
+                focusManager.moveFocus(FocusDirection.Down)
+            }),
         )
 
 
@@ -139,7 +151,12 @@ fun LoginScreen(
                 focusedTextColor = MaterialTheme.colorScheme.onSurface,
                 unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
             ),
-            shape = MaterialTheme.shapes.small
+            shape = MaterialTheme.shapes.small,
+            textStyle = MaterialTheme.typography.bodyMedium,
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(onDone = {
+                focusManager.clearFocus()
+            }),
         )
 
         Spacer(
@@ -197,15 +214,25 @@ fun LoginScreen(
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.End
-        ) {//TODO: Implementar que hacer si se ha olvidado la pass
+        ) {
             Spacer(Modifier.size(8.dp))
             Text(
                 text = stringResource(R.string.forgot_pass),
                 textAlign = TextAlign.End,
                 color = MaterialTheme.colorScheme.tertiary,
                 style = MaterialTheme.typography.labelSmall,
-
+                modifier = Modifier.clickable {
+                    scope.launch {
+                        Log.i("loginScreen"," Requested reset pass ")
+                        if(email.isEmpty()){
+                            Toast.makeText(context, context.getString(R.string.emailError),Toast.LENGTH_SHORT).show()
+                            return@launch
+                        }
+                        userViewModel.forgotPassword(email, context)
+                    }
+                }
                 )
+
         }
         Spacer(Modifier.height(40.dp))
 

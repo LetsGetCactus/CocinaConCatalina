@@ -23,6 +23,8 @@ import com.letsgetcactus.cocinaconcatalina.model.enum.UnitsTypeEnum
 import kotlinx.coroutines.tasks.await
 import java.util.Locale
 import java.util.UUID
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 
 /**
@@ -247,149 +249,167 @@ object FirebaseConnection {
 
 
     /**
-     * Deletes all user data in Firebase users collection and Firebase Auth
-     * @param userId Id from the user collection to be deleted
-     * @return Boolean whether data was fully deleted or not
+     * Suspend function to get the user an email to help him restore his password
+     * Waits till Firebase executes or not the action
+     * @param email from the user to be used
+     * @return true or false whether the user could obtain a new password or not
      */
-    suspend fun deleteUserAccount(userId: String): Boolean {
+    suspend fun getUserForgottenPassword(email: String): Boolean {
         return try {
-            val auth = FirebaseAuth.getInstance()
+            FirebaseAuth.getInstance()
+                .sendPasswordResetEmail(email)
+                .await()
+            true
+        } catch (e: Exception) {
+            false
 
-            val currentUser = auth.currentUser
-            if (currentUser != null && currentUser.uid == userId) {
+        }
+    }
 
-                val userCollection = db.collection("users")
-                    .document(userId)
+        /**
+         * Deletes all user data in Firebase users collection and Firebase Auth
+         * @param userId Id from the user collection to be deleted
+         * @return Boolean whether data was fully deleted or not
+         */
+        suspend fun deleteUserAccount(userId: String): Boolean {
+            return try {
+                val auth = FirebaseAuth.getInstance()
 
-                val favs = userCollection.collection("favouriteRecipes").get().await()
-                favs.documents.forEach { it.reference.delete().await() }
+                val currentUser = auth.currentUser
+                if (currentUser != null && currentUser.uid == userId) {
 
-                val mods = userCollection.collection("modifiedRecipes").get().await()
-                mods.documents.forEach { it.reference.delete().await() }
+                    val userCollection = db.collection("users")
+                        .document(userId)
+
+                    val favs = userCollection.collection("favouriteRecipes").get().await()
+                    favs.documents.forEach { it.reference.delete().await() }
+
+                    val mods = userCollection.collection("modifiedRecipes").get().await()
+                    mods.documents.forEach { it.reference.delete().await() }
 
 
-                userCollection.delete().await()
+                    userCollection.delete().await()
 
 
-                currentUser.delete().await()
-                true
-            } else {
+                    currentUser.delete().await()
+                    true
+                } else {
+                    false
+                }
+            } catch (e: Exception) {
+                Log.e("FirebaseConnection", "Error deleting user account $userId", e)
                 false
             }
-        }catch (e: Exception){
-            Log.e("FirebaseConnection", "Error deleting user account $userId", e)
-            false
         }
-    }
 
-    //USER'S RECIPES: fav and mod
-    /**
-     * Gets all modified recipes from user
-     * @param userId Id from the user to obtain his subcollection of modified recipes
-     * @return a list of modified recipes by the user or an empty list
-     */
-    suspend fun getUserModifiedRecipes(
-        userId: String,
-    ): List<Recipe> {
-        return try {
-            val result = db.collection("users")
-                .document(userId)
-                .collection("modifiedRecipes")
-                .get()
-                .await()
+        //USER'S RECIPES: fav and mod
+        /**
+         * Gets all modified recipes from user
+         * @param userId Id from the user to obtain his subcollection of modified recipes
+         * @return a list of modified recipes by the user or an empty list
+         */
+        suspend fun getUserModifiedRecipes(
+            userId: String,
+        ): List<Recipe> {
+            return try {
+                val result = db.collection("users")
+                    .document(userId)
+                    .collection("modifiedRecipes")
+                    .get()
+                    .await()
 
-            result.documents.mapNotNull { doc ->
-                val data = doc.data ?: return@mapNotNull null
+                result.documents.mapNotNull { doc ->
+                    val data = doc.data ?: return@mapNotNull null
 
-                // Title
-                val title = when (val t = data["title"]) {
-                    is String -> t
-                    is Map<*, *> -> (t[Locale.getDefault().language] ?: t["en"] ?: "") as String
-                    else -> ""
-                }
-
-                // Steps
-                val steps = (data["steps"] as? List<*>)?.map { step ->
-                    when (step) {
-                        is String -> step
-                        is Map<*, *> -> (step[Locale.getDefault().language] ?: step["en"]
-                        ?: "") as String
-
+                    // Title
+                    val title = when (val t = data["title"]) {
+                        is String -> t
+                        is Map<*, *> -> (t[Locale.getDefault().language] ?: t["en"] ?: "") as String
                         else -> ""
                     }
-                } ?: emptyList()
 
-                // Ingredients
-                val ingredientList = (data["ingredientList"] as? List<*>)?.mapNotNull { ing ->
-                    val map = ing as? Map<*, *> ?: return@mapNotNull null
-                    val name = map["name"] as? String ?: ""
-                    val quantity = map["quantity"]?.toString() ?: ""
-                    val unitStr = map["unit"] as? String ?: "UNITS"
-                    val unit = try {
-                        UnitsTypeEnum.valueOf(unitStr)
-                    } catch (e: Exception) {
-                        UnitsTypeEnum.UNITS
-                    }
-                    Ingredient(name, quantity, unit)
-                } ?: emptyList()
+                    // Steps
+                    val steps = (data["steps"] as? List<*>)?.map { step ->
+                        when (step) {
+                            is String -> step
+                            is Map<*, *> -> (step[Locale.getDefault().language] ?: step["en"]
+                            ?: "") as String
 
-                // Allergens
-                val allergenList = (data["allergenList"] as? List<*>)?.mapNotNull { all ->
-                    val map = all as? Map<*, *> ?: return@mapNotNull null
-                    val nameStr = map["name"] as? String ?: return@mapNotNull null
-                    val imgEnum = try {
-                        AllergenEnum.valueOf(nameStr.uppercase())
-                    } catch (e: Exception) {
-                        null
-                    }
-                    imgEnum?.let { Allergen(nameStr, it) }
-                } ?: emptyList()
+                            else -> ""
+                        }
+                    } ?: emptyList()
 
-                // Categories
-                val categoryList = (data["categoryList"] as? List<*>)?.mapNotNull { cat ->
-                    val map = cat as? Map<*, *> ?: return@mapNotNull null
-                    val id = (map["id"]?.toString()?.toIntOrNull() ?: 0)
-                    val name = map["name"] as? String ?: ""
-                    Category(id, name)
-                } ?: emptyList()
+                    // Ingredients
+                    val ingredientList = (data["ingredientList"] as? List<*>)?.mapNotNull { ing ->
+                        val map = ing as? Map<*, *> ?: return@mapNotNull null
+                        val name = map["name"] as? String ?: ""
+                        val quantity = map["quantity"]?.toString() ?: ""
+                        val unitStr = map["unit"] as? String ?: "UNITS"
+                        val unit = try {
+                            UnitsTypeEnum.valueOf(unitStr)
+                        } catch (e: Exception) {
+                            UnitsTypeEnum.UNITS
+                        }
+                        Ingredient(name, quantity, unit)
+                    } ?: emptyList()
 
-                // Difficulty
-                val dificulty = (data["dificulty"] as? String)?.let { str ->
-                    DificultyEnum.entries.find { it.name == str }
-                } ?: DificultyEnum.EASY
+                    // Allergens
+                    val allergenList = (data["allergenList"] as? List<*>)?.mapNotNull { all ->
+                        val map = all as? Map<*, *> ?: return@mapNotNull null
+                        val nameStr = map["name"] as? String ?: return@mapNotNull null
+                        val imgEnum = try {
+                            AllergenEnum.valueOf(nameStr.uppercase())
+                        } catch (e: Exception) {
+                            null
+                        }
+                        imgEnum?.let { Allergen(nameStr, it) }
+                    } ?: emptyList()
 
-                // Origin
-                val originMap = data["origin"] as? Map<*, *>
-                val origin = Origin(
-                    id = (originMap?.get("id") as? Number)?.toInt() ?: 0,
-                    country = originMap?.get("country") as? String ?: "",
-                    flag = (originMap?.get("flag")?.toString()?.toIntOrNull() ?: 0)
-                )
+                    // Categories
+                    val categoryList = (data["categoryList"] as? List<*>)?.mapNotNull { cat ->
+                        val map = cat as? Map<*, *> ?: return@mapNotNull null
+                        val id = (map["id"]?.toString()?.toIntOrNull() ?: 0)
+                        val name = map["name"] as? String ?: ""
+                        Category(id, name)
+                    } ?: emptyList()
 
-                // Recipe final
-                Recipe(
-                    id = data["id"] as? String ?: doc.id,
-                    title = title,
-                    avgRating = (data["avgRating"] as? Number)?.toInt() ?: 0,
-                    steps = steps,
-                    ingredientList = ingredientList,
-                    allergenList = allergenList,
-                    categoryList = categoryList,
-                    prepTime = (data["prepTime"] as? Number)?.toInt() ?: 0,
-                    dificulty = dificulty,
-                    origin = origin,
-                    portions = (data["portions"] as? Number)?.toInt() ?: 1,
-                    active = data["active"] as? Boolean ?: true,
-                    img = data["img"] as? String ?: "",
-                    video = data["video"] as? String
-                )
+                    // Difficulty
+                    val dificulty = (data["dificulty"] as? String)?.let { str ->
+                        DificultyEnum.entries.find { it.name == str }
+                    } ?: DificultyEnum.EASY
+
+                    // Origin
+                    val originMap = data["origin"] as? Map<*, *>
+                    val origin = Origin(
+                        id = (originMap?.get("id") as? Number)?.toInt() ?: 0,
+                        country = originMap?.get("country") as? String ?: "",
+                        flag = (originMap?.get("flag")?.toString()?.toIntOrNull() ?: 0)
+                    )
+
+                    // Recipe final
+                    Recipe(
+                        id = data["id"] as? String ?: doc.id,
+                        title = title,
+                        avgRating = (data["avgRating"] as? Number)?.toInt() ?: 0,
+                        steps = steps,
+                        ingredientList = ingredientList,
+                        allergenList = allergenList,
+                        categoryList = categoryList,
+                        prepTime = (data["prepTime"] as? Number)?.toInt() ?: 0,
+                        dificulty = dificulty,
+                        origin = origin,
+                        portions = (data["portions"] as? Number)?.toInt() ?: 1,
+                        active = data["active"] as? Boolean ?: true,
+                        img = data["img"] as? String ?: "",
+                        video = data["video"] as? String
+                    )
+                }
+
+            } catch (e: Exception) {
+                Log.e("FirebaseConnection", "Error fetching modified recipes", e)
+                emptyList()
             }
-
-        } catch (e: Exception) {
-            Log.e("FirebaseConnection", "Error fetching modified recipes", e)
-            emptyList()
         }
-    }
 
 //    /**
 //     * Adds a modified recipe to user's modifiedRecipes subcollection
@@ -452,95 +472,122 @@ object FirebaseConnection {
 //        }
 //    }
 //
-    /**
-     * Adds a modified recipe to user's modifiedRecipes subcollection (does not translate)
-     * @param userId Id from the user
-     * @param recipe modified Recipe to be saved in
-     */
-    suspend fun addModifiedRecipe(userId: String, recipe: Recipe) {
-        try {
+        /**
+         * Adds a modified recipe to user's modifiedRecipes subcollection (does not translate)
+         * @param userId Id from the user
+         * @param recipe modified Recipe to be saved in
+         */
+        suspend fun addModifiedRecipe(userId: String, recipe: Recipe) {
+            try {
 
-            Log.i("FirebaseConnection", "receta a subir $recipe")
+                Log.i("FirebaseConnection", "receta a subir $recipe")
 
-            db.collection("users")
-                .document(userId)
-                .collection("modifiedRecipes")
-                .document(recipe.id)
-                .set(recipe.toMap())
-                .await()
+                db.collection("users")
+                    .document(userId)
+                    .collection("modifiedRecipes")
+                    .document(recipe.id)
+                    .set(recipe.toMap())
+                    .await()
 
-            Log.i("FirebaseConnection", "Recipe:${recipe.toMap()} correctly saved for user")
-        } catch (e: Exception) {
-            Log.e("FirebaseConnection", "Error saving modified recipe: ${recipe.title}", e)
+                Log.i("FirebaseConnection", "Recipe:${recipe.toMap()} correctly saved for user")
+            } catch (e: Exception) {
+                Log.e("FirebaseConnection", "Error saving modified recipe: ${recipe.title}", e)
+            }
         }
+
+
+    /**
+     * Removes a modified recipe from the user
+     * @param recipeId Recipe to be deleted
+     * @param userId Id from the user whose subcolection has the recipe to be deleted
+     * @return boolean true if the recipe was deleted, fals if not
+     *
+     */
+    suspend fun removeModifiedFromUser(recipeId: String,userId: String){
+      try {
+          db.collection("users")
+              .document(userId)
+              .collection("modifiedRecipes")
+              .document(recipeId)
+              .delete()
+              .await()
+
+          Log.i("FirebaseConnection", "Recipe ${recipeId }deleted from user's modified")
+      }catch (e: Exception){
+          Log.e("FirebaseConnection", "Could no delete recipe $recipeId from user's modified",e)
+
+      }
     }
 
 
     /**
-     * Gets user's favourites Recipes by their Id's
-     * @param userId Id from the user to obtain his subcollection
-     * @param language to get the recipes in that language
-     * @return a list of his fav recipes or empty list if there's none
-     */
-    suspend fun getUserFavouriteRecipes(
-        userId: String,
-        language: String = Locale.getDefault().language
-    ): List<Recipe> {
-        val supportedLanguages = listOf("es", "en", "gl")
-        if (language !in supportedLanguages) "en"
+         * Gets user's favourites Recipes by their Id's
+         * @param userId Id from the user to obtain his subcollection
+         * @param language to get the recipes in that language
+         * @return a list of his fav recipes or empty list if there's none
+         */
+        suspend fun getUserFavouriteRecipes(
+            userId: String,
+            language: String = Locale.getDefault().language
+        ): List<Recipe> {
+            val supportedLanguages = listOf("es", "en", "gl")
+            if (language !in supportedLanguages) "en"
 
-        return try {
-            val result = db.collection("users")
-                .document(userId)
-                .collection("favouriteRecipes")
-                .get()
-                .await()
+            return try {
+                val result = db.collection("users")
+                    .document(userId)
+                    .collection("favouriteRecipes")
+                    .get()
+                    .await()
 
-            Log.i("FirebaseConnect8ion", "Fetched ${result.size()} favourites recipes (String ID)")
-            result.toObjects(RecipeDto::class.java).map { it.toRecipe(language) }
+                Log.i(
+                    "FirebaseConnect8ion",
+                    "Fetched ${result.size()} favourites recipes (String ID)"
+                )
+                result.toObjects(RecipeDto::class.java).map { it.toRecipe(language) }
 
 
-        } catch (e: Exception) {
-            Log.e("FirebaseConnection", " Error fetching favourites recipes (String ID)", e)
-            emptyList()
+            } catch (e: Exception) {
+                Log.e("FirebaseConnection", " Error fetching favourites recipes (String ID)", e)
+                emptyList()
+            }
+        }
+
+        /**
+         * Adds a recipe to the user's favorites
+         * @param userId Id from the user itself to use his subcollection of favs
+         * @param recipeId Id from the recipe to be saved on the user's favs
+         */
+        suspend fun addRecipeToUsersFavorites(userId: String, recipeId: String) {
+            try {
+                val result = db.collection("users")
+                    .document(userId)
+                    .collection("favouriteRecipes")
+                    .document(recipeId)
+
+                result.set(mapOf("id" to recipeId)).await()
+                Log.i("FirebaseConnection", "Added a recipe to users favs")
+            } catch (e: Exception) {
+                Log.i("FirebaseConnection", "Coul not add a recipe to users favs", e)
+            }
+        }
+
+        /**
+         * Removes a recipe from user's favs
+         * @param userId Id from the user
+         * @param recipeId Id from the Recipe to be removed
+         */
+        suspend fun removeUsersFavouriteRecipe(userId: String, recipeId: String) {
+            try {
+                db.collection("users")
+                    .document(userId)
+                    .collection("favouriteRecipes")
+                    .document(recipeId)
+                    .delete()
+                    .await()
+                Log.i("FirebaseConnection", "Removed recipe $recipeId from user's favs")
+            } catch (e: Exception) {
+                Log.e("FirebaseConnection", "Error removing favourite $recipeId on user $userId", e)
+            }
         }
     }
-
-    /**
-     * Adds a recipe to the user's favorites
-     * @param userId Id from the user itself to use his subcollection of favs
-     * @param recipeId Id from the recipe to be saved on the user's favs
-     */
-    suspend fun addRecipeToUsersFavorites(userId: String, recipeId: String) {
-        try {
-            val result = db.collection("users")
-                .document(userId)
-                .collection("favouriteRecipes")
-                .document(recipeId)
-
-            result.set(mapOf("id" to recipeId)).await()
-            Log.i("FirebaseConnection", "Added a recipe to users favs")
-        } catch (e: Exception) {
-            Log.i("FirebaseConnection", "Coul not add a recipe to users favs", e)
-        }
-    }
-
-    /**
-     * Removes a recipe from user's favs
-     * @param userId Id from the user
-     * @param recipeId Id from the Recipe to be removed
-     */
-    suspend fun removeUsersFavouriteRecipe(userId: String, recipeId: String) {
-        try {
-            db.collection("users")
-                .document(userId)
-                .collection("favouriteRecipes")
-                .document(recipeId)
-                .delete()
-                .await()
-            Log.i("FirebaseConnection", "Removed recipe $recipeId from user's favs")
-        } catch (e: Exception) {
-            Log.e("FirebaseConnection", "Error removing favourite $recipeId on user $userId", e)
-        }
-    }
-}

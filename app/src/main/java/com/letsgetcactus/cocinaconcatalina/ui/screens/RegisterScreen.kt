@@ -1,9 +1,7 @@
 package com.letsgetcactus.cocinaconcatalina.ui.screens// Archivo: app/src/main/java/com/letsgetcactus/cocinaconcatarina2/ui/screens/RegisterScreen.kt
 
-import android.os.Build
 import android.util.Patterns
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,6 +15,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.MaterialTheme
@@ -32,9 +32,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -58,7 +61,6 @@ fun isValidEmail(email: String): Boolean {
 /**
  * Screen to register a new user of the app
  */
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun RegisterScreen(
     navController: NavController,
@@ -68,6 +70,7 @@ fun RegisterScreen(
 
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
+    val focusManager = LocalFocusManager.current
 
     // States for the textFields
     var name by remember { mutableStateOf("") }
@@ -138,7 +141,12 @@ fun RegisterScreen(
                 focusedTextColor = MaterialTheme.colorScheme.onBackground,
                 unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
             ),
-            shape = MaterialTheme.shapes.small
+            shape = MaterialTheme.shapes.small,
+            textStyle = MaterialTheme.typography.bodyMedium,
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+            keyboardActions = KeyboardActions(onNext = {
+                focusManager.moveFocus(FocusDirection.Down)
+            }),
 
         )
 
@@ -167,7 +175,12 @@ fun RegisterScreen(
                 focusedTextColor = MaterialTheme.colorScheme.onBackground,
                 unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
             ),
-            shape = MaterialTheme.shapes.small
+            shape = MaterialTheme.shapes.small,
+            textStyle = MaterialTheme.typography.bodyMedium,
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+            keyboardActions = KeyboardActions(onNext = {
+                focusManager.moveFocus(FocusDirection.Down)
+            }),
         )
 
 
@@ -192,7 +205,12 @@ fun RegisterScreen(
                 focusedTextColor = MaterialTheme.colorScheme.onBackground,
                 unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
             ),
-            shape = MaterialTheme.shapes.small
+            shape = MaterialTheme.shapes.small,
+            textStyle = MaterialTheme.typography.bodyMedium,
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+            keyboardActions = KeyboardActions(onNext = {
+                focusManager.moveFocus(FocusDirection.Down)
+            }),
         )
 
 
@@ -217,7 +235,12 @@ fun RegisterScreen(
                 focusedTextColor = MaterialTheme.colorScheme.onBackground,
                 unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
             ),
-            shape = MaterialTheme.shapes.small
+            shape = MaterialTheme.shapes.small,
+            textStyle = MaterialTheme.typography.bodyMedium,
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(onDone = {
+                focusManager.clearFocus()   // Closes keyboard
+            }),
         )
 
 
@@ -236,7 +259,9 @@ fun RegisterScreen(
             Text(
                 text = stringResource(R.string.termsAndConditions),
                 modifier = Modifier
-                    .clickable { navController.navigate(NavigationRoutes.TERMS_CONDITIONS_SCREEN) }
+                    .clickable {
+                        navController.navigate(NavigationRoutes.TERMS_CONDITIONS_SCREEN)
+                    }
                     .fillMaxWidth()
                     .padding(top = 16.dp),
                 style = MaterialTheme.typography.labelSmall,
@@ -285,23 +310,15 @@ fun RegisterScreen(
                             return@launch
                         } else {
 
-                            val success = userViewModel.register(name, email, pass)
-                            if (success != null) {
-                                navController.navigate(NavigationRoutes.HOME_SCREEN) {
-                                    popUpTo(NavigationRoutes.REGISTER_SCREEN) { inclusive = true }
-                                }
-                                Toast.makeText(
-                                    context,
-                                    "${context.getString(R.string.welcome)} $name",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            } else {
-                                Toast.makeText(
-                                    context,
-                                    context.getString(R.string.email_pass_incorrect),
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                            userViewModel.register(name, email, pass)
+                            navController.navigate(NavigationRoutes.HOME_SCREEN) {
+                                popUpTo(NavigationRoutes.REGISTER_SCREEN) { inclusive = true }
                             }
+                            Toast.makeText(
+                                context,
+                                "${context.getString(R.string.welcome)} $name",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     }
                 }

@@ -1,7 +1,9 @@
 import android.content.Intent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DrawerState
@@ -44,11 +46,11 @@ fun MenuDrawerComponent(
 ) {
     //To close de drawer when navigatin to other screen
     val scope = rememberCoroutineScope()
-
     val context= LocalContext.current
 
-    //Dialog to pop up when user clicks on delete drawer item
+    //Dialogs to pop up when user clicks on delete user
     var deletePopUpDialog by remember { mutableStateOf(false) }
+
 
     CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSecondary)
     {
@@ -109,12 +111,6 @@ fun MenuDrawerComponent(
             HorizontalDivider(
                 modifier = Modifier.padding(top = 16.dp, bottom = 8.dp),
                 color = MaterialTheme.colorScheme.onSecondary
-            )
-
-            DrawerItem(
-                icon = R.drawable.translate,
-                label = stringResource(R.string.language),
-                onClick = { /* acción de idioma */ }
             )
 
             DrawerSwitchItem(
@@ -180,16 +176,6 @@ fun MenuDrawerComponent(
 
         )
 
-        DrawerItem(
-            icon = R.drawable.question,
-            label = stringResource(R.string.faq),
-            onClick = { /* ir a FAQ */
-                scope.launch { drawerState.close() }
-            } //TODO
-        )
-
-
-
             if(deletePopUpDialog){
                 AlertDialog(
                     onDismissRequest = { deletePopUpDialog = false },
@@ -237,6 +223,6 @@ fun MenuDrawerComponent(
                     }
                 )
             }
-    }
+        }
 }
 }

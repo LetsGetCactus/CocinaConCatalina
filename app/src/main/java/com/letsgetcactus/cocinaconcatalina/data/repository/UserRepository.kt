@@ -50,6 +50,17 @@ object UserRepository {
     }
 
     /**
+     * To get helo from Firebase Auth whenever the user forgets his password
+     * @param email from the user to get the help
+     * @return true or false whether the user could obtain a new password or not
+     */
+    suspend fun handleForgetPassword(email: String): Boolean{
+        val result= FirebaseConnection.getUserForgottenPassword(email)
+        Log.i("UserRepository"," Requested reset pass to URepo , status= $result")
+        return result
+    }
+
+    /**
      * Registers a new User in Firestore by FirebaseAuth (generates an uid)
      * @param name: user's name
      * @param email: user's email
@@ -184,6 +195,16 @@ object UserRepository {
         val mods = FirebaseConnection.getUserModifiedRecipes(userId)
         Log.i("UserRepository", "Loaded ${mods.size} modified recipes for $userId")
         return mods
+    }
+
+    /**
+     * Removes a modified recipe from user's subcollection
+     * @param recipeId Id from the recipe to be deleted
+     * @param userId Id from the user that wants to remove his recipe
+     * @return a bool whether the recipe was correctly deleted or not
+     */
+    suspend fun deleteModifiedRecipe(recipeId: String, userId: String){
+        FirebaseConnection.removeModifiedFromUser(recipeId,userId)
     }
 
 }
