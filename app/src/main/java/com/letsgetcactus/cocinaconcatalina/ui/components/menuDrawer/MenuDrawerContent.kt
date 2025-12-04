@@ -48,9 +48,9 @@ fun MenuDrawerComponent(
     val scope = rememberCoroutineScope()
     val context= LocalContext.current
 
-    //Dialogs to pop up when user clicks on some drawer items (language and delete)
+    //Dialogs to pop up when user clicks on delete user
     var deletePopUpDialog by remember { mutableStateOf(false) }
-    var languagePopUpDialog by remember{mutableStateOf(false)}
+
 
     CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSecondary)
     {
@@ -111,12 +111,6 @@ fun MenuDrawerComponent(
             HorizontalDivider(
                 modifier = Modifier.padding(top = 16.dp, bottom = 8.dp),
                 color = MaterialTheme.colorScheme.onSecondary
-            )
-
-            DrawerItem(
-                icon = R.drawable.translate,
-                label = stringResource(R.string.language),
-                onClick = { languagePopUpDialog = true }
             )
 
             DrawerSwitchItem(
@@ -229,42 +223,6 @@ fun MenuDrawerComponent(
                     }
                 )
             }
-
-
-            if (languagePopUpDialog) {
-                AlertDialog(
-                    onDismissRequest = { languagePopUpDialog = false },
-                    title = { Text("Seleccione idioma") },
-                    text = {
-                        Column {
-                            LanguageOption("Español") {
-                                userViewModel.updateUserLanguage("es")
-                                languagePopUpDialog = false
-                            }
-                            LanguageOption("English") {
-                                userViewModel.updateUserLanguage("en")
-                                languagePopUpDialog = false
-                            }
-                            LanguageOption("Galego") {
-                                userViewModel.updateUserLanguage("gl")
-                                languagePopUpDialog = false
-                            }
-                        }
-                    },
-                    confirmButton = {}
-                )
-            }
-    }
+        }
 }
 }
-@Composable
-fun LanguageOption(text: String, onClick: () -> Unit) {
-    Text(
-        text = text,
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() }
-            .padding(vertical = 12.dp)
-    )
-}
-
