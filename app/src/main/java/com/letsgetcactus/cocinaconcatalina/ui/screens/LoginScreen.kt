@@ -122,7 +122,7 @@ fun LoginScreen(
                 unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
             ),
             shape = MaterialTheme.shapes.small,
-            textStyle = MaterialTheme.typography.bodySmall,
+            textStyle = MaterialTheme.typography.bodyMedium,
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
             keyboardActions = KeyboardActions(onNext = {
                 focusManager.moveFocus(FocusDirection.Down)
@@ -152,7 +152,7 @@ fun LoginScreen(
                 unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
             ),
             shape = MaterialTheme.shapes.small,
-            textStyle = MaterialTheme.typography.bodySmall,
+            textStyle = MaterialTheme.typography.bodyMedium,
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
             keyboardActions = KeyboardActions(onDone = {
                 focusManager.clearFocus()

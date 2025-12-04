@@ -142,7 +142,7 @@ fun RegisterScreen(
                 unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
             ),
             shape = MaterialTheme.shapes.small,
-            textStyle = MaterialTheme.typography.bodySmall,
+            textStyle = MaterialTheme.typography.bodyMedium,
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
             keyboardActions = KeyboardActions(onNext = {
                 focusManager.moveFocus(FocusDirection.Down)
@@ -176,7 +176,7 @@ fun RegisterScreen(
                 unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
             ),
             shape = MaterialTheme.shapes.small,
-            textStyle = MaterialTheme.typography.bodySmall,
+            textStyle = MaterialTheme.typography.bodyMedium,
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
             keyboardActions = KeyboardActions(onNext = {
                 focusManager.moveFocus(FocusDirection.Down)
@@ -206,7 +206,7 @@ fun RegisterScreen(
                 unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
             ),
             shape = MaterialTheme.shapes.small,
-            textStyle = MaterialTheme.typography.bodySmall,
+            textStyle = MaterialTheme.typography.bodyMedium,
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
             keyboardActions = KeyboardActions(onNext = {
                 focusManager.moveFocus(FocusDirection.Down)
@@ -236,7 +236,7 @@ fun RegisterScreen(
                 unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
             ),
             shape = MaterialTheme.shapes.small,
-            textStyle = MaterialTheme.typography.bodySmall,
+            textStyle = MaterialTheme.typography.bodyMedium,
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
             keyboardActions = KeyboardActions(onDone = {
                 focusManager.clearFocus()   // Closes keyboard
@@ -310,7 +310,7 @@ fun RegisterScreen(
                             return@launch
                         } else {
 
-                            val success = userViewModel.register(name, email, pass)
+                            userViewModel.register(name, email, pass)
                             navController.navigate(NavigationRoutes.HOME_SCREEN) {
                                 popUpTo(NavigationRoutes.REGISTER_SCREEN) { inclusive = true }
                             }

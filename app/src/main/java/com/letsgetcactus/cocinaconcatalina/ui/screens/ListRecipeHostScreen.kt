@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -58,7 +59,7 @@ fun ListRecipeHostScreen(
     val recipesToShow: List<Recipe> =
         when (recipeSource) {
             Source.ALL -> {
-                allFiltered.sortedBy { it.title.lowercase() }
+                allFiltered.sortedBy { it.title.lowercase()}
             }
 
             Source.ASIAN_OG -> {
@@ -88,6 +89,7 @@ fun ListRecipeHostScreen(
                 modifiedRecipesFiltered.sortedBy { it.title.lowercase() }
             }
         }
+
 
 
     Log.i(
@@ -194,6 +196,7 @@ fun LegendComposable() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+
             .padding(16.dp),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
@@ -201,7 +204,7 @@ fun LegendComposable() {
         DificultyEnum.entries.forEach { difficulty ->
             ImageAndTextComponent(
                 textToShow = difficulty.enumId,
-                colorText = difficulty.color,
+                colorText = if(difficulty.color == Color.Black && isSystemInDarkTheme())  Color.White else difficulty.color,
                 textStyle = MaterialTheme.typography.labelSmall,
                 imgToShow = difficulty.icon,
                 imgDescription = difficulty.enumId,

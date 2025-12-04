@@ -2,6 +2,7 @@ package com.letsgetcactus.cocinaconcatalina.ui.screens
 
 import DropDownMenuSelector
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -30,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -38,7 +40,6 @@ import coil.compose.rememberAsyncImagePainter
 import com.letsgetcactus.cocinaconcatalina.R
 import com.letsgetcactus.cocinaconcatalina.model.Allergen
 import com.letsgetcactus.cocinaconcatalina.model.Ingredient
-import com.letsgetcactus.cocinaconcatalina.ui.NavigationRoutes
 import com.letsgetcactus.cocinaconcatalina.model.enum.AllergenEnum
 import com.letsgetcactus.cocinaconcatalina.model.enum.UnitsTypeEnum
 import com.letsgetcactus.cocinaconcatalina.ui.components.BackStackButton
@@ -51,7 +52,6 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun ModifyRecipeScreen(
-    onNavigate: (String) -> Unit,
     navController: NavHostController,
     userViewModel: UserViewModel,
     recipeViewModel: RecipeViewModel
@@ -62,6 +62,7 @@ fun ModifyRecipeScreen(
 
 
     val scope = rememberCoroutineScope()
+    val context= LocalContext.current
 
     currentRecipe?.let { recipe ->
 
@@ -69,7 +70,7 @@ fun ModifyRecipeScreen(
 
         // Inicializamos selectedAllergens al cargar la receta
         LaunchedEffect(currentRecipe.id) {
-            currentRecipe?.let { recipe ->
+            currentRecipe.let { recipe ->
                 selectedAllergens = AllergenEnum.entries.associateWith { allergen ->
                     recipe.allergenList.any { it.img == allergen }
                 }
@@ -209,7 +210,8 @@ fun ModifyRecipeScreen(
 
                             Log.i("ModifyRecipeScreen", "$newModRecipe")
                             userViewModel.saveModifiedRecipe(newModRecipe)
-                            onNavigate(NavigationRoutes.ITEM_RECIPE_SCREEN) //Mostrar la receta modificada?
+                            navController.popBackStack()
+                            Toast.makeText(context, context.getString(R.string.recipe_saved),Toast.LENGTH_SHORT).show()
                         }
                     }
                 )

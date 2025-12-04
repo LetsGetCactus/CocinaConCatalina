@@ -188,5 +188,9 @@ O Titular poderá modificar estes Termos en calquera momento. O uso continuado d
 10. Lexislación aplicable\n
 Este contrato réxese pola lexislación española. Calquera controversia someterase aos tribunais da cidade de residencia do usuario.\n\n
 ]]></string>
+    <string name="chek_inbox">Enviouse un email á túa conta de correo para recuperar o contrasinal</string>
+    <string name="error_sending_to_inbox">Sintóo, ocurriu un erro</string>
+    <string name="delete_recipe">Eliminar receita</string>
+    <string name="recipe_saved">Nova receita dispoñible!</string>
 
 </resources>

@@ -1,7 +1,9 @@
 import android.content.Intent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DrawerState
@@ -44,11 +46,11 @@ fun MenuDrawerComponent(
 ) {
     //To close de drawer when navigatin to other screen
     val scope = rememberCoroutineScope()
-
     val context= LocalContext.current
 
-    //Dialog to pop up when user clicks on delete drawer item
+    //Dialogs to pop up when user clicks on some drawer items (language and delete)
     var deletePopUpDialog by remember { mutableStateOf(false) }
+    var languagePopUpDialog by remember{mutableStateOf(false)}
 
     CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSecondary)
     {
@@ -114,7 +116,7 @@ fun MenuDrawerComponent(
             DrawerItem(
                 icon = R.drawable.translate,
                 label = stringResource(R.string.language),
-                onClick = { /* acción de idioma */ }
+                onClick = { languagePopUpDialog = true }
             )
 
             DrawerSwitchItem(
@@ -180,16 +182,6 @@ fun MenuDrawerComponent(
 
         )
 
-        DrawerItem(
-            icon = R.drawable.question,
-            label = stringResource(R.string.faq),
-            onClick = { /* ir a FAQ */
-                scope.launch { drawerState.close() }
-            } //TODO
-        )
-
-
-
             if(deletePopUpDialog){
                 AlertDialog(
                     onDismissRequest = { deletePopUpDialog = false },
@@ -237,6 +229,42 @@ fun MenuDrawerComponent(
                     }
                 )
             }
+
+
+            if (languagePopUpDialog) {
+                AlertDialog(
+                    onDismissRequest = { languagePopUpDialog = false },
+                    title = { Text("Seleccione idioma") },
+                    text = {
+                        Column {
+                            LanguageOption("Español") {
+                                userViewModel.updateUserLanguage("es")
+                                languagePopUpDialog = false
+                            }
+                            LanguageOption("English") {
+                                userViewModel.updateUserLanguage("en")
+                                languagePopUpDialog = false
+                            }
+                            LanguageOption("Galego") {
+                                userViewModel.updateUserLanguage("gl")
+                                languagePopUpDialog = false
+                            }
+                        }
+                    },
+                    confirmButton = {}
+                )
+            }
     }
 }
 }
+@Composable
+fun LanguageOption(text: String, onClick: () -> Unit) {
+    Text(
+        text = text,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() }
+            .padding(vertical = 12.dp)
+    )
+}
+

@@ -2,8 +2,6 @@ package com.letsgetcactus.cocinaconcatalina.ui
 
 import MenuDrawerComponent
 import android.annotation.SuppressLint
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.DrawerValue
@@ -46,7 +44,6 @@ import kotlinx.coroutines.launch
  * also integrates the TopAppBar and BottomAppBar in the screens that need them
  */
 @SuppressLint("ConfigurationScreenWidthHeight")
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppNavigation(
     navController: NavHostController,
@@ -65,13 +62,18 @@ fun AppNavigation(
         drawerState = drawerState,
         drawerContent = {
 
-            MenuDrawerComponent(
-                navController = navController,
-                userViewModel = userViewModel,
-                modifier = Modifier.width(LocalConfiguration.current.screenWidthDp.dp * 0.7f),
-                drawerState = drawerState
-            )
 
+            if(currentRoute != NavigationRoutes.LOGIN_SCREEN &&
+                currentRoute != NavigationRoutes.REGISTER_SCREEN &&
+                currentRoute != NavigationRoutes.TERMS_CONDITIONS_SCREEN) {
+
+                MenuDrawerComponent(
+                    navController = navController,
+                    userViewModel = userViewModel,
+                    modifier = Modifier.width(LocalConfiguration.current.screenWidthDp.dp * 0.7f),
+                    drawerState = drawerState
+                )
+            }
         }
     ) {
         Scaffold(
@@ -180,8 +182,10 @@ fun AppNavigation(
                     AddRecipeScreen(
                         modifier = Modifier.padding(innerPadding),
                         onNavigate = { route ->
-                            navController.navigate(route)
-
+                            navController.navigate(route) {
+                                popUpTo(NavigationRoutes.ADD_RECIPE_SCREEN) { inclusive = true }
+                                launchSingleTop = true
+                            }
                         },
                         userViewModel = userViewModel,
                         recipeViewModel = recipeViewModel
@@ -201,7 +205,11 @@ fun AppNavigation(
                 composable(NavigationRoutes.ITEM_RECIPE_SCREEN) {
                     ItemRecipeScreen(
                         modifier = Modifier.padding(innerPadding),
-                        onNavigate = { route -> navController.navigate(route) },
+                        onNavigate = { route ->
+                            navController.navigate(route) {
+                                launchSingleTop = true
+                            }
+                        },
                         navController = navController,
                         userViewModel = userViewModel,
                         recipeViewModel = recipeViewModel,
@@ -235,7 +243,6 @@ fun AppNavigation(
                     ModifyRecipeScreen(
                         userViewModel = userViewModel,
                         recipeViewModel = recipeViewModel,
-                        onNavigate = { route -> navController.navigate(route) },
                         navController = navController
                     )
                 }
@@ -251,7 +258,11 @@ fun AppNavigation(
                     HomeScreen(
                         modifier = Modifier.padding(innerPadding),
                         onNavigate = { route ->
-                            navController.navigate(route)
+                            navController.navigate(route) {
+                                popUpTo(NavigationRoutes.HOME_SCREEN)
+                                launchSingleTop = true
+                            }
+
                         },
                         userViewModel = userViewModel
 

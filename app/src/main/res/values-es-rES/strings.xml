@@ -189,5 +189,9 @@ El Titular podrá modificar estos Términos en cualquier momento. El uso continu
 10. Legislación aplicable\n
 Este contrato se rige por la legislación española. Cualquier controversia se someterá a los tribunales de la ciudad de residencia del usuario.\n\n
 ]]></string>
+    <string name="chek_inbox">Se ha enviado un email a tu correo para recuperar la contraseña</string>
+    <string name="error_sending_to_inbox">Lo siento, ha ocurrido un error</string>
+    <string name="delete_recipe">Eliminar receta</string>
+    <string name="recipe_saved">Nueva receta disponible!</string>
 
 </resources>

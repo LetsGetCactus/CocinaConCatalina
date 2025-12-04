@@ -2,11 +2,9 @@ package com.letsgetcactus.cocinaconcatalina.ui.screens
 
 import DropDownMenuSelector
 import android.net.Uri
-import android.os.Build
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -21,6 +19,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -33,21 +32,21 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.google.android.material.loadingindicator.LoadingIndicator
 import com.letsgetcactus.cocinaconcatalina.R
 import com.letsgetcactus.cocinaconcatalina.model.Allergen
 import com.letsgetcactus.cocinaconcatalina.model.Category
 import com.letsgetcactus.cocinaconcatalina.model.Ingredient
-import com.letsgetcactus.cocinaconcatalina.ui.NavigationRoutes
 import com.letsgetcactus.cocinaconcatalina.model.Origin
 import com.letsgetcactus.cocinaconcatalina.model.Recipe
 import com.letsgetcactus.cocinaconcatalina.model.enum.AllergenEnum
 import com.letsgetcactus.cocinaconcatalina.model.enum.DificultyEnum
 import com.letsgetcactus.cocinaconcatalina.model.enum.UnitsTypeEnum
+import com.letsgetcactus.cocinaconcatalina.ui.NavigationRoutes
 import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonMain
 import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonPair
 import com.letsgetcactus.cocinaconcatalina.ui.components.FAB
@@ -59,7 +58,7 @@ import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
 import java.util.UUID
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @Composable
 fun AddRecipeScreen(
     onNavigate: (String) -> Unit,
@@ -100,6 +99,7 @@ fun AddRecipeScreen(
     var active by remember { mutableStateOf(true) }
     var origin by remember { mutableStateOf(Origin(country = "")) }
 
+    var isLoading by remember { mutableStateOf(false) }
 
     val scrollState = rememberScrollState()
     val coroutineToAddRecipe= rememberCoroutineScope () //Needed to call suspend function addRecipe()
@@ -485,19 +485,32 @@ fun AddRecipeScreen(
                         video = null
                     )
                     coroutineToAddRecipe.launch {
+                        isLoading=true
                         try{
                             recipeViewModel.addRecipe(newRecipe,img)
-                            LoadingIndicator(context) //TODO
-
-                            onNavigate(NavigationRoutes.HOME_SCREEN)
-
+                            onNavigate(NavigationRoutes.HOME_SCREEN) //NAvegas a la receta??
+                            Toast.makeText(context, context.getString(R.string.recipe_saved), Toast.LENGTH_SHORT).show()
                         }catch(e: Exception) {
                             Toast.makeText(context, "${context.getString(R.string.recipe_saved_error)}: $e", Toast.LENGTH_SHORT).show()
+                        }finally {
+                            isLoading=false
                         }
                     }
 
                 }
             )
+        }
+        if(isLoading){
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.LightGray.copy(alpha = 0.3f)),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
         }
     }
 

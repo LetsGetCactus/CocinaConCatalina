@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -39,6 +40,7 @@ import com.letsgetcactus.cocinaconcatalina.ui.components.BackStackButton
 import com.letsgetcactus.cocinaconcatalina.ui.components.RecipeRatingSelector
 import com.letsgetcactus.cocinaconcatalina.viewmodel.RecipeViewModel
 import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 @Composable
@@ -52,7 +54,8 @@ fun ItemRecipeScreen(
     ) {
 
     //Combine both
-    val recipeSelected = userViewModel.selectedRecipe.collectAsState().value ?: recipeViewModel.selectedRecipe.collectAsState().value
+    val recipeSelected = userViewModel.selectedRecipe.collectAsState().value
+        ?: recipeViewModel.selectedRecipe.collectAsState().value
 
     recipeSelected?.let { currentRecipe ->
 
@@ -65,6 +68,7 @@ fun ItemRecipeScreen(
         val originEnum = OriginMapper.mapOriginToEnum(currentRecipe.origin.country)
         val flagForRecipe = originEnum.flag
 
+        val scope = rememberCoroutineScope()
 
         Log.i(
             "ItemRecipeScreen",
@@ -182,7 +186,7 @@ fun ItemRecipeScreen(
                                 modifier = Modifier
                                     .align(Alignment.TopEnd)
                                     .size(40.dp)
-                                    .offset(x= -24.dp, y=-4.dp)
+                                    .offset(x = -24.dp, y = -4.dp)
 
                             )
                         }
@@ -207,8 +211,26 @@ fun ItemRecipeScreen(
                             imageContent = R.string.prep_time,
                             textIn = currentRecipe.prepTime.toString()
                         )
+                        Spacer(Modifier.size(24.dp))
+                        if(currentRecipe.title.endsWith("(Mod)")) {
+                            IconAndText(
+                                modifier = Modifier.clickable(
+                                    onClick = {
+                                        val user = userViewModel.currentUser.value?.id
+                                        scope.launch {
+                                            userViewModel.deleteModified(
+                                                currentRecipe.id,
+                                                user
+                                            )
+                                        }
+                                        navController.popBackStack()
+                                    }),
+                                imageResource = R.drawable.trash,
+                                imageContent = R.string.delete_recipe,
+                                textIn = stringResource(R.string.delete_recipe)
+                            )
 
-
+                        }
                     }
                     Spacer(modifier = Modifier.size(32.dp))
                 }
@@ -240,7 +262,7 @@ fun ItemRecipeScreen(
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.weight(1f)
                     )
-                     ItemSteps(currentRecipe.steps)
+                    ItemSteps(currentRecipe.steps)
                 }
 
                 //rating

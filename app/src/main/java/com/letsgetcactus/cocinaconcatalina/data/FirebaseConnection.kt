@@ -496,7 +496,31 @@ object FirebaseConnection {
         }
 
 
-        /**
+    /**
+     * Removes a modified recipe from the user
+     * @param recipeId Recipe to be deleted
+     * @param userId Id from the user whose subcolection has the recipe to be deleted
+     * @return boolean true if the recipe was deleted, fals if not
+     *
+     */
+    suspend fun removeModifiedFromUser(recipeId: String,userId: String){
+      try {
+          db.collection("users")
+              .document(userId)
+              .collection("modifiedRecipes")
+              .document(recipeId)
+              .delete()
+              .await()
+
+          Log.i("FirebaseConnection", "Recipe ${recipeId }deleted from user's modified")
+      }catch (e: Exception){
+          Log.e("FirebaseConnection", "Could no delete recipe $recipeId from user's modified",e)
+
+      }
+    }
+
+
+    /**
          * Gets user's favourites Recipes by their Id's
          * @param userId Id from the user to obtain his subcollection
          * @param language to get the recipes in that language

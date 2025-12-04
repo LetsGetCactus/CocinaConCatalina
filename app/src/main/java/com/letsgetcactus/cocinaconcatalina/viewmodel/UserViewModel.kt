@@ -49,7 +49,7 @@ class UserViewModel(
     private val _isLoggedIn = MutableStateFlow(false)
     val isLoggedIn: StateFlow<Boolean> = _isLoggedIn
 
-    //Curreny user
+    //Current user
     private val _currentUser = MutableStateFlow<User?>(null)
     val currentUser = _currentUser.asStateFlow()
 
@@ -146,16 +146,25 @@ class UserViewModel(
      * @param email to send the restore password
      * @param context for the Toast
      */
-    suspend fun forgotPassword( email: String, context: Context){
+    suspend fun forgotPassword(email: String, context: Context) {
         if (email.isBlank()) {
-            Toast.makeText(context, context.getString(R.string.emailError), Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, context.getString(R.string.emailError), Toast.LENGTH_SHORT)
+                .show()
             return
         }
-        val result= userRepo.handleForgetPassword(email)
+        val result = userRepo.handleForgetPassword(email)
 
-        Log.i("UserViewModel"," Requested reset pass to URepo , status= $result")
-        if(result) Toast.makeText(context,context.getString(R.string.chek_inbox), Toast.LENGTH_SHORT).show()
-        else Toast.makeText(context,context.getString(R.string.error_sending_to_inbox), Toast.LENGTH_SHORT).show()
+        Log.i("UserViewModel", " Requested reset pass to URepo , status= $result")
+        if (result) Toast.makeText(
+            context,
+            context.getString(R.string.chek_inbox),
+            Toast.LENGTH_SHORT
+        ).show()
+        else Toast.makeText(
+            context,
+            context.getString(R.string.error_sending_to_inbox),
+            Toast.LENGTH_SHORT
+        ).show()
 
 
     }
@@ -392,6 +401,8 @@ class UserViewModel(
         }
 
         _modifiedRecipes.value = currentList
+        loadModified()
+
     }
 
 
@@ -413,6 +424,26 @@ class UserViewModel(
     fun selectRecipe(recipe: Recipe) {
         _selectedRecipe.value = recipe
         Log.i("UserViewModel", "Selected recipe: ${recipe.title}")
+    }
+
+    /**
+     * To delete a modified recipe
+     * @param recipeId Id from the recipe to be deleted
+     * @param userId Id from the owner of the modified recipe
+     * @return boolean
+     */
+    suspend fun deleteModified(recipeId: String, userId: String?): Boolean {
+        return try {
+            if(!userId.isNullOrEmpty()) {
+                userRepo.deleteModifiedRecipe(recipeId, userId)
+                loadModified()
+                true
+            }else false
+        }catch (e: Exception){
+            throw e
+        }
+
+
     }
 
 

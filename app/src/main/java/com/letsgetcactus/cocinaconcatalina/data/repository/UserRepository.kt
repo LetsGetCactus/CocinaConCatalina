@@ -197,4 +197,14 @@ object UserRepository {
         return mods
     }
 
+    /**
+     * Removes a modified recipe from user's subcollection
+     * @param recipeId Id from the recipe to be deleted
+     * @param userId Id from the user that wants to remove his recipe
+     * @return a bool whether the recipe was correctly deleted or not
+     */
+    suspend fun deleteModifiedRecipe(recipeId: String, userId: String){
+        FirebaseConnection.removeModifiedFromUser(recipeId,userId)
+    }
+
 }
