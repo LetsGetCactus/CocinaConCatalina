@@ -274,7 +274,7 @@ fun AppNavigation(
                         recipeViewModel = recipeViewModel,
                         userViewModel = userViewModel,
                         recipeSource = Source.ALL,
-                        navControler = navController
+                        navController = navController
                     )
                 }
 

@@ -41,7 +41,7 @@ import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
 @Composable
 fun FilterScreen(
     recipeSource: Source,
-    navControler: NavController,
+    navController: NavController,
     recipeViewModel: RecipeViewModel,
     userViewModel: UserViewModel
 ) {
@@ -88,7 +88,7 @@ fun FilterScreen(
 
             // DishType
             DropDownMenuSelector(
-                options = DishTypeEnum.values(),
+                options = DishTypeEnum.entries.toTypedArray(),
                 selected = selectedDishType,
                 onSelect = { selectedDishType = it },
                 placeholder = stringResource(R.string.dish_type),
@@ -221,7 +221,7 @@ fun FilterScreen(
                             }
                         }
 
-                        navControler.navigate(NavigationRoutes.LIST_RECIPES_HOST_SCREEN+"?source=FILTERED")
+                        navController.navigate(NavigationRoutes.LIST_RECIPES_HOST_SCREEN+"?source=FILTERED")
                     },
                     modifier = Modifier.weight(1f)
                 )

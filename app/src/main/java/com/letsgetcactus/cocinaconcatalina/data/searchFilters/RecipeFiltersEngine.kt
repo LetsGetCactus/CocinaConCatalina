@@ -14,11 +14,14 @@ object RecipeFiltersEngine {
         recipes: List<Recipe>,
         filter: RecipeSearchFilters
     ): List<Recipe> {
+
+        val query = filter.query.lowercase()
+
         return recipes.filter { recipe ->
 
             // Search text (searchbar) - Title or ingredients
             if (filter.query.isNotBlank()){
-                val query = filter.query.lowercase()
+
                 val foundInTitle = recipe.title.lowercase().contains(query)
                 val foundInIngredient = recipe.ingredientList.any { it.name.lowercase().contains(query) }
                 if(!foundInIngredient && !foundInTitle) return@filter false
@@ -30,7 +33,8 @@ object RecipeFiltersEngine {
                 return@filter false
 
             // Dish Type
-            if (filter.dishType != null && recipe.categoryList.equals(filter.dishType))
+            if (filter.dishType != null &&
+                recipe.categoryList.none { it.name.equals(filter.dishType.name, true) })
                 return@filter false
 
             // Difficulty
@@ -52,8 +56,8 @@ object RecipeFiltersEngine {
 
             // Allergens to exclude
             if (filter.allergens.isNotEmpty() &&
-                recipe.allergenList.any { it.equals(filter.allergens) }
-            ) return@filter false
+                recipe.allergenList.any { it.img in filter.allergens })
+                return@filter false
 
             true
         }

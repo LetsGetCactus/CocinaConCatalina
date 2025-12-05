@@ -480,8 +480,10 @@ class UserViewModel(
             maxIngredients = maxIngredients,
             rating = rating,
             allergens = allergens,
-            query = _searchQuery.value
+            query = ""
         )
+
+        _searchQuery.value=""
         filterRecipes()
         Log.i("UserViewModel", "Set filters in search")
     }
@@ -504,9 +506,20 @@ class UserViewModel(
      */
     fun search(query: String) {
         _searchQuery.value = query
-        _activeFilter.value = _activeFilter.value.copy(query = query)
+
+
+        _activeFilter.value = RecipeSearchFilters(
+            query = query,
+            origin = null,
+            dishType = null,
+            difficulty = null,
+            prepTime = null,
+            maxIngredients = null,
+            rating = null,
+            allergens = emptyList()
+        )
+
         filterRecipes()
-        Log.i("UserViewModel", "Searching..")
     }
 
     /**

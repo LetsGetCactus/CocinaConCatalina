@@ -23,12 +23,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.letsgetcactus.cocinaconcatalina.R
 import com.letsgetcactus.cocinaconcatalina.ui.NavigationRoutes
-import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
 import com.letsgetcactus.cocinaconcatalina.viewmodel.RecipeViewModel
 import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
 
@@ -51,12 +49,31 @@ fun SearchBarComponent(
             value = searchQuery,
             onValueChange = { onSearchQueryChange(it) },
             leadingIcon = {
-                IconButton(onClick = {}) {
+                IconButton(onClick = {
+                    // Delete previous search filters
+                    recipeViewModel.resetFilters()
+                    userViewModel.resetFilters()
+
+                    recipeViewModel.search(searchQuery)
+                    userViewModel.search(searchQuery)
+
+                    navController.navigate(NavigationRoutes.LIST_RECIPES_HOST_SCREEN + "?source=FILTERED")
+
+                    //Cleans search after searching
+                    onSearchQueryChange("")
+                }) {
                     Icon(Icons.Default.Search, contentDescription = stringResource(R.string.search))
                 }
             },
             trailingIcon = {
-                IconButton(onClick = onCloseClick) {
+                IconButton(onClick = {
+                    onSearchQueryChange("")
+
+                    recipeViewModel.search("")
+                    userViewModel.search("")
+
+                    onCloseClick()
+                }) {
                     Icon(
                         Icons.Default.Close,
                         contentDescription = stringResource(R.string.close)
@@ -72,7 +89,9 @@ fun SearchBarComponent(
                 .shadow(8.dp),
             textStyle = MaterialTheme.typography.bodySmall,
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
-            keyboardActions = KeyboardActions(onSearch = {
+            keyboardActions = KeyboardActions(
+                onSearch = {
+
                 onSearchQueryChange(searchQuery)
                 recipeViewModel.search(searchQuery)
                 userViewModel.search(searchQuery)
