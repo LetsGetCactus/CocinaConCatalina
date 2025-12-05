@@ -434,12 +434,12 @@ class UserViewModel(
      */
     suspend fun deleteModified(recipeId: String, userId: String?): Boolean {
         return try {
-            if(!userId.isNullOrEmpty()) {
+            if (!userId.isNullOrEmpty()) {
                 userRepo.deleteModifiedRecipe(recipeId, userId)
                 loadModified()
                 true
-            }else false
-        }catch (e: Exception){
+            } else false
+        } catch (e: Exception) {
             throw e
         }
 
@@ -483,7 +483,7 @@ class UserViewModel(
             query = ""
         )
 
-        _searchQuery.value=""
+        _searchQuery.value = ""
         filterRecipes()
         Log.i("UserViewModel", "Set filters in search")
     }
@@ -505,20 +505,13 @@ class UserViewModel(
      * @query data to be searched for
      */
     fun search(query: String) {
+        if (query.isNotBlank()) {
+            _activeFilter.value = RecipeSearchFilters(query = query)
+        } else {
+            _activeFilter.value = RecipeSearchFilters()
+        }
+
         _searchQuery.value = query
-
-
-        _activeFilter.value = RecipeSearchFilters(
-            query = query,
-            origin = null,
-            dishType = null,
-            difficulty = null,
-            prepTime = null,
-            maxIngredients = null,
-            rating = null,
-            allergens = emptyList()
-        )
-
         filterRecipes()
     }
 

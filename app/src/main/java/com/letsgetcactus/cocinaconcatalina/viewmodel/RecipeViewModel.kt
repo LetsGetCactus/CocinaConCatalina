@@ -131,22 +131,18 @@ class RecipeViewModel(
      * @param query to be searched
      */
     fun search(query: String) {
+        if (query.isNotBlank()) {
+            _activeFilter.value = RecipeSearchFilters(query = query)
+        } else {
+            _activeFilter.value = RecipeSearchFilters()
+        }
+
         _searchQuery.value = query
-
-        // Each search is isolated and not adding to the others
-        _activeFilter.value = RecipeSearchFilters(
-            query = query,
-            origin = null,
-            dishType = null,
-            difficulty = null,
-            prepTime = null,
-            maxIngredients = null,
-            rating = null,
-            allergens = emptyList()
-        )
-
         filterRecipes()
     }
+
+
+
     /**
      * Resets/clears RecipeViewModel private filter vals to null
      */
