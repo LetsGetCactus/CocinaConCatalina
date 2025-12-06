@@ -2,8 +2,8 @@ package com.letsgetcactus.cocinaconcatalina.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.letsgetcactus.cocinaconcatalina.data.repository.UserSessionRepository
 import com.letsgetcactus.cocinaconcatalina.data.repository.UserRepository
+import com.letsgetcactus.cocinaconcatalina.data.repository.UserSessionRepository
 
 class UserViewModelFactory(
     private val userSessionRepo: UserSessionRepository
