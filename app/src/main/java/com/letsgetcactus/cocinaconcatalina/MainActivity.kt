@@ -1,11 +1,18 @@
 package com.letsgetcactus.cocinaconcatalina
 
+import android.Manifest
+import android.app.NotificationManager
+import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.collectAsState
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.FirebaseApp
@@ -13,6 +20,7 @@ import com.google.firebase.appcheck.FirebaseAppCheck
 import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory
 import com.letsgetcactus.cocinaconcatalina.data.local.DataStoreManagment
 import com.letsgetcactus.cocinaconcatalina.data.repository.UserSessionRepository
+import com.letsgetcactus.cocinaconcatalina.data.util.NotificationUtil
 import com.letsgetcactus.cocinaconcatalina.ui.AppNavigation
 import com.letsgetcactus.cocinaconcatalina.ui.NavigationRoutes
 import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
@@ -41,9 +49,19 @@ import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModelFactory
 
 class MainActivity : ComponentActivity() {
 
+
+    //Permission for POST_NOTIFIC
+    private val requestNotificationPermission =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+
+        }
+    //NotificationManagaer for  the whole Activity
+    private lateinit var notificationManager: NotificationManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        //FIREBASE
         //Init Firebase
         FirebaseApp.initializeApp(this)
         //App Check Provider for Firebase
@@ -52,6 +70,17 @@ class MainActivity : ComponentActivity() {
           //PARA PROD:  PlayIntegrityAppCheckProviderFactory.getInstance()
             DebugAppCheckProviderFactory.getInstance()
         )
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED
+            ) {
+                requestNotificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+        //NOTIF.MANAGER init
+        notificationManager= getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
         enableEdgeToEdge()
 
         val dataStore= DataStoreManagment(applicationContext)
@@ -80,6 +109,7 @@ class MainActivity : ComponentActivity() {
 
             }
         }
+
     }
 }
 

@@ -1,6 +1,8 @@
 package com.letsgetcactus.cocinaconcatalina.ui.components.bars
 
 import android.content.Intent
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,30 +10,40 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import com.letsgetcactus.cocinaconcatalina.R
+import com.letsgetcactus.cocinaconcatalina.data.util.TimerScheduler
 import com.letsgetcactus.cocinaconcatalina.ui.NavigationRoutes
-import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
 
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun BottomBarComposable(
     onNavigate: (String) -> Unit,
 ) {
 
-    val context= LocalContext.current
+    val context = LocalContext.current
+
+    var timerDialog by remember { mutableStateOf(false) }
+    var minutes by remember { mutableStateOf("") }
 
 
     BottomAppBar(
@@ -57,6 +69,14 @@ fun BottomBarComposable(
                 }
             )
 
+            // Timer
+            BottomBarItem(
+                icon = R.drawable.timer,
+                label = stringResource(R.string.timer),
+                onClick = { timerDialog = true }
+            )
+
+
             // Favs
             BottomBarItem(
                 icon = R.drawable.favs,
@@ -71,6 +91,45 @@ fun BottomBarComposable(
                 onClick = { onNavigate(NavigationRoutes.HOME_SCREEN) }
             )
         }
+
+        if (timerDialog) {
+            AlertDialog(
+                onDismissRequest = { timerDialog = false },
+                title = { Text(stringResource(R.string.set_timer)) },
+                text = {
+                    Column {
+                        Text(stringResource(R.string.set_minutes))
+                        TextField(
+                            value = minutes,
+                            onValueChange = { minutes = it },
+                            placeholder = { Text("15") },
+                            singleLine = true
+                        )
+                    }
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            val m = minutes.toIntOrNull() ?: 0
+                            if (m > 0) {
+                                TimerScheduler.scheduleTimer(
+                                    context.applicationContext,
+                                    m
+                                )
+                            }
+                            timerDialog = false
+                        }
+                    ) {
+                        Text(stringResource(R.string.ok))
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { timerDialog = false }) {
+                        Text(stringResource(R.string.cancel))
+                    }
+                }
+            )
+        }
     }
 }
 
@@ -80,7 +139,7 @@ private fun BottomBarItem(
     label: String,
     onClick: () -> Unit
 ) {
-     Column(
+    Column(
         modifier = Modifier
             .clickable { onClick() }
             .padding(vertical = 6.dp),
@@ -90,7 +149,8 @@ private fun BottomBarItem(
         Icon(
             painter = painterResource(icon),
             contentDescription = label,
-            modifier = Modifier.padding(bottom = 2.dp)
+            modifier = Modifier
+                .padding(bottom = 2.dp)
                 .size(32.dp)
         )
         Text(
@@ -99,14 +159,5 @@ private fun BottomBarItem(
             color = MaterialTheme.colorScheme.onPrimary
         )
     }
-}
 
-@Preview
-@Composable
-fun PreviewMainScreen() {
-    CocinaConCatalinaTheme(darkTheme = false) {
-        BottomBarComposable(
-            onNavigate = {},
-        )
-    }
 }

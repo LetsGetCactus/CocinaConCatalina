@@ -112,6 +112,12 @@
     <string name="error_sending_to_inbox">Sorry, an error occurred</string>
     <string name="delete_recipe">Delete recipe</string>
     <string name="recipe_saved">New recipe available!</string>
+    <string name="timer">Timer</string>
+    <string name="set_timer">Set timer</string>
+    <string name="set_minutes">Set minutes</string>
+    <string name="ok">Ok</string>
+    <string name="time_over">Time\'s up! Let\'s keep cooking 🍜</string>
+    <string name="minutes">Minutes</string>
 
 
 </resources>

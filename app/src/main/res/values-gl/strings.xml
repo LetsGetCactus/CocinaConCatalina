@@ -192,5 +192,11 @@ Este contrato réxese pola lexislación española. Calquera controversia someter
     <string name="error_sending_to_inbox">Sintóo, ocurriu un erro</string>
     <string name="delete_recipe">Eliminar receita</string>
     <string name="recipe_saved">Nova receita dispoñible!</string>
+    <string name="set_minutes">Establecer minutos</string>
+    <string name="ok">Ok</string>
+    <string name="timer">Temporizador</string>
+    <string name="set_timer">Establecer temporizador</string>
+    <string name="time_over">Acabouse a espera!  Hora de cociñar \uD83C\uDF5C</string>
+    <string name="minutes">Minutos</string>
 
 </resources>
