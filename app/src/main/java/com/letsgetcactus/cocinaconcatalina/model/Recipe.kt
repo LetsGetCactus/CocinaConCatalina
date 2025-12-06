@@ -5,7 +5,9 @@ import com.letsgetcactus.cocinaconcatalina.model.enum.DificultyEnum
 data class Recipe(
     val id: String,
     var title: String,
-    val avgRating: Int,
+    val avgRating: Double = 0.0,
+    val totalRating: Int = 0,
+    val ratingCount: Int = 0,
     val steps: List<String>,
     val ingredientList: List<Ingredient>,
     val allergenList: List<Allergen>,

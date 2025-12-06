@@ -17,6 +17,8 @@ fun RecipeDto.toRecipe(language: String = Locale.getDefault().language): Recipe 
         id = this.id,
         title = this.title[lang] ?: this.title["en"] ?: "",
         avgRating = this.avgRating,
+        totalRating = this.totalRating,
+        ratingCount = this.ratingCount,
         steps = this.steps.map { stepMap ->
             stepMap[lang] ?: stepMap["en"] ?: ""
         },
@@ -46,6 +48,8 @@ fun Recipe.toMap(): Map<String, Any?> {
         "id" to id,
         "title" to title,
         "avgRating" to avgRating,
+        "totalRating" to totalRating,
+        "ratingCount" to ratingCount,
         "steps" to steps,
         "ingredientList" to ingredientList.map { ing ->
             mapOf(

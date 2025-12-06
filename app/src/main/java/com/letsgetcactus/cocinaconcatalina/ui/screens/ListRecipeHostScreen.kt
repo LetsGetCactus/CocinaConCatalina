@@ -182,7 +182,7 @@ private fun RecipeCard(
                     color = MaterialTheme.colorScheme.onSecondary
                 )
                 RecipeRating(
-                    recipe.avgRating,
+                    recipe.avgRating.toInt(),
                     difficulty = recipe.dificulty ?: DificultyEnum.EASY
                 )
             }

@@ -266,7 +266,7 @@ fun ItemRecipeScreen(
                 }
 
                 //rating
-                item { //TODO puntuacion seleccionable, actualizar ratings
+                item {
                     Spacer(modifier = Modifier.size(24.dp))
                     Column(
                         modifier = Modifier.fillMaxWidth(),
@@ -284,13 +284,37 @@ fun ItemRecipeScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = "(4.8)",
+                                text = "(${currentRecipe.avgRating})",
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.primary
                             )
-                            RecipeRatingSelector(3)
+                            RecipeRatingSelector(
+                                initialRating = currentRecipe.avgRating.toInt(),
+                                onRatingSelected = { rate ->
+
+                                    val userId = userViewModel.currentUser.value?.id
+                                    val isModified = currentRecipe.title.trim().contains("(Mod)")
+                                    Log.i("ItemRecipeScreen",
+                                        "UserId=${userViewModel.currentUser.value?.id}, " +
+                                                "Modified list=${userViewModel.currentUser.value?.modifiedRecipes}, " +
+                                                "Checking ID=${currentRecipe.id}"
+                                    )
+                                    if (isModified && userId!= null) {
+
+                                        userViewModel.rateRecipe(
+                                            currentRecipe.id,
+                                            rate,
+                                            userId
+                                        )
+
+                                    } else {
+                                        recipeViewModel.rateRecipe(currentRecipe.id, rate)
+                                    }
+                                }
+
+                            )
                             Text(
-                                text = "(342 ratings)",
+                                text = "(${currentRecipe.ratingCount})",
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.primary
                             )

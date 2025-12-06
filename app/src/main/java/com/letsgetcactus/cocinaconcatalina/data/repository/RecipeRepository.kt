@@ -1,10 +1,7 @@
 package com.letsgetcactus.cocinaconcatalina.data.repository
 
-import android.annotation.SuppressLint
 import android.net.Uri
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import com.letsgetcactus.cocinaconcatalina.data.FirebaseConnection
 import com.letsgetcactus.cocinaconcatalina.model.Recipe
 import kotlinx.coroutines.Dispatchers
@@ -130,7 +127,6 @@ object RecipeRepository {
      * To add a new recipe to AsianOriginals
      * @param recipe the recipe to be upload and saved on the db
      */
-    @RequiresApi(Build.VERSION_CODES.O)
     suspend fun addAsianOriginalRecipe(recipe: Recipe, language: String= Locale.getDefault().language){
         try {
             FirebaseConnection.uploadRecipeAndTranslations(recipe,language)
@@ -143,17 +139,24 @@ object RecipeRepository {
      * Adds a new asian original recipe to the db
      * @param recipe to be uploaded
      */
-    @SuppressLint("SuspiciousIndentation")
-    @RequiresApi(Build.VERSION_CODES.O)
     suspend fun addRecipeToDB(recipe: Recipe, img: Uri?): Boolean{
-        var urlFromStorage= FirebaseConnection.imgToFirestore(img)
+        val urlFromStorage= FirebaseConnection.imgToFirestore(img)
         Log.i("recipeRepository","Got url from storage: $urlFromStorage")
-        if(urlFromStorage!=null)
-        recipe.img=urlFromStorage
+        if(urlFromStorage!=null) recipe.img=urlFromStorage
         Log.i("recipeRepository","Sending prepared recipe to firebase $recipe")
 
         FirebaseConnection.uploadRecipeAndTranslations(recipe, Locale.getDefault().language)
         //Si no funciona usamos addmodifiedrecipe()
         return true
+    }
+
+    /**
+     * To rate a recipe on ItemRecipeScreen
+     * It sums to the rating and shows de average rating from all the votes
+     * @param id from the recipe who got the vote
+     * @param rating int for the rating received
+     */
+    suspend fun rateRecipe(id: String, rating: Int){
+        FirebaseConnection.rateRecipe(id,rating,null)
     }
 }

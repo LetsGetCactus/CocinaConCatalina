@@ -161,5 +161,18 @@ class RecipeViewModel(
         Log.i("REcipeViewModel", "Sent recipe $recipe to Repo")
     }
 
+    /**
+     * To rate a recipe on ItemRecipeScreen
+     * It sums to the rating and shows de average rating from all the votes
+     * @param id from the recipe who got the vote
+     * @param rating int for the rating received
+     */
+    fun rateRecipe(id: String, rating: Int){
+        viewModelScope.launch {
+            recipeRepository.rateRecipe(id, rating)
+            loadAsianOgRecipes()
+        }
+    }
+
 
 }

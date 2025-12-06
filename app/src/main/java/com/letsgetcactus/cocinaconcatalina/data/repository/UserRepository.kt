@@ -207,4 +207,13 @@ object UserRepository {
         FirebaseConnection.removeModifiedFromUser(recipeId,userId)
     }
 
+    /**
+     * To rate a recipe on ItemRecipeScreen
+     * It sums to the rating and shows de average rating from all the votes
+     * @param id from the recipe who got the vote
+     * @param rating int for the rating received
+     */
+    suspend fun rateRecipe(recipeId: String, rating: Int,userId: String ){
+        FirebaseConnection.rateRecipe(recipeId,rating,userId)
+    }
 }

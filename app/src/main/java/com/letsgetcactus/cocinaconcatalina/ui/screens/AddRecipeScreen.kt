@@ -481,7 +481,9 @@ fun AddRecipeScreen(
                         active = active,
                         origin = origin,
                         img ="",
-                        avgRating = 0,
+                        avgRating = 0.0,
+                        totalRating = 0,
+                        ratingCount = 0,
                         video = null
                     )
                     coroutineToAddRecipe.launch {

@@ -205,7 +205,9 @@ fun ModifyRecipeScreen(
                                 .map { Allergen(name = it.key.name, img = it.key) }
                             val newModRecipe = recipe.copy(
                                 allergenList = allergenList,
-                                avgRating = 0 //As a new recipe it should not save the current recipe's rating
+                                avgRating = 0.0, //As a new recipe it should not save the current recipe's rating
+                                totalRating = 0,
+                                ratingCount = 0,
                             )
 
                             Log.i("ModifyRecipeScreen", "$newModRecipe")
