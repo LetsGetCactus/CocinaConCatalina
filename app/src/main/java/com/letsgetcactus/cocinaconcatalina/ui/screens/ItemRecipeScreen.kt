@@ -1,7 +1,6 @@
 package com.letsgetcactus.cocinaconcatalina.ui.screens
 
 import android.app.Activity
-import android.text.Layout
 import android.util.Log
 import android.view.WindowManager
 import android.widget.Toast
@@ -24,7 +23,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -36,7 +34,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -44,7 +41,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
-import com.letsgetcactus.cocinaconcatalina.ApplicationClass
 import com.letsgetcactus.cocinaconcatalina.R
 import com.letsgetcactus.cocinaconcatalina.data.mapper.OriginMapper
 import com.letsgetcactus.cocinaconcatalina.model.Allergen
@@ -229,7 +225,7 @@ val context= LocalContext.current
                                 .offset(x = 12.dp)
                         ) {
                             Image(
-                                painter = rememberAsyncImagePainter(flagForRecipe),
+                                painter = painterResource(flagForRecipe),
                                 contentDescription = currentRecipe.origin.country,
                                 modifier = Modifier
                                     .align(Alignment.TopEnd)

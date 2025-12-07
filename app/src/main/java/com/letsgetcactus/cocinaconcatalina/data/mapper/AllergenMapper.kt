@@ -1,6 +1,5 @@
 package com.letsgetcactus.cocinaconcatalina.data.mapper
 
-import android.util.Log
 import com.letsgetcactus.cocinaconcatalina.data.dto.AllergenDto
 import com.letsgetcactus.cocinaconcatalina.model.Allergen
 import com.letsgetcactus.cocinaconcatalina.model.enum.AllergenEnum
@@ -9,7 +8,7 @@ import com.letsgetcactus.cocinaconcatalina.model.enum.AllergenEnum
  * Class that translates Firebases simple types (DTO) into our Kotlin types for the recipes
  *
  */
-fun AllergenDto.toAllergen(language: String): Allergen {
+fun AllergenDto.toAllergen(): Allergen {
     val mapToEnum = mapOf(
         "SHELLFISH_ICON" to AllergenEnum.MOLLUSK,
         "EGG_ICON" to AllergenEnum.EGG,
@@ -29,14 +28,10 @@ fun AllergenDto.toAllergen(language: String): Allergen {
 
 
     val allergenEnum = mapToEnum[this.img] ?: AllergenEnum.ALTRAMUZ
-    Log.i("AllergenMapper", "Firebase allergen: ${this.img}")
 
-    // 👇 Nuevo manejo multilenguaje
-    val lang = if (language !in listOf("es", "gl", "en")) "en" else language
-    val localizedName = this.name[lang] ?: this.name["en"] ?: ""
 
     return Allergen(
-        name = localizedName,
+        name = allergenEnum.name,
         img = allergenEnum
     )
 }

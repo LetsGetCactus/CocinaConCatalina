@@ -5,21 +5,14 @@ import android.net.Uri
 import android.util.Log
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
-import com.google.firebase.functions.FirebaseFunctions
 import com.google.firebase.storage.FirebaseStorage
 import com.letsgetcactus.cocinaconcatalina.data.dto.RecipeDto
 import com.letsgetcactus.cocinaconcatalina.data.mapper.toMap
 import com.letsgetcactus.cocinaconcatalina.data.mapper.toRecipe
-import com.letsgetcactus.cocinaconcatalina.model.Allergen
-import com.letsgetcactus.cocinaconcatalina.model.Category
-import com.letsgetcactus.cocinaconcatalina.model.Ingredient
-import com.letsgetcactus.cocinaconcatalina.model.Origin
 import com.letsgetcactus.cocinaconcatalina.model.Recipe
 import com.letsgetcactus.cocinaconcatalina.model.User
-import com.letsgetcactus.cocinaconcatalina.model.enum.AllergenEnum
-import com.letsgetcactus.cocinaconcatalina.model.enum.DificultyEnum
-import com.letsgetcactus.cocinaconcatalina.model.enum.UnitsTypeEnum
 import kotlinx.coroutines.tasks.await
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -29,11 +22,8 @@ import java.util.UUID
 
 /**
  * Singleton to connect with Firebase
- * It also uses the dto and mappers to download and 'translate' correctly the data from the DB into the app and vice versa
  */
 object FirebaseConnection {
-
-    private val db = Firebase.firestore
 
 
     //ALL RECIPES
@@ -45,14 +35,10 @@ object FirebaseConnection {
      * @param language to get the recipes in that language
      * @return Recipe or null
      */
-    suspend fun getRecipeById(
-        userId: String,
-        recipeId: String,
-        language: String = Locale.getDefault().language
-    ): Recipe? {
+    suspend fun getRecipeById(userId: String,recipeId: String): Recipe? {
         return try {
             //Modified
-            val modified = db.collection("users")
+            val modified = Firebase.firestore.collection("users")
                 .document(userId)
                 .collection("modifiedRecipes")
                 .document(recipeId)
@@ -61,12 +47,12 @@ object FirebaseConnection {
 
             if (modified.exists()) return modified.toObject(Recipe::class.java)
             //If not found, search on original
-            val original = db.collection("asianOriginalRecipes")
+            val original = Firebase.firestore.collection("asianOriginalRecipes")
                 .document(recipeId)
                 .get()
                 .await()
 
-            original.toObject(RecipeDto::class.java)?.toRecipe(language)
+            original.toObject(RecipeDto::class.java)?.toRecipe()
 
         } catch (e: Exception) {
             Log.e("FirebaseConnection", "Error fetching recipe by id $recipeId", e)
@@ -81,21 +67,17 @@ object FirebaseConnection {
      * @param language to get the recipes in that language
      * @return a list of all the original asian recipes in the database
      */
-    suspend fun getAsianOriginalRecipes(language: String = Locale.getDefault().language): List<Recipe> {
-        // Get the apps language
-        // If it's not determined, use system instead , if system not supported, use english
-        val supportedLanguages = listOf("es", "en", "gl")
-        if (language !in supportedLanguages) "en"
+    suspend fun getAsianOriginalRecipes(): List<Recipe> {
 
         return try {
-            val result = db.collection("asianOriginalRecipes").get().await()
+            val result = Firebase.firestore.collection("asianOriginalRecipes").get().await()
             val dto = result.toObjects(RecipeDto::class.java)
 
             //Converts in language through mapper
-            val listRecipes = dto.map { it.toRecipe(language) } // RecipeMapper
+            val listRecipes = dto.map { it.toRecipe() } // RecipeMapper
 
 
-            Log.i("FirebaseConnection", "Got ${listRecipes.size} recipes in $language")
+            Log.i("FirebaseConnection", "Got ${listRecipes.size} recipes ")
             listRecipes
 
         } catch (e: Exception) {
@@ -104,30 +86,27 @@ object FirebaseConnection {
         }
     }
 
-    /**
-     * To get only one recipe
-     * @param recipeId Id from the Recipe to be getting
-     * @return a Recipe
-     */
-    suspend fun getAsianOriginalRecipeById(
-        recipeId: String,
-        language: String = Locale.getDefault().language
-    ): Recipe? {
-        return try {
-            val supportedLanguages = listOf("es", "en", "gl")
-            if (language !in supportedLanguages) "en"
-
-            val result = db.collection("asianOriginalRecipes")
-                .document(recipeId)
-                .get()
-                .await()
-
-            result.toObject(RecipeDto::class.java)?.toRecipe(language)
-        } catch (e: Exception) {
-            Log.e("FirebaseConnection", "Error trying to get a single Recipe from asianOg", e)
-            null
-        }
-    }
+//    /**
+//     * To get only one recipe
+//     * @param recipeId Id from the Recipe to be getting
+//     * @return a Recipe
+//     */
+//    suspend fun getAsianOriginalRecipeById( recipeId: String,language: String = Locale.getDefault().language): Recipe? {
+//        return try {
+//            val supportedLanguages = listOf("es", "en", "gl")
+//            if (language !in supportedLanguages) "en"
+//
+//            val result = Firebase.firestore.collection("asianOriginalRecipes")
+//                .document(recipeId)
+//                .get()
+//                .await()
+//
+//            result.toObject(RecipeDto::class.java)?.toRecipe(language)
+//        } catch (e: Exception) {
+//            Log.e("FirebaseConnection", "Error trying to get a single Recipe from asianOg", e)
+//            null
+//        }
+//    }
 
 
     /**
@@ -159,53 +138,88 @@ object FirebaseConnection {
     }
 
 
+//    /**
+//     * To upload to Firebase a recipe to the asianOriginalRecipe collection
+//     * Google Cloud Translation API will translate it before saving it
+//     * @param recipe to be saved
+//     * @param originalLanguage for the API to translate into the 2 others
+//     * @return boolean whether the upload has been successful or not
+//     */
+//    suspend fun uploadRecipeAndTranslations(
+//        recipe: Recipe,
+//        originalLanguage: String? = null
+//    ): Boolean {
+//        return try {
+//            ensureLoggedIn()
+//            Log.i("AUTH", "current user: ${FirebaseAuth.getInstance().currentUser}")
+//
+//            val functions = FirebaseFunctions.getInstance("us-central1")
+//            Log.i("FirebaseConnection", "Obtained $recipe to upload")
+//
+//            // If there's not a language passed on originalLanguage, it detects it by the system language
+//            val language = originalLanguage ?: Locale.getDefault().language
+//            Log.i("FirebaseConnection", "Recipe is in: $language language")
+//            val data = mapOf(
+//                "receta" to recipe.toMap(),
+//                "idiomaOriginal" to language
+//            )
+//
+//            Log.i("FirebaseConnection", "mapped recite to: $data")
+//            // Calls Cloud Function: call()
+//            val result = functions
+//                .getHttpsCallable("uploadOriginalRecipe") //Cloud function
+//                .call(data)
+//                .await()
+//
+//            Log.i("FirebaseConnection", "resultado de la subida= $result")
+//            val response = result.data as? Map<*, *>
+//            Log.i("FirebaseConnection", "response= $response")
+//            val success = response?.get("success") as? Boolean ?: false
+//
+//            if (!success) {
+//                Log.e("FirebaseConnection", "Error on Transaltion API ${response?.get("error")}")
+//            } else {
+//                Log.i("FirebaseConnection", "Correctly translated and saved ${recipe.title}")
+//            }
+//
+//            success
+//        } catch (e: Exception) {
+//            Log.e("FirebaseConnection", "Error uploading/translating recipe: ${e.message}", e)
+//            false
+//        }
+//    }
+
     /**
-     * To upload to Firebase a recipe to the asianOriginalRecipe collection
-     * Google Cloud Translation API will translate it before saving it
-     * @param recipe to be saved
-     * @param originalLanguage for the API to translate into the 2 others
-     * @return boolean whether the upload has been successful or not
+     * Uploads a new asianOriginalRecipe to the db
+     * @param recipe to be uploaded
      */
-    suspend fun uploadRecipeAndTranslations(
-        recipe: Recipe,
-        originalLanguage: String? = null
-    ): Boolean {
+    suspend fun uploadRecipeToDb(recipe: Recipe): Boolean{
         return try {
-            val functions = FirebaseFunctions.Companion.getInstance("us-central1")
-            Log.i("FirebaseConnection", "Obtained $recipe to upload")
-
-            // If there's not a language passed on originalLanguage, it detects it by the system language
-            val language = originalLanguage ?: Locale.getDefault().language
-            Log.i("FirebaseConnection", "Recipe is in: $language language")
-            val data = mapOf(
-                "receta" to recipe.toMap(),
-                "idiomaOriginal" to language
-            )
-
-            Log.i("FirebaseConnection", "mapped recite to: $data")
-            // Calls Cloud Function: call()
-            val result = functions
-                .getHttpsCallable("uploadOriginalRecipe") //Cloud function
-                .call(data)
-                .await()
-
-            Log.i("FirebaseConnection", "resultado de la subida= $result")
-            val response = result.data as? Map<*, *>
-            Log.i("FirebaseConnection", "response= $response")
-            val success = response?.get("success") as? Boolean ?: false
-
-            if (!success) {
-                Log.e("FirebaseConnection", "Error on Transaltion API ${response?.get("error")}")
-            } else {
-                Log.i("FirebaseConnection", "Correctly translated and saved ${recipe.title}")
+            val uid = FirebaseAuth.getInstance().currentUser?.uid
+            if (uid == null) {
+                Log.e("FirebaseConnection", "User not logged in")
+                return false
             }
 
-            success
+            Log.i("FirebaseConnection", "Uploading recipe directly as $uid")
+
+            FirebaseFirestore.getInstance()
+                .collection("asianOriginalRecipes")
+                .document(recipe.id)
+                .set(recipe.toMap())
+                .await()
+
+            Log.i("FirebaseConnection", "Recipe uploaded without cloud functions")
+            true
+
         } catch (e: Exception) {
-            Log.e("FirebaseConnection", "Error uploading/translating recipe: ${e.message}", e)
+            Log.e("FirebaseConnection", "Error uploading recipe: ${e.message}", e)
             false
         }
+
     }
+
+
 
     //USER
     /**
@@ -216,7 +230,7 @@ object FirebaseConnection {
     suspend fun getUserById(userId: String): User? {
         return try {
             Log.i("FirebaseConnection", "Intentando obtener usuario con ID: $userId")
-            val result = db.collection("users")
+            val result = Firebase.firestore.collection("users")
                 .document(userId)
                 .get()
                 .await()
@@ -236,7 +250,7 @@ object FirebaseConnection {
      */
     suspend fun saveUser(user: User) {
         try {
-            db.collection("users")
+            Firebase.firestore.collection("users")
                 .document(user.id)
                 .set(user)
                 .await()
@@ -278,7 +292,7 @@ object FirebaseConnection {
             val currentUser = auth.currentUser
             if (currentUser != null && currentUser.uid == userId) {
 
-                val userCollection = db.collection("users")
+                val userCollection = Firebase.firestore.collection("users")
                     .document(userId)
 
                 val favs = userCollection.collection("favouriteRecipes").get().await()
@@ -308,110 +322,23 @@ object FirebaseConnection {
      * @param userId Id from the user to obtain his subcollection of modified recipes
      * @return a list of modified recipes by the user or an empty list
      */
-    suspend fun getUserModifiedRecipes(
-        userId: String,
-    ): List<Recipe> {
+    suspend fun getUserModifiedRecipes(userId: String): List<Recipe> {
         return try {
-            val result = db.collection("users")
+            val result = Firebase.firestore.collection("users")
                 .document(userId)
                 .collection("modifiedRecipes")
                 .get()
                 .await()
 
-            result.documents.mapNotNull { doc ->
-                val data = doc.data ?: return@mapNotNull null
+            result.toObjects(RecipeDto::class.java).map { it.toRecipe() }
 
-                // Title
-                val title = when (val t = data["title"]) {
-                    is String -> t
-                    is Map<*, *> -> (t[Locale.getDefault().language] ?: t["en"] ?: "") as String
-                    else -> ""
-                }
-
-                // Steps
-                val steps = (data["steps"] as? List<*>)?.map { step ->
-                    when (step) {
-                        is String -> step
-                        is Map<*, *> -> (step[Locale.getDefault().language] ?: step["en"]
-                        ?: "") as String
-
-                        else -> ""
-                    }
-                } ?: emptyList()
-
-                // Ingredients
-                val ingredientList = (data["ingredientList"] as? List<*>)?.mapNotNull { ing ->
-                    val map = ing as? Map<*, *> ?: return@mapNotNull null
-                    val name = map["name"] as? String ?: ""
-                    val quantity = map["quantity"]?.toString() ?: ""
-                    val unitStr = map["unit"] as? String ?: "UNITS"
-                    val unit = try {
-                        UnitsTypeEnum.valueOf(unitStr)
-                    } catch (e: Exception) {
-                        UnitsTypeEnum.UNITS
-                    }
-                    Ingredient(name, quantity, unit)
-                } ?: emptyList()
-
-                // Allergens
-                val allergenList = (data["allergenList"] as? List<*>)?.mapNotNull { all ->
-                    val map = all as? Map<*, *> ?: return@mapNotNull null
-                    val nameStr = map["name"] as? String ?: return@mapNotNull null
-                    val imgEnum = try {
-                        AllergenEnum.valueOf(nameStr.uppercase())
-                    } catch (e: Exception) {
-                        null
-                    }
-                    imgEnum?.let { Allergen(nameStr, it) }
-                } ?: emptyList()
-
-                // Categories
-                val categoryList = (data["categoryList"] as? List<*>)?.mapNotNull { cat ->
-                    val map = cat as? Map<*, *> ?: return@mapNotNull null
-                    val id = (map["id"]?.toString()?.toIntOrNull() ?: 0)
-                    val name = map["name"] as? String ?: ""
-                    Category(id, name)
-                } ?: emptyList()
-
-                // Difficulty
-                val dificulty = (data["dificulty"] as? String)?.let { str ->
-                    DificultyEnum.entries.find { it.name == str }
-                } ?: DificultyEnum.EASY
-
-                // Origin
-                val originMap = data["origin"] as? Map<*, *>
-                val origin = Origin(
-                    id = (originMap?.get("id") as? Number)?.toInt() ?: 0,
-                    country = originMap?.get("country") as? String ?: "",
-                    flag = (originMap?.get("flag")?.toString()?.toIntOrNull() ?: 0)
-                )
-
-                // Recipe final
-                Recipe(
-                    id = data["id"] as? String ?: doc.id,
-                    title = title,
-                    avgRating =  (data["avgRating"] as? Number)?.toDouble() ?: 0.0,
-                    totalRating =(data["totalRating"] as? Number)?.toInt() ?: 0 ,
-                    ratingCount=(data["ratingCount"] as? Number)?.toInt() ?: 0,
-                    steps = steps,
-                    ingredientList = ingredientList,
-                    allergenList = allergenList,
-                    categoryList = categoryList,
-                    prepTime = (data["prepTime"] as? Number)?.toInt() ?: 0,
-                    dificulty = dificulty,
-                    origin = origin,
-                    portions = (data["portions"] as? Number)?.toInt() ?: 1,
-                    active = data["active"] as? Boolean ?: true,
-                    img = data["img"] as? String ?: "",
-                    video = data["video"] as? String
-                )
-            }
 
         } catch (e: Exception) {
             Log.e("FirebaseConnection", "Error fetching modified recipes", e)
             emptyList()
         }
     }
+
 
 //    /**
 //     * Adds a modified recipe to user's modifiedRecipes subcollection
@@ -473,7 +400,7 @@ object FirebaseConnection {
 //
 //        }
 //    }
-//
+
     /**
      * Adds a modified recipe to user's modifiedRecipes subcollection (does not translate)
      * @param userId Id from the user
@@ -484,7 +411,7 @@ object FirebaseConnection {
 
             Log.i("FirebaseConnection", "receta a subir $recipe")
 
-            db.collection("users")
+            Firebase.firestore.collection("users")
                 .document(userId)
                 .collection("modifiedRecipes")
                 .document(recipe.id)
@@ -507,7 +434,7 @@ object FirebaseConnection {
      */
     suspend fun removeModifiedFromUser(recipeId: String, userId: String) {
         try {
-            db.collection("users")
+            Firebase.firestore.collection("users")
                 .document(userId)
                 .collection("modifiedRecipes")
                 .document(recipeId)
@@ -536,7 +463,7 @@ object FirebaseConnection {
         if (language !in supportedLanguages) "en"
 
         return try {
-            val result = db.collection("users")
+            val result = Firebase.firestore.collection("users")
                 .document(userId)
                 .collection("favouriteRecipes")
                 .get()
@@ -546,7 +473,7 @@ object FirebaseConnection {
                 "FirebaseConnect8ion",
                 "Fetched ${result.size()} favourites recipes (String ID)"
             )
-            result.toObjects(RecipeDto::class.java).map { it.toRecipe(language) }
+            result.toObjects(RecipeDto::class.java).map { it.toRecipe() }
 
 
         } catch (e: Exception) {
@@ -562,7 +489,7 @@ object FirebaseConnection {
      */
     suspend fun addRecipeToUsersFavorites(userId: String, recipeId: String) {
         try {
-            val result = db.collection("users")
+            val result = Firebase.firestore.collection("users")
                 .document(userId)
                 .collection("favouriteRecipes")
                 .document(recipeId)
@@ -581,7 +508,7 @@ object FirebaseConnection {
      */
     suspend fun removeUsersFavouriteRecipe(userId: String, recipeId: String) {
         try {
-            db.collection("users")
+            Firebase.firestore.collection("users")
                 .document(userId)
                 .collection("favouriteRecipes")
                 .document(recipeId)
@@ -605,7 +532,7 @@ object FirebaseConnection {
 
         val recipeToRate =if (userId== null) {
             Log.i("FirebaseConnection", "Actualizando puntuacion de receta Og")
-            db.collection("asianOriginalRecipes")
+            Firebase.firestore.collection("asianOriginalRecipes")
                 .document(recipeId)
 
 
@@ -613,14 +540,14 @@ object FirebaseConnection {
         } else {
             Log.i("FirebaseConnection", "Actualizando puntuacion de receta MOD")
 
-            db.collection("users")
+            Firebase.firestore.collection("users")
                 .document(userId)
                 .collection("modifiedRecipes")
                 .document(recipeId)
         }
 
             try {
-                db.runTransaction { transaction ->
+                Firebase.firestore.runTransaction { transaction ->
                     val snapshot = transaction.get(recipeToRate)
 
                     val totalRating = snapshot.getLong("totalRating")?.toInt() ?: 0

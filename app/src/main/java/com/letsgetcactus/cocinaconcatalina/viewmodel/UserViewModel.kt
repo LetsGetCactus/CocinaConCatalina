@@ -291,16 +291,16 @@ class UserViewModel(
     }
 
     //Updates for lang and theme
-    /**
-     * Saves a new language for the user
-     * @param lang user's new selected language for the app
-     */
-    fun updateUserLanguage(lang: String) {
-        viewModelScope.launch {
-            userSessionRepo.saveLangData(lang)
-            _language.value = lang
-        }
-    }
+//    /**
+//     * Saves a new language for the user
+//     * @param lang user's new selected language for the app
+//     */
+//    fun updateUserLanguage(lang: String) {
+//        viewModelScope.launch {
+//            userSessionRepo.saveLangData(lang)
+//            _language.value = lang
+//        }
+//    }
 
     /**
      * Saves a new theme for the user

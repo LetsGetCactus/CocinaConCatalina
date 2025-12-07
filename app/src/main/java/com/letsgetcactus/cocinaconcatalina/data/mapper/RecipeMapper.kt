@@ -5,39 +5,33 @@ import com.letsgetcactus.cocinaconcatalina.data.dto.RecipeDto
 import com.letsgetcactus.cocinaconcatalina.model.Origin
 import com.letsgetcactus.cocinaconcatalina.model.Recipe
 import com.letsgetcactus.cocinaconcatalina.model.enum.DificultyEnum
-import java.util.Locale
 
 /**
  * Mappers DTO (from DB) to model (to app)
  */
-fun RecipeDto.toRecipe(language: String = Locale.getDefault().language): Recipe {
-    val lang = if (language in listOf("es", "gl", "en")) language else "en"
-
+fun RecipeDto.toRecipe(): Recipe {
     return Recipe(
-        id = this.id,
-        title = this.title[lang] ?: this.title["en"] ?: "",
-        avgRating = this.avgRating,
-        totalRating = this.totalRating,
-        ratingCount = this.ratingCount,
-        steps = this.steps.map { stepMap ->
-            stepMap[lang] ?: stepMap["en"] ?: ""
-        },
-        ingredientList = this.ingredientList.map { it.toIngredient(language) },
-        allergenList = this.allergenList.map { it.toAllergen(language) },
-        categoryList = this.categoryList.map { it.toCategory(lang) },
-        prepTime = this.prepTime,
-        dificulty = DificultyEnum.entries.find { it.name == this.dificulty } ?: DificultyEnum.EASY,
+        id = id,
+        title = title,
+        avgRating = avgRating,
+        totalRating = totalRating,
+        ratingCount = ratingCount,
+        steps = steps,
+        ingredientList = ingredientList.map { it.toIngredient() },
+        allergenList = allergenList.map { it.toAllergen() },
+        categoryList = categoryList.map { it.toCategory() },
+        prepTime = prepTime,
+        dificulty = DificultyEnum.entries.find { it.name == dificulty } ?: DificultyEnum.EASY,
         origin = Origin(
-            id = (origin.id as? Number)?.toInt() ?: 0,
-            country = (origin.country).uppercase(),
-            flag = (origin.flag as? Number)?.toInt() ?: 0
+            country = origin.country,
         ),
-        portions = this.portions,
-        active = this.active,
-        img = this.img,
-        video = this.video
+        portions = portions,
+        active = active,
+        img = img,
+        video = video
     )
 }
+
 
 
 /**
@@ -53,45 +47,31 @@ fun Recipe.toMap(): Map<String, Any?> {
         "steps" to steps,
         "ingredientList" to ingredientList.map { ing ->
             mapOf(
-                "name" to ing.name ,
+                "name" to ing.name,
                 "quantity" to ing.quantity,
                 "unit" to ing.unit.name
             )
         },
         "allergenList" to allergenList.map { all ->
             mapOf(
-                "name" to all.name ,
+                "name" to all.name,
                 "img" to all.img.name
             )
         },
         "categoryList" to categoryList.map { cat ->
-            mapOf(
-                "id" to cat.id ,
-                "name" to cat.name
+            mapOf("name" to cat.name
             )
         },
         "prepTime" to prepTime,
         "dificulty" to dificulty?.name,
         "origin" to mapOf(
-            "id" to origin.id ,
-            "country" to origin.country,
-            "flag" to origin.flag
+            "country" to origin.country
         ),
         "portions" to portions,
-        "active" to active ,
-        "img" to img ,
+        "active" to active,
+        "img" to img,
         "video" to (video ?: "")
-        )
-
+    )
 }
 
 
-/**
- * Translates the strings properties in a Recipe
- * @param language Language for the recipe to be shown
- */
-fun Recipe.selectLanguage(language: String = "en"): String {
-    val supportedLanguage = listOf("es", "en", "gl")
-    return if (language in supportedLanguage) language else "en"
-
-}
