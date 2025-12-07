@@ -198,5 +198,8 @@ Este contrato réxese pola lexislación española. Calquera controversia someter
     <string name="set_timer">Establecer temporizador</string>
     <string name="time_over">Acabouse a espera!  Hora de cociñar \uD83C\uDF5C</string>
     <string name="minutes">Minutos</string>
+    <string name="cook_mode_on">Modo cociñado encendido</string>
+    <string name="cook_mode_off">Modo codiñado apagado</string>
+    <string name="cook_mode">Modo cociñado</string>
 
 </resources>

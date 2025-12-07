@@ -1,6 +1,11 @@
 package com.letsgetcactus.cocinaconcatalina.ui.screens
 
+import android.app.Activity
+import android.text.Layout
 import android.util.Log
+import android.view.WindowManager
+import android.widget.Toast
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,19 +23,28 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
+import com.letsgetcactus.cocinaconcatalina.ApplicationClass
 import com.letsgetcactus.cocinaconcatalina.R
 import com.letsgetcactus.cocinaconcatalina.data.mapper.OriginMapper
 import com.letsgetcactus.cocinaconcatalina.model.Allergen
@@ -52,6 +66,14 @@ fun ItemRecipeScreen(
     recipeViewModel: RecipeViewModel,
 
     ) {
+    //Cook Mode - Screen does not suspend while activated
+    var cookMode by remember { mutableStateOf(false) }
+    var activity= LocalActivity.current as Activity
+    LaunchedEffect(cookMode) {
+        if(cookMode) activity.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        else activity.window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+    }
+
 
     //Combine both
     val recipeSelected = userViewModel.selectedRecipe.collectAsState().value
@@ -68,6 +90,8 @@ fun ItemRecipeScreen(
         val originEnum = OriginMapper.mapOriginToEnum(currentRecipe.origin.country)
         val flagForRecipe = originEnum.flag
 
+
+val context= LocalContext.current
         val scope = rememberCoroutineScope()
 
         Log.i(
@@ -79,9 +103,33 @@ fun ItemRecipeScreen(
             modifier = modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
-                .padding(24.dp, 40.dp),
+                .padding(start = 24.dp, end = 24.dp, bottom = 40.dp, top = 16.dp),
 
             ) {
+            Row(
+                modifier=Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = stringResource(R.string.cook_mode),
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.labelSmall
+                )
+                Spacer(Modifier.size(8.dp))
+                Switch(
+                    checked = cookMode,
+                    onCheckedChange = {
+                        cookMode = it
+                        Toast.makeText(
+                            context, context.getString(
+                                if (cookMode) R.string.cook_mode_on else R.string.cook_mode_off
+                            ), Toast.LENGTH_SHORT
+                        ).show()
+                    },
+
+                )
+            }
             Spacer(modifier = Modifier.size(56.dp))
 
             LazyColumn(

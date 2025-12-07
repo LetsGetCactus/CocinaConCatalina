@@ -118,6 +118,9 @@
     <string name="ok">Ok</string>
     <string name="time_over">Time\'s up! Let\'s keep cooking 🍜</string>
     <string name="minutes">Minutes</string>
+    <string name="cook_mode_on">Cook mode on</string>
+    <string name="cook_mode_off">Cook mode off</string>
+    <string name="cook_mode">Cook mode</string>
 
 
 </resources>
