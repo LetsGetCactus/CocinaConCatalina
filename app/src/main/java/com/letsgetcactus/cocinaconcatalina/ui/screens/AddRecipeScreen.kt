@@ -410,7 +410,6 @@ fun AddRecipeScreen(
                     onNavigateLeft = {
                         if(categoryIn.isNotBlank()){
                             val newCategory = Category(
-                                id= UUID.randomUUID().mostSignificantBits.toInt(),
                                 name= categoryIn
                             )
                             categories = categories + newCategory

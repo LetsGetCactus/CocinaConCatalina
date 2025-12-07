@@ -20,7 +20,6 @@ import com.google.firebase.appcheck.FirebaseAppCheck
 import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory
 import com.letsgetcactus.cocinaconcatalina.data.local.DataStoreManagment
 import com.letsgetcactus.cocinaconcatalina.data.repository.UserSessionRepository
-import com.letsgetcactus.cocinaconcatalina.data.util.NotificationUtil
 import com.letsgetcactus.cocinaconcatalina.ui.AppNavigation
 import com.letsgetcactus.cocinaconcatalina.ui.NavigationRoutes
 import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme

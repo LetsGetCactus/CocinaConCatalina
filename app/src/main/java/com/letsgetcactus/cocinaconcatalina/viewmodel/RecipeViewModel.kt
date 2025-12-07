@@ -16,7 +16,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.util.Locale
 
 
 /**
@@ -55,16 +54,16 @@ class RecipeViewModel(
     /**
      * Gets all the recipes from FirebaseConnection
      */
-    fun loadAsianOgRecipes(language: String = Locale.getDefault().language) {
+    fun loadAsianOgRecipes() {
         viewModelScope.launch {
-            val result = recipeRepository.getAllAsianOriginalRecipes(language)
+            val result = recipeRepository.getAllAsianOriginalRecipes()
             _asianOgRecipes.value = result.sortedBy { it.title.lowercase() }
 
             if (result.isNotEmpty()) filterRecipes()
 
             Log.i(
                 "RecipeViewModel",
-                "Obtained ${result.size}} recipes in ${Locale.getDefault().language}"
+                "Obtained ${result.size}} recipes"
             )
         }
     }
