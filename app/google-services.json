@@ -12,7 +12,20 @@
           "package_name": "com.letsgetcactus.cocinaconcatalina"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "166093713399-q5lf3saoh35q42ptlnub8god9oanete7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.letsgetcactus.cocinaconcatalina",
+            "certificate_hash": "3f3cf38f80d8b114a1002dc77f38a446ae4f8b61"
+          }
+        },
+        {
+          "client_id": "166093713399-ghsfctt6da1psiub6agtcguh31s0h3uc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCHD_MjmK37FO_XwVX6d5YCJ-clIPC5jSw"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "166093713399-ghsfctt6da1psiub6agtcguh31s0h3uc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
