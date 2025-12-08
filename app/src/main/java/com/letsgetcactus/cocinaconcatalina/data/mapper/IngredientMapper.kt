@@ -9,12 +9,9 @@ import com.letsgetcactus.cocinaconcatalina.model.enum.UnitsTypeEnum
  * In this case, translates
  */
 fun IngredientDto.toIngredient(): Ingredient {
-
-
-
     return Ingredient(
-        name = this.name,
-        quantity = this.quantity,
-        unit = UnitsTypeEnum.entries.find { it.name == this.unit } ?: UnitsTypeEnum.UNITS
+        name = name,
+        quantity = quantity,
+        unit = UnitsTypeEnum.fromString(unit)
     )
 }
