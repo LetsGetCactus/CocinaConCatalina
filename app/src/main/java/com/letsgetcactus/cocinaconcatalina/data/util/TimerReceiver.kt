@@ -10,6 +10,9 @@ import androidx.core.app.NotificationManagerCompat
 import com.letsgetcactus.cocinaconcatalina.R
 
 
+/**
+ *
+ */
 class TimerReceiver : BroadcastReceiver() {
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     override fun onReceive(context: Context, intent: Intent?) {

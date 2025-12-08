@@ -5,8 +5,8 @@ import com.letsgetcactus.cocinaconcatalina.model.Ingredient
 import com.letsgetcactus.cocinaconcatalina.model.enum.UnitsTypeEnum
 
 /**
- * Uses the DTO to map the Ingredient data from Firebase to the apps type,
- * In this case, translates
+ * Uses the DTO to map the Ingredient data from Firebase to the apps Ingredient type
+ * and UnitTypeEnum
  */
 fun IngredientDto.toIngredient(): Ingredient {
     return Ingredient(

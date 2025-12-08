@@ -32,7 +32,6 @@ object FirebaseConnection {
      * It first check on modifiedRecipes, then original ones
      * @param userId id from the user
      * @param recipeId to look for the recipe
-     * @param language to get the recipes in that language
      * @return Recipe or null
      */
     suspend fun getRecipeById(userId: String,recipeId: String): Recipe? {
@@ -64,7 +63,6 @@ object FirebaseConnection {
     //ASIAN ORIGINAL RECIPES
     /**
      * Gets all asian original recipes and translate Firebase's data into our data for the app
-     * @param language to get the recipes in that language
      * @return a list of all the original asian recipes in the database
      */
     suspend fun getAsianOriginalRecipes(): List<Recipe> {
@@ -86,27 +84,6 @@ object FirebaseConnection {
         }
     }
 
-//    /**
-//     * To get only one recipe
-//     * @param recipeId Id from the Recipe to be getting
-//     * @return a Recipe
-//     */
-//    suspend fun getAsianOriginalRecipeById( recipeId: String,language: String = Locale.getDefault().language): Recipe? {
-//        return try {
-//            val supportedLanguages = listOf("es", "en", "gl")
-//            if (language !in supportedLanguages) "en"
-//
-//            val result = Firebase.firestore.collection("asianOriginalRecipes")
-//                .document(recipeId)
-//                .get()
-//                .await()
-//
-//            result.toObject(RecipeDto::class.java)?.toRecipe(language)
-//        } catch (e: Exception) {
-//            Log.e("FirebaseConnection", "Error trying to get a single Recipe from asianOg", e)
-//            null
-//        }
-//    }
 
 
     /**
@@ -137,57 +114,6 @@ object FirebaseConnection {
         }
     }
 
-
-//    /**
-//     * To upload to Firebase a recipe to the asianOriginalRecipe collection
-//     * Google Cloud Translation API will translate it before saving it
-//     * @param recipe to be saved
-//     * @param originalLanguage for the API to translate into the 2 others
-//     * @return boolean whether the upload has been successful or not
-//     */
-//    suspend fun uploadRecipeAndTranslations(
-//        recipe: Recipe,
-//        originalLanguage: String? = null
-//    ): Boolean {
-//        return try {
-//            ensureLoggedIn()
-//            Log.i("AUTH", "current user: ${FirebaseAuth.getInstance().currentUser}")
-//
-//            val functions = FirebaseFunctions.getInstance("us-central1")
-//            Log.i("FirebaseConnection", "Obtained $recipe to upload")
-//
-//            // If there's not a language passed on originalLanguage, it detects it by the system language
-//            val language = originalLanguage ?: Locale.getDefault().language
-//            Log.i("FirebaseConnection", "Recipe is in: $language language")
-//            val data = mapOf(
-//                "receta" to recipe.toMap(),
-//                "idiomaOriginal" to language
-//            )
-//
-//            Log.i("FirebaseConnection", "mapped recite to: $data")
-//            // Calls Cloud Function: call()
-//            val result = functions
-//                .getHttpsCallable("uploadOriginalRecipe") //Cloud function
-//                .call(data)
-//                .await()
-//
-//            Log.i("FirebaseConnection", "resultado de la subida= $result")
-//            val response = result.data as? Map<*, *>
-//            Log.i("FirebaseConnection", "response= $response")
-//            val success = response?.get("success") as? Boolean ?: false
-//
-//            if (!success) {
-//                Log.e("FirebaseConnection", "Error on Transaltion API ${response?.get("error")}")
-//            } else {
-//                Log.i("FirebaseConnection", "Correctly translated and saved ${recipe.title}")
-//            }
-//
-//            success
-//        } catch (e: Exception) {
-//            Log.e("FirebaseConnection", "Error uploading/translating recipe: ${e.message}", e)
-//            false
-//        }
-//    }
 
     /**
      * Uploads a new asianOriginalRecipe to the db
@@ -274,7 +200,7 @@ object FirebaseConnection {
                 .sendPasswordResetEmail(email)
                 .await()
             true
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             false
 
         }
@@ -339,67 +265,6 @@ object FirebaseConnection {
         }
     }
 
-
-//    /**
-//     * Adds a modified recipe to user's modifiedRecipes subcollection
-//     * @param userId Id from the user
-//     * @param recipe modified Recipe to be saved in
-//     */
-//    suspend fun saveUserModifiedRecipe(
-//        userId: String,
-//        recipe: Recipe,
-//        language: String? = null
-//    ): Boolean {
-//
-//        val currentUser = FirebaseAuth.getInstance().currentUser
-//        if (currentUser == null) {
-//            Log.e("FirebaseConnection", "Usuario no autenticado")
-//            return false
-//        }
-//        try {
-//
-//            val functions = FirebaseFunctions.Companion.getInstance("us-central1")
-//
-//            val language = language ?: Locale.getDefault().language
-//
-//            val data = mapOf(
-//                "receta" to recipe.toMap(),
-//                "idiomaOriginal" to language
-//            )
-//
-//
-//            val result = functions
-//                .getHttpsCallable("traducirRecetaModificada") //script
-//                .call(data)
-//                .await()
-//
-//
-//            val response = result.data as? Map<*, *>
-//            val success = response?.get("success") as? Boolean ?: false
-//
-//            if (!success) {
-//                Log.e(
-//                    "FirebaseConnection",
-//                    "Error on Transaltion API for modified recipe ${response?.get("error")}"
-//                )
-//            } else {
-//                Log.i(
-//                    "FirebaseConnection",
-//                    "Correctly translated and saved modified recipe ${recipe.title}"
-//                )
-//            }
-//
-//            return success
-//        } catch (e: Exception) {
-//            Log.e(
-//                "FirebaseConnection",
-//                "Error saving modified recipe ${recipe.id} from user $userId",
-//                e
-//            )
-//            return false
-//
-//        }
-//    }
 
     /**
      * Adds a modified recipe to user's modifiedRecipes subcollection (does not translate)

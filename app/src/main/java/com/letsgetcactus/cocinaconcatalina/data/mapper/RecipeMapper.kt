@@ -7,7 +7,7 @@ import com.letsgetcactus.cocinaconcatalina.model.Recipe
 import com.letsgetcactus.cocinaconcatalina.model.enum.DificultyEnum
 
 /**
- * Mappers DTO (from DB) to model (to app)
+ * Mappers RecipeDto (DB) to model's Recipe (app)
  */
 fun RecipeDto.toRecipe(): Recipe {
     return Recipe(

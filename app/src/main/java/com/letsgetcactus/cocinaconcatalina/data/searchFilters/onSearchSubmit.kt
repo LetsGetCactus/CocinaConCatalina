@@ -4,7 +4,8 @@ import com.letsgetcactus.cocinaconcatalina.viewmodel.RecipeViewModel
 import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
 
 /**
- * Establishes the Source (what ViewMod needs to search) to the search on the SearchBar composable
+ * Establishes the Source to the search on the SearchBar composable
+ *  (what ViewModel needs to search depending of what type of Recipe is been searched)
  */
 fun onSearchSubmit(
     query: String,

@@ -9,6 +9,9 @@ import androidx.core.app.NotificationCompat
 import com.letsgetcactus.cocinaconcatalina.MainActivity
 import com.letsgetcactus.cocinaconcatalina.R
 
+/**
+ *
+ */
 object NotificationUtil {
 
     fun buildTimerNotification(context: Context, message: String): Notification {

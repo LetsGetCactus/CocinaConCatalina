@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 /**
  * Mediates between DataStore and the ViewModel to obtain user's session persistency
- * - calls DataStoreManagment for the data on it
+ * - calls DataStoreManagement for the data on it
  * - exposes simple functions to the UserViewModel
  */
 class UserSessionRepository (
@@ -17,19 +17,21 @@ class UserSessionRepository (
     val userThemeFlow: Flow<String?> = dataStore.userThemeFlow
 
     /**
-     * Saves the data from the user (id) into DataStoreManagment
+     * Saves the data from the user (id) into DataStoreManagement
      */
     suspend fun saveUserIdData(id: String){
         dataStore.saveUserId(id)
     }
+
+//    /**
+//     * Saves the data form the language of the app on the user's session and stores it into DataStoreManagement
+//     */
+//    suspend fun saveLangData(language: String){
+//        dataStore.saveUserLang(language)
+//    }
+
     /**
-     * Saves the data form the language of the app on the user's session and stores it into DataStoreManagment
-     */
-    suspend fun saveLangData(language: String){
-        dataStore.saveUserLang(language)
-    }
-    /**
-     * Saves the user's preferred theme into DataStoreManagment
+     * Saves the user's preferred theme into DataStoreManagement
      */
     suspend fun saveThemeData(theme:String){
         dataStore.saveUserTheme(theme)

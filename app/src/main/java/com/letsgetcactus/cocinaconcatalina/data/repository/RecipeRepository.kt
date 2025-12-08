@@ -7,13 +7,13 @@ import com.letsgetcactus.cocinaconcatalina.model.Recipe
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
+/**
+ * Object to connect the RecipeViewModel with the Firebase singleton
+ */
 object RecipeRepository {
-
-
 
     /**
      * Gets all original recipes from the db
-     * @param language language to obtain Recipes in
      * @return a list of all the asian original recipes
      */
     suspend fun getAllAsianOriginalRecipes(): List<Recipe> =
@@ -27,51 +27,28 @@ object RecipeRepository {
             }
         }
 
-//
+
 //    /**
-//     * To get only one recipe
-//     * @param userId Id from user to search in his modified recipes first, in case there is an userId
-//     * @param recipeId ID from the recipe we are searching for
-//     * @param language to obtain the recipe in
-//     * @return a recipe or null whether the Recipe is found or not
+//     * Gets all recipes form Firebase and the user's modified ones
+//     * @param userId ID from the user to obtains his modified subcollection of recipes
+//     * @return a list of all the recipes on the DB
 //     */
-//    suspend fun getRecipeById(userId: String?, recipeId: String, language: String): Recipe? =
-//        withContext(Dispatchers.IO) {
-//            try {
-//                //If there's an userId first check modified
-//                if (!userId.isNullOrBlank()) {
-//                    FirebaseConnection.getRecipeById(userId, recipeId, language)
-//                        ?.let { return@withContext it }
-//                }
-//                //else search on asianOriginal
-//                FirebaseConnection.getAsianOriginalRecipeById(recipeId, language)
-//            } catch (e: Exception) {
-//                Log.e("RecipeRepository", "Error getRecipeById $recipeId", e)
-//                null
-//            }
+//    suspend fun getAllRecipesInDb(userId: String?): List<Recipe> = withContext(
+//        Dispatchers.IO
+//    ) {
+//        try {
+//            val ogRecipes = FirebaseConnection.getAsianOriginalRecipes()
+//            val modRecipes = if (!userId.isNullOrBlank()) FirebaseConnection.getUserModifiedRecipes(
+//                userId,
+//
+//            ) else emptyList()
+//
+//            (ogRecipes + modRecipes).sortedBy { it.title.lowercase() }
+//        } catch (e: Exception) {
+//            Log.e("RecipeRepository", "Error geting all the Recipes from DB", e)
+//            emptyList()
 //        }
-
-    /**
-     * Gets all recipes form Firebase and the user's modified ones
-     * @param userId ID from the user to obtains his modified subcollection of recipes
-     * @return a list of all the recipes on the DB
-     */
-    suspend fun getAllRecipesInDb(userId: String?): List<Recipe> = withContext(
-        Dispatchers.IO
-    ) {
-        try {
-            val ogRecipes = FirebaseConnection.getAsianOriginalRecipes()
-            val modRecipes = if (!userId.isNullOrBlank()) FirebaseConnection.getUserModifiedRecipes(
-                userId,
-
-            ) else emptyList()
-
-            (ogRecipes + modRecipes).sortedBy { it.title.lowercase() }
-        } catch (e: Exception) {
-            Log.e("RecipeRepository", "Error geting all the Recipes from DB", e)
-            emptyList()
-        }
-    }
+//    }
 
 //    /**
 //     * For searching filtered Recipes from the FilterRecipeScreen
