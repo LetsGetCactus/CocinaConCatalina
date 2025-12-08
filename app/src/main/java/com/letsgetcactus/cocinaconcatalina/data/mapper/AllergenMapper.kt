@@ -5,7 +5,7 @@ import com.letsgetcactus.cocinaconcatalina.model.Allergen
 import com.letsgetcactus.cocinaconcatalina.model.enum.AllergenEnum
 
 /**
- * Class that translates Firebases simple ALLERGEN type (AllergenDto) into our Kotlin Allergen
+ * Class that translates Firebase's simple ALLERGEN type (AllergenDto) into our Kotlin Allergen
  */
 fun AllergenDto.toAllergen(): Allergen {
     val mapToEnum = mapOf(

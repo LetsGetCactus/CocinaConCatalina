@@ -2,6 +2,10 @@ package com.letsgetcactus.cocinaconcatalina.model.enum
 
 import com.letsgetcactus.cocinaconcatalina.R
 
+/**
+ * Enum for the Ingredients unit
+ * Implements TranslatableEnum to map each unit into a translatable String on strings.xml
+ */
 enum class UnitsTypeEnum(
     override val enumId: Int
 ) : TranslatableEnum {
@@ -16,6 +20,12 @@ enum class UnitsTypeEnum(
     SMALL_SPOON(R.string.small_spoon),
     A_BIT(R.string.a_bit);
 
+
+    /**
+     * Object for the UnitsTypeEnum to obtain their match form the IngredientDto
+     * Converts a String into its UnitsTypeEnum or , if it does not match any shows "GRAM"
+     * (just to prevent errors)
+     */
     companion object {
         fun fromString(value: String?): UnitsTypeEnum {
             return entries.find { it.name.equals(value, ignoreCase = true) }

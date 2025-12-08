@@ -2,6 +2,11 @@ package com.letsgetcactus.cocinaconcatalina.model
 
 import com.letsgetcactus.cocinaconcatalina.model.enum.DificultyEnum
 
+/**
+ * Main type for the app, it contains a full Recipe to be shown to the user
+ * @param img pubic url from Storage real image
+ * @param video NOT IMPLEMENTED YET!
+ */
 data class Recipe(
     val id: String,
     var title: String,

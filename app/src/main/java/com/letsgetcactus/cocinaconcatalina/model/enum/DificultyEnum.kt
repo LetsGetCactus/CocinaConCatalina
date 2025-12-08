@@ -7,7 +7,11 @@ import com.letsgetcactus.cocinaconcatalina.ui.theme.Green
 import com.letsgetcactus.cocinaconcatalina.ui.theme.Red
 import com.letsgetcactus.cocinaconcatalina.ui.theme.Yellow
 
-
+/**
+ * Enum for the level of difficulty of a recipe
+ * @param color palette to show the difficulty level (green -> yellow -> red -> black)
+ * @param icon apps icon on each difficulty color to match
+ */
 enum class DificultyEnum (
   override  val enumId: Int,
     val color: Color,

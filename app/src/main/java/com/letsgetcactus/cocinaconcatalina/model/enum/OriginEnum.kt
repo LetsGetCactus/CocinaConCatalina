@@ -2,6 +2,11 @@ package com.letsgetcactus.cocinaconcatalina.model.enum
 
 import com.letsgetcactus.cocinaconcatalina.R
 
+/**
+ * Land of origin of the different asian recipes on the DB
+ * @param enumId name of the country
+ * @param flag of the country
+ */
 enum class OriginEnum(override val enumId: Int, val flag: Int): TranslatableEnum {
     JAPON(
         R.string.japan,

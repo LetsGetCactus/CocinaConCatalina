@@ -16,7 +16,6 @@ import com.letsgetcactus.cocinaconcatalina.model.User
 import kotlinx.coroutines.tasks.await
 import java.math.BigDecimal
 import java.math.RoundingMode
-import java.util.Locale
 import java.util.UUID
 
 
@@ -317,15 +316,9 @@ object FirebaseConnection {
     /**
      * Gets user's favourites Recipes by their Id's
      * @param userId Id from the user to obtain his subcollection
-     * @param language to get the recipes in that language
      * @return a list of his fav recipes or empty list if there's none
      */
-    suspend fun getUserFavouriteRecipes(
-        userId: String,
-        language: String = Locale.getDefault().language
-    ): List<Recipe> {
-        val supportedLanguages = listOf("es", "en", "gl")
-        if (language !in supportedLanguages) "en"
+    suspend fun getUserFavouriteRecipes( userId: String ): List<Recipe> {
 
         return try {
             val result = Firebase.firestore.collection("users")
@@ -396,54 +389,57 @@ object FirebaseConnection {
     suspend fun rateRecipe(recipeId: String, rating: Int, userId: String?) {
 
         val recipeToRate =if (userId== null) {
-            Log.i("FirebaseConnection", "Actualizando puntuacion de receta Og")
             Firebase.firestore.collection("asianOriginalRecipes")
                 .document(recipeId)
 
-
-
         } else {
-            Log.i("FirebaseConnection", "Actualizando puntuacion de receta MOD")
-
             Firebase.firestore.collection("users")
                 .document(userId)
                 .collection("modifiedRecipes")
                 .document(recipeId)
         }
+        try {
+            Firebase.firestore.runTransaction { transaction ->
 
-            try {
-                Firebase.firestore.runTransaction { transaction ->
-                    val snapshot = transaction.get(recipeToRate)
+                val snapshot = transaction.get(recipeToRate)
 
-                    val totalRating = snapshot.getLong("totalRating")?.toInt() ?: 0
-                    val currentCount = snapshot.getLong("ratingCount")?.toInt() ?: 0
-                    Log.i(
-                        "FirebaseConnection",
-                        "Puntuacion anterior: \n" +
-                                "totalRating= $totalRating\n" +
-                                "currentCount= $currentCount\n" +
-                                "total=${(totalRating/ currentCount).toDouble()}"
+                val totalRating = snapshot.getLong("totalRating")?.toInt() ?: 0
+                val currentCount = snapshot.getLong("ratingCount")?.toInt() ?: 0
+
+                Log.i(
+                    "FirebaseConnection",
+                    "Puntuación anterior:\n" +
+                            "totalRating = $totalRating\n" +
+                            "currentCount = $currentCount\n" +
+                            "totalAvg = ${if (currentCount > 0) totalRating.toDouble() / currentCount else 0.0}"
+                )
+
+                val newRatingSum = totalRating + rating
+                val newCount = currentCount + 1
+                val newAvg = BigDecimal(newRatingSum.toDouble() / newCount)
+                    .setScale(2, RoundingMode.HALF_UP)
+                    .toDouble()
+
+                Log.i(
+                    "FirebaseConnection",
+                    "Puntuación nueva:\n" +
+                            "newRatingSum = $newRatingSum\n" +
+                            "newCount = $newCount\n" +
+                            "newAvg = $newAvg"
+                )
+
+                transaction.update(
+                    recipeToRate, mapOf(
+                        "totalRating" to newRatingSum,
+                        "ratingCount" to newCount,
+                        "avgRating" to newAvg
                     )
+                )
 
-                    val newRating = totalRating + rating
-                    val newCount = currentCount +1
-                    val newAvg = BigDecimal(newRating.toDouble() / newCount).setScale(2,
-                        RoundingMode.HALF_UP).toDouble()
+                return@runTransaction newAvg
+            }.await()
 
-                    Log.i("FirebaseConnection", "Puntuacion nueva:\n" +
-                            "newRating= $newRating\n" +
-                            "newCount= $newCount\n" +
-                            "total= $newAvg")
-                    transaction.update(
-                        recipeToRate, mapOf(
-                            "ratingSum" to newRating,
-                            "ratingCount" to newCount,
-                            "avgRating" to newAvg
-                        )
-                    )
-                    return@runTransaction newAvg
-                }.await()
-            }catch (e: Exception){
+        }catch (e: Exception){
                 Log.e("FirebaseConnection","Error en rateRecipes: ${e.message}")
             }
     }
