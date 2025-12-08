@@ -10,10 +10,11 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
 
+/**
+ * Selection bar to select from a range of numbers
+ */
 @Composable
 fun SliderSelector(
     label: String,
@@ -45,16 +46,3 @@ fun SliderSelector(
 }
 
 
-@Preview
-@Composable
-fun PreviewSliderSelector(){
-    CocinaConCatalinaTheme(darkTheme = false) {
-        SliderSelector(
-            label = "Example",
-            value = 5f,
-            onValueChange = {it},
-            valueRange = 1f..15f,
-            steps = 9
-        )
-    }
-}

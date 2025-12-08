@@ -50,6 +50,18 @@ import com.letsgetcactus.cocinaconcatalina.viewmodel.RecipeViewModel
 import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
 
+
+/**
+ * Here the user can moodify from the original Recipe:
+ * - Ingredients
+ * - Steps
+ * - Allergens
+ *
+ * It will save a new Modified Recipe in it's own subcollection on the DB
+ * Only visible to the user itself
+ * Only one modified Recipe per original one, so if you modify a modifed recipe or the same
+ * original one, it will overWrite the old modified Recipe
+ */
 @Composable
 fun ModifyRecipeScreen(
     navController: NavHostController,

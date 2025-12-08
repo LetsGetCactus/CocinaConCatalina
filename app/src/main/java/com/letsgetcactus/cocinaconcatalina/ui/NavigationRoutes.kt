@@ -1,5 +1,8 @@
 package com.letsgetcactus.cocinaconcatalina.ui
 
+/**
+ * All possible routes to navigate into on the whole app
+ */
 object NavigationRoutes{
     const val LOGIN_SCREEN = "LoginScreen"
     const val HOME_SCREEN = "HomeScreen"

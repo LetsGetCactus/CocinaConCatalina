@@ -32,7 +32,6 @@ import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
 fun SearchBarComponent(
     searchQuery: String,
     onSearchQueryChange: (String) -> Unit,
-    onFilterClick: () -> Unit,
     onCloseClick: () -> Unit,
     recipeViewModel: RecipeViewModel,
     userViewModel: UserViewModel,
@@ -98,18 +97,6 @@ fun SearchBarComponent(
 
         )
         Spacer(modifier = Modifier.size(8.dp))
-
-        // Botón de filtros avanzados
-//        IconButton(
-//            onClick = onFilterClick
-//        ) {
-//            Icon(
-//                painter = painterResource(R.drawable.filters),
-//                contentDescription = stringResource(R.string.close),
-//                modifier = Modifier.size(32.dp),
-//                tint = Color.Black
-//            )
-//        }
 
     }
 }

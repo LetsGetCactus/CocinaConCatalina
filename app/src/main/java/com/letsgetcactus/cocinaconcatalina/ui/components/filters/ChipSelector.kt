@@ -10,15 +10,12 @@ import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
 
+/**
+ * Selection buttons to filter the recipes shown by their origin
+ */
 @Composable
 fun ChipSelector(
     modifier: Modifier = Modifier,
@@ -43,7 +40,7 @@ fun ChipSelector(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             options.forEach { option ->
-                var isSelected = option in selectedOptions
+                val isSelected = option in selectedOptions
                 FilterChip(
                     selected = isSelected,
                     onClick = {
@@ -70,26 +67,6 @@ fun ChipSelector(
                     )
                 )
             }
-        }
-    }
-}
-
-@Preview
-@Composable
-fun PreviewChip() {
-    CocinaConCatalinaTheme(darkTheme = false) {
-        //TODO: Ejemplo
-        var selectedPlato: Set<String> by remember { mutableStateOf(emptySet()) }
-
-        Column {
-            ChipSelector(
-                title = "Plato",
-                options = listOf("Entrante", "Sopa", "Principal", "Postre"),
-                selectedOptions = selectedPlato,
-                onSelectionChanged = { selectedPlato }
-
-
-            )
         }
     }
 }

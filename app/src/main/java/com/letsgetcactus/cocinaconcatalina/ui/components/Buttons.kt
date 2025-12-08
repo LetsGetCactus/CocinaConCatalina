@@ -25,6 +25,9 @@ import androidx.compose.ui.unit.dp
 import com.letsgetcactus.cocinaconcatalina.R
 import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
 
+/**
+ * Button in Red
+ */
 @Composable
 fun ButtonMain(
     buttonText: String,
@@ -48,6 +51,9 @@ fun ButtonMain(
     }
 }
 
+/**
+ * Button in dark red
+ */
 @Composable
 fun ButtonSecondary(
     buttonText: String,
@@ -71,7 +77,9 @@ fun ButtonSecondary(
     }
 }
 
-
+/**
+ * Button for Google login o registration
+ */
 @Composable
 fun ButtonGoogle(
     onNavigate: () -> Unit,
@@ -114,6 +122,9 @@ fun ButtonGoogle(
     }
 }
 
+/**
+ * Round button
+ */
 @Composable
 fun ButtonRound(
     buttonText: String,
@@ -137,6 +148,10 @@ fun ButtonRound(
     }
 }
 
+
+/**
+ * Pair of two buttons (red and dark red)
+ */
 @Composable
 fun ButtonPair(
     textRight: String,

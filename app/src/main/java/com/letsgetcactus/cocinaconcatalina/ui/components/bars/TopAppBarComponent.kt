@@ -21,12 +21,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.letsgetcactus.cocinaconcatalina.R
-import com.letsgetcactus.cocinaconcatalina.ui.NavigationRoutes
 import com.letsgetcactus.cocinaconcatalina.ui.components.SearchBarComponent
 import com.letsgetcactus.cocinaconcatalina.viewmodel.RecipeViewModel
 import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
 
-
+/**
+ * Top bar to be shown on the upper part of the screen
+ * Contains:
+ * - Menu drawer
+ *  - Search button OR expanded search bar
+ *  - App's name
+ *
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBarComposable(
@@ -38,6 +44,7 @@ fun TopBarComposable(
 
 
     ) {
+    // Controls for the searchbar, whether it is expanded or not
     var isSearchActive by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
 
@@ -47,6 +54,7 @@ fun TopBarComposable(
             titleContentColor = MaterialTheme.colorScheme.onPrimary
         ),
         navigationIcon = {
+            //Left icon: menu drawer
             Icon(
                 painter = painterResource(R.drawable.menu_drawer),
                 contentDescription = stringResource(R.string.menu_drawer),
@@ -56,6 +64,7 @@ fun TopBarComposable(
                     .clickable { onMenu() }
             )
         },
+        //Title or Searchbar
         title = {
             if (!isSearchActive) {
                 Text(
@@ -69,7 +78,6 @@ fun TopBarComposable(
                         searchQuery = query
                         onSearchChanged(query) //This will decide which VMod to use on each screen
                     },
-                    onFilterClick = { navController.navigate(NavigationRoutes.FILTER_SCREEN) },
                     onCloseClick = {
                         searchQuery = ""
                         isSearchActive = false

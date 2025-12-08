@@ -24,6 +24,10 @@ import com.letsgetcactus.cocinaconcatalina.ui.NavigationRoutes
 import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonRound
 import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
 
+/**
+ * Principal screen on the app
+ * It shows several buttons for the user to navigate to different lists of Recipes
+ */
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,

@@ -36,7 +36,9 @@ import com.letsgetcactus.cocinaconcatalina.ui.components.RecipeRating
 import com.letsgetcactus.cocinaconcatalina.viewmodel.RecipeViewModel
 import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
 
-
+/**
+ * List of Recipe's always shown sorted by title
+ */
 @Composable
 fun ListRecipeHostScreen(
     modifier: Modifier = Modifier,

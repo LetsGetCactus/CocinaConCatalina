@@ -12,12 +12,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.letsgetcactus.cocinaconcatalina.R
 
+
+/**
+ * Floating Action Button to be shown on top of the Screens to perform something:
+ * - Save a recipe
+ * - Accept the Terms and conditions and navigate back
+ * - etc
+ */
 @Composable
 fun FAB(
     onNavigate: () -> Unit
 ) {
     FloatingActionButton(
-        //TODO: manejar persistencia
         onClick = { onNavigate()},
         containerColor = MaterialTheme.colorScheme.secondary,
         contentColor = MaterialTheme.colorScheme.onSecondary,

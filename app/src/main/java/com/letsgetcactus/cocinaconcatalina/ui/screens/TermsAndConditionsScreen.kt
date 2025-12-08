@@ -16,13 +16,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.letsgetcactus.cocinaconcatalina.R
 import com.letsgetcactus.cocinaconcatalina.ui.NavigationRoutes
 import com.letsgetcactus.cocinaconcatalina.ui.components.FAB
-import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
 
+/**
+ * Terms,conditions, and policy Screen for the user to be obligatory accepted to enjoy the app
+ */
 @Composable
 fun TermsAndConditionsScreen(
     onNavigate: (String) -> Unit
@@ -61,13 +62,5 @@ fun TermsAndConditionsScreen(
                     onNavigate(NavigationRoutes.REGISTER_SCREEN)}
             )
         }
-    }
-}
-
-@Preview
-@Composable
-fun PreviewTermsAndConditions(){
-    CocinaConCatalinaTheme(darkTheme = false) {
-        TermsAndConditionsScreen(onNavigate = {})
     }
 }

@@ -49,6 +49,9 @@ import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonSecondary
 import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
 
+/**
+ * Screen to log into the app
+ */
 @Composable
 fun LoginScreen(
     navController: NavController,

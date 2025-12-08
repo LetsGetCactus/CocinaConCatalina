@@ -59,7 +59,7 @@ fun isValidEmail(email: String): Boolean {
 }
 
 /**
- * Screen to register a new user of the app
+ * Screen to register a new user on the app and save him on DB
  */
 @Composable
 fun RegisterScreen(

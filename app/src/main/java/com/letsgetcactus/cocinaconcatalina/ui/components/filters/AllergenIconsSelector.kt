@@ -22,6 +22,11 @@ import androidx.compose.ui.unit.dp
 import com.letsgetcactus.cocinaconcatalina.model.enum.AllergenEnum
 import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
 
+
+/**
+ * Shows an horizontal list of selectable allergens by their icons
+ * When an allergen icon is selected it will be shown in colour
+ */
 @Composable
 fun AllergenIconsSelector(
     selectedAllergens: Map<AllergenEnum, Boolean>,

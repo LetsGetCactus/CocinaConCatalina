@@ -59,6 +59,10 @@ import kotlinx.coroutines.launch
 import java.util.UUID
 
 
+/**
+ * Screen to add a new recipe to asianOriginalRecipes
+ * Only accessible for the admin
+ */
 @Composable
 fun AddRecipeScreen(
     onNavigate: (String) -> Unit,
@@ -169,7 +173,7 @@ fun AddRecipeScreen(
                 style = MaterialTheme.typography.bodyLarge
             )
             ButtonMain(
-                buttonText = img.toString() ?: stringResource(R.string.img_selector),
+                buttonText = img.toString(),
                 onNavigate = {launcher.launch("image/*") },
                 modifier = Modifier.fillMaxWidth()
             )

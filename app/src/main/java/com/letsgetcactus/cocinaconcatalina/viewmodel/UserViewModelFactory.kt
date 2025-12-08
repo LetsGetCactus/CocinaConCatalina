@@ -5,6 +5,10 @@ import androidx.lifecycle.ViewModelProvider
 import com.letsgetcactus.cocinaconcatalina.data.repository.UserRepository
 import com.letsgetcactus.cocinaconcatalina.data.repository.UserSessionRepository
 
+
+/**
+ * To create instances of the UserViewModel and its needed parameters
+ */
 class UserViewModelFactory(
     private val userSessionRepo: UserSessionRepository
 ) : ViewModelProvider.Factory {

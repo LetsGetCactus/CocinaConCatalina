@@ -20,6 +20,10 @@ import com.letsgetcactus.cocinaconcatalina.R
 import com.letsgetcactus.cocinaconcatalina.model.enum.DificultyEnum
 import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
 
+
+/**
+ * Recipe's ratings visualizer by a bunch of ramen icons coloured
+ */
 @Composable
 fun RecipeRating(
     avgRating: Int,
@@ -45,6 +49,9 @@ fun RecipeRating(
 
 
 
+/**
+ * Recipe rating selector for the user to rate a recipe
+ */
 @Composable
 fun RecipeRatingSelector(
     initialRating: Int,

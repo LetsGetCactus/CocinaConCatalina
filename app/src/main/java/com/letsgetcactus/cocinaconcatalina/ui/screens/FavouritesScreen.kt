@@ -47,6 +47,9 @@ import com.letsgetcactus.cocinaconcatalina.ui.components.BackStackButton
 import com.letsgetcactus.cocinaconcatalina.ui.components.filters.ChipSelector
 import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
 
+/**
+ * Shows all user favourite selected Recipes
+ */
 @Composable
 fun FavouritesScreen(
     modifier: Modifier = Modifier,

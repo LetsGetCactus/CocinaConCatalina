@@ -2,6 +2,8 @@ package com.letsgetcactus.cocinaconcatalina.ui
 
 import MenuDrawerComponent
 import android.annotation.SuppressLint
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.DrawerValue
@@ -24,7 +26,6 @@ import com.letsgetcactus.cocinaconcatalina.data.searchFilters.onSearchSubmit
 import com.letsgetcactus.cocinaconcatalina.ui.components.bars.BottomBarComposable
 import com.letsgetcactus.cocinaconcatalina.ui.screens.AddRecipeScreen
 import com.letsgetcactus.cocinaconcatalina.ui.screens.FavouritesScreen
-import com.letsgetcactus.cocinaconcatalina.ui.screens.FilterScreen
 import com.letsgetcactus.cocinaconcatalina.ui.screens.HomeScreen
 import com.letsgetcactus.cocinaconcatalina.ui.screens.ItemRecipeScreen
 import com.letsgetcactus.cocinaconcatalina.ui.screens.ListRecipeHostScreen
@@ -43,6 +44,7 @@ import kotlinx.coroutines.launch
  * AppNavigation contains NAvHost which establishes the possible routes (NavigationRoutes) each screen could go
  * also integrates the TopAppBar and BottomAppBar in the screens that need them
  */
+@RequiresApi(Build.VERSION_CODES.S)
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
 fun AppNavigation(
@@ -104,7 +106,7 @@ fun AppNavigation(
                                             ?: Source.ALL.name
                                     val source = try {
                                         Source.valueOf(sourceName)
-                                    } catch (e: Exception) {
+                                    } catch (_: Exception) {
                                         Source.ALL
                                     }
                                     onSearchSubmit(query, source, recipeViewModel, userViewModel)
@@ -225,7 +227,7 @@ fun AppNavigation(
                         backStackEntry.arguments?.getString("source") ?: Source.ALL.name
                     val source = try {
                         Source.valueOf(sourceName)
-                    } catch (e: Exception) {
+                    } catch (_: Exception) {
                         Source.ALL
                     }
                     val filterShortCut = backStackEntry.arguments?.getString("filter") ?: ""
@@ -268,16 +270,6 @@ fun AppNavigation(
 
                     )
                 }
-
-                composable(NavigationRoutes.FILTER_SCREEN) {
-                    FilterScreen(
-                        recipeViewModel = recipeViewModel,
-                        userViewModel = userViewModel,
-                        recipeSource = Source.ALL,
-                        navController = navController
-                    )
-                }
-
             }
         }
     }
