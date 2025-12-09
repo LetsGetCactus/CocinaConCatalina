@@ -1,4 +1,4 @@
-package com.letsgetcactus.cocinaconcatalina.ui.screens
+package com.letsgetcactus.cocinaconcatalina.ui.components.bars
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding

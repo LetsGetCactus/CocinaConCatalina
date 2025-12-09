@@ -201,9 +201,10 @@ fun FavCard(
             ) {
                 Text(
                     text = recipe.title,
-                    style = MaterialTheme.typography.bodySmall,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onPrimary
                 )
+
             }
         }
 
@@ -212,7 +213,8 @@ fun FavCard(
             contentDescription = stringResource(R.string.image_description),
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .size(32.dp)
+                .size(40.dp)
+                .padding(top = 8.dp)
                 .clickable { userViewModel.changeFavourite(recipe) }
         )
     }

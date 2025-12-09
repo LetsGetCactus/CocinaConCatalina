@@ -34,7 +34,7 @@ import com.letsgetcactus.cocinaconcatalina.ui.screens.ModifyRecipeScreen
 import com.letsgetcactus.cocinaconcatalina.ui.screens.RegisterScreen
 import com.letsgetcactus.cocinaconcatalina.ui.screens.SplashScreen
 import com.letsgetcactus.cocinaconcatalina.ui.screens.TermsAndConditionsScreen
-import com.letsgetcactus.cocinaconcatalina.ui.screens.TopBarComposable
+import com.letsgetcactus.cocinaconcatalina.ui.components.bars.TopBarComposable
 import com.letsgetcactus.cocinaconcatalina.viewmodel.RecipeViewModel
 import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
 import kotlinx.coroutines.launch

@@ -107,9 +107,7 @@ fun BottomBarComposable(
                 onDismissRequest = { timerDialog = false },
                 title = { Text(stringResource(R.string.set_timer)) },
                 text = {
-                    Column {
-                        Text(stringResource(R.string.set_minutes))
-                        TextField(
+                    Column { TextField(
                             value = minutes,
                             onValueChange = { minutes = it },
                             placeholder = { Text("15") },
