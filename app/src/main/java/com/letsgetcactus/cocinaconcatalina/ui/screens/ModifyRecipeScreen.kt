@@ -1,7 +1,6 @@
 package com.letsgetcactus.cocinaconcatalina.ui.screens
 
 import DropDownMenuSelector
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -228,7 +227,7 @@ fun ModifyRecipeScreen(
                                 ratingCount = 0,
                             )
 
-                            Log.i("ModifyRecipeScreen", "$newModRecipe")
+
                             userViewModel.saveModifiedRecipe(newModRecipe)
                             navController.popBackStack()
                             Toast.makeText(context, context.getString(R.string.recipe_saved),Toast.LENGTH_SHORT).show()

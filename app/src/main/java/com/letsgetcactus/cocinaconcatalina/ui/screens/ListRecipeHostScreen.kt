@@ -1,6 +1,5 @@
 package com.letsgetcactus.cocinaconcatalina.ui.screens
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -97,14 +96,6 @@ fun ListRecipeHostScreen(
         }
 
 
-
-    Log.i(
-        "ListRecipeHostScreen", " Listing ${recipesToShow.size} recipes from : $recipeSource \n" +
-                "${recipeViewModel.asianOgRecipes.collectAsState().value.size}  originals " +
-                "\n${userViewModel.modifiedRecipes.collectAsState().value.size} modified"
-    )
-
-
     Box(
         modifier = Modifier
             .fillMaxSize(),
@@ -117,7 +108,7 @@ fun ListRecipeHostScreen(
             LegendComposable()
             ListRecipeContent(
                 onNavigate = { selected ->
-                    Log.i("ListRecipeHostScreen", "Clicked recipe: ${selected.title}")
+
                     recipeViewModel.selectRecipe(selected)
                     userViewModel.selectRecipe(selected)
                     onNavigate()
@@ -167,7 +158,7 @@ private fun RecipeCard(
                 .fillMaxWidth()
                 .height(250.dp)
                 .clickable {
-                    Log.i("ListRecipeHostScreen", "Clicked recipe inside card: ${recipe.title}")
+
                     onNavigate(recipe)
                 }
         ) {

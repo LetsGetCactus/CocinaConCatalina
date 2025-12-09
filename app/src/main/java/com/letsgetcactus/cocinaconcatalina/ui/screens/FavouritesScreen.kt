@@ -1,6 +1,5 @@
 package com.letsgetcactus.cocinaconcatalina.ui.screens
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -61,15 +60,14 @@ fun FavouritesScreen(
 
     //User's state
     val favouriteRecipes by userViewModel.favouriteRecipe.collectAsState()
-    Log.i("FavouriteScreen", "Showing ${favouriteRecipes.size} recipes from user's favs")
 
     //Selected chipset
     var selectedOrigin: OriginEnum? by remember { mutableStateOf(null) }
-    Log.i("FavouriteScreen", "$selectedOrigin")
+
     val filteredFavourites = remember(favouriteRecipes, selectedOrigin) {
         if (selectedOrigin == null) favouriteRecipes
         else favouriteRecipes.filter { recipe ->
-            Log.i("FavouriteScreen", "$recipe")
+
             val recipeOriginEnum = OriginMapper.mapOriginToEnum(recipe.origin.country)
             recipeOriginEnum == selectedOrigin
         }
@@ -168,7 +166,6 @@ fun FavCard(
     onNavigate: (String) -> Unit
 ) {
 
-    Log.i("FavouriteScreen- FavCard", "$recipe")
     Box(
         modifier = Modifier
             .fillMaxWidth()
