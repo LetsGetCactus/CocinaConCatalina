@@ -80,71 +80,80 @@ fun FavouritesScreen(
     }
 
     //UI
-    Column(modifier = modifier.background(MaterialTheme.colorScheme.background)) {
-        ChipSelector(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 8.dp)
-                .horizontalScroll(rememberScrollState()),
-            title = null,
-            options = OriginEnum.entries.map { it.name },
-            selectedOptions = selectedOrigin?.let { setOf(it.name) } ?: emptySet(),
-            onSelectionChanged = { selectedNames ->
-                selectedOrigin =
-                    OriginEnum.entries.firstOrNull { it.name in selectedNames }
-            },
-            singleSelection = true
-        )
-
+    Box(
+        modifier = Modifier
+            .fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-                .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = modifier.background(MaterialTheme.colorScheme.background)
+                .widthIn(max=560.dp)
         ) {
+            ChipSelector(
+                modifier = Modifier
+                    .widthIn(max = 480.dp)
+                    .padding(start = 8.dp)
+                    .horizontalScroll(rememberScrollState()),
+                title = null,
+                options = OriginEnum.entries.map { it.name },
+                selectedOptions = selectedOrigin?.let { setOf(it.name) } ?: emptySet(),
+                onSelectionChanged = { selectedNames ->
+                    selectedOrigin =
+                        OriginEnum.entries.firstOrNull { it.name in selectedNames }
+                },
+                singleSelection = true
+            )
 
-            Spacer(modifier = Modifier.size(50.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                BackStackButton(
-                    navController = navController
-                )
-                Text(
-                    text = stringResource(R.string.favs),
-                    style = MaterialTheme.typography.displayLarge,
-                    color = MaterialTheme.colorScheme.tertiary
-                )
-            }
 
-            LazyColumn(
-                modifier = Modifier.fillMaxWidth(),
-                contentPadding = PaddingValues(vertical = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
+                Spacer(modifier = Modifier.size(50.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    BackStackButton(
+                        navController = navController
+                    )
+                    Text(
+                        text = stringResource(R.string.favs),
+                        style = MaterialTheme.typography.displayLarge,
+                        color = MaterialTheme.colorScheme.tertiary
+                    )
+                }
 
-                if (filteredFavourites.isEmpty()) {
-                    item {
-                        Text(
-                            text = "No tienes recetas favoritas todavía",
-                            style = MaterialTheme.typography.labelSmall,
-                            modifier = Modifier.padding(16.dp),
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                    }
-                } else {
-                    items(filteredFavourites.size) { index ->
-                        val recipe = filteredFavourites[index]
-                        FavCard(
-                            recipe = recipe,
-                            userViewModel = userViewModel,
-                            onNavigate = onNavigate
+                LazyColumn(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentPadding = PaddingValues(vertical = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+
+                    if (filteredFavourites.isEmpty()) {
+                        item {
+                            Text(
+                                text = "No tienes recetas favoritas todavía",
+                                style = MaterialTheme.typography.labelSmall,
+                                modifier = Modifier.padding(16.dp),
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    } else {
+                        items(filteredFavourites.size) { index ->
+                            val recipe = filteredFavourites[index]
+                            FavCard(
+                                recipe = recipe,
+                                userViewModel = userViewModel,
+                                onNavigate = onNavigate
 
 
-                        )
+                            )
+                        }
                     }
                 }
             }

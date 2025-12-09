@@ -60,6 +60,7 @@ fun MenuDrawerComponent(
 
     CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSecondary)
     {
+
         Column(
             modifier = modifier
                 .fillMaxSize()

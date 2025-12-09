@@ -6,6 +6,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -84,256 +86,269 @@ fun RegisterScreen(
     //States for possible errors on mail or password
     var emailError by remember { mutableStateOf(false) }
 
-
-    Column(
+    Box(
         modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .padding(48.dp, 40.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-
-
+            .fillMaxSize(),
+        contentAlignment = Alignment.Center
     ) {
-        // Image
-        Image(
-            painter = painterResource(id = R.drawable.icon),
-            contentDescription = stringResource(R.string.ccc_icon),
-            modifier = Modifier
-                .size(96.dp)
-                .align(Alignment.Start)
-                .shadow(
-                    elevation = 16.dp,
-                    shape = CircleShape,
-
-                    )
-
-        )
-
-        //Register text
-        Text(
-            text = stringResource(R.string.register_title),
-            modifier = Modifier
-                .align(Alignment.Start)
-                .padding(bottom = 24.dp),
-            style = MaterialTheme.typography.displayLarge,
-            color = MaterialTheme.colorScheme.tertiary
-
-        )
-        // Name
-        TextField(
-            value = name,
-            onValueChange = { name = it },
-            label = {
-                Text(
-                    text = stringResource(R.string.insert_name),
-                    style = MaterialTheme.typography.labelSmall,
-                )
-            },
-            modifier = Modifier
-                .shadow(8.dp)
-                .fillMaxWidth()
-                .padding(bottom = 8.dp),
-
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.surface,
-                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                focusedTextColor = MaterialTheme.colorScheme.onBackground,
-                unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
-            ),
-            shape = MaterialTheme.shapes.small,
-            textStyle = MaterialTheme.typography.bodyMedium,
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-            keyboardActions = KeyboardActions(onNext = {
-                focusManager.moveFocus(FocusDirection.Down)
-            }),
-
-        )
-
-
-        // Email
-        TextField(
-            value = email,
-            onValueChange = {
-                email = it
-                emailError = !isValidEmail(it) && it.isNotEmpty()
-            },
-            label = {
-                Text(
-                    text = stringResource(R.string.email),
-                    style = MaterialTheme.typography.labelSmall,
-                )
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 8.dp)
-                .shadow(8.dp),
-            isError = emailError,
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.surface,
-                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                focusedTextColor = MaterialTheme.colorScheme.onBackground,
-                unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
-            ),
-            shape = MaterialTheme.shapes.small,
-            textStyle = MaterialTheme.typography.bodyMedium,
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-            keyboardActions = KeyboardActions(onNext = {
-                focusManager.moveFocus(FocusDirection.Down)
-            }),
-        )
-
-
-        // Password
-        TextField(
-            value = pass,
-            onValueChange = { pass = it },
-            label = {
-                Text(
-                    text = stringResource(R.string.pass),
-                    style = MaterialTheme.typography.labelSmall,
-                )
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .shadow(8.dp)
-                .padding(bottom = 8.dp),
-            visualTransformation = PasswordVisualTransformation(),
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.surface,
-                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                focusedTextColor = MaterialTheme.colorScheme.onBackground,
-                unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
-            ),
-            shape = MaterialTheme.shapes.small,
-            textStyle = MaterialTheme.typography.bodyMedium,
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-            keyboardActions = KeyboardActions(onNext = {
-                focusManager.moveFocus(FocusDirection.Down)
-            }),
-        )
-
-
-        // Confirm password
-        TextField(
-            value = confirmPass,
-            onValueChange = { confirmPass = it },
-            label = {
-                Text(
-                    text = stringResource(R.string.confirm_pass),
-                    style = MaterialTheme.typography.labelSmall,
-                )
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .shadow(8.dp),
-            visualTransformation = PasswordVisualTransformation(),
-            isError = pass != confirmPass && confirmPass.isNotEmpty(),
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.surface,
-                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                focusedTextColor = MaterialTheme.colorScheme.onBackground,
-                unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
-            ),
-            shape = MaterialTheme.shapes.small,
-            textStyle = MaterialTheme.typography.bodyMedium,
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-            keyboardActions = KeyboardActions(onDone = {
-                focusManager.clearFocus()   // Closes keyboard
-            }),
-        )
-
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Checkbox(
-                checked = checkedTerms,
-                onCheckedChange = { checkedTerms = it },
-                colors = CheckboxDefaults.colors(
-                    checkedColor = MaterialTheme.colorScheme.primary,
-                    checkmarkColor = MaterialTheme.colorScheme.onPrimary
-                ),
-            )
-            Text(
-                text = stringResource(R.string.termsAndConditions),
-                modifier = Modifier
-                    .clickable {
-                        navController.navigate(NavigationRoutes.TERMS_CONDITIONS_SCREEN)
-                    }
-                    .fillMaxWidth()
-                    .padding(top = 16.dp),
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onBackground
-
-            )
-        }
-
-        Spacer(Modifier.height(24.dp))
-
-        //Buttons:Back and Register
         Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.background)
+                .padding(48.dp, 40.dp)
+                .widthIn(max = 480.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+
+
         ) {
-            ButtonMain(
-                buttonText = stringResource(R.string.back),
-                onNavigate = { navController.navigate(NavigationRoutes.LOGIN_SCREEN) },
-                modifier = Modifier.fillMaxWidth()
+            // Image
+            Image(
+                painter = painterResource(id = R.drawable.icon),
+                contentDescription = stringResource(R.string.ccc_icon),
+                modifier = Modifier
+                    .size(96.dp)
+                    .align(Alignment.Start)
+                    .shadow(
+                        elevation = 16.dp,
+                        shape = CircleShape,
+
+                        )
+
             )
 
-            Spacer(modifier = Modifier.size(8.dp))
+            //Register text
+            Text(
+                text = stringResource(R.string.register_title),
+                modifier = Modifier
+                    .align(Alignment.Start)
+                    .padding(bottom = 24.dp),
+                style = MaterialTheme.typography.displayLarge,
+                color = MaterialTheme.colorScheme.tertiary
 
-            ButtonSecondary(
-                buttonText = stringResource(R.string.register),
+            )
+            // Name
+            TextField(
+                value = name,
+                onValueChange = { name = it },
+                label = {
+                    Text(
+                        text = stringResource(R.string.insert_name),
+                        style = MaterialTheme.typography.labelSmall,
+                    )
+                },
+                modifier = Modifier
+                    .shadow(8.dp)
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp),
+
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                    focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
+                ),
+                shape = MaterialTheme.shapes.small,
+                textStyle = MaterialTheme.typography.bodyMedium,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                keyboardActions = KeyboardActions(onNext = {
+                    focusManager.moveFocus(FocusDirection.Down)
+                }),
+
+                )
+
+
+            // Email
+            TextField(
+                value = email,
+                onValueChange = {
+                    email = it
+                    emailError = !isValidEmail(it) && it.isNotEmpty()
+                },
+                label = {
+                    Text(
+                        text = stringResource(R.string.email),
+                        style = MaterialTheme.typography.labelSmall,
+                    )
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp)
+                    .shadow(8.dp),
+                isError = emailError,
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                    focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
+                ),
+                shape = MaterialTheme.shapes.small,
+                textStyle = MaterialTheme.typography.bodyMedium,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                keyboardActions = KeyboardActions(onNext = {
+                    focusManager.moveFocus(FocusDirection.Down)
+                }),
+            )
+
+
+            // Password
+            TextField(
+                value = pass,
+                onValueChange = { pass = it },
+                label = {
+                    Text(
+                        text = stringResource(R.string.pass),
+                        style = MaterialTheme.typography.labelSmall,
+                    )
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(8.dp)
+                    .padding(bottom = 8.dp),
+                visualTransformation = PasswordVisualTransformation(),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                    focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
+                ),
+                shape = MaterialTheme.shapes.small,
+                textStyle = MaterialTheme.typography.bodyMedium,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                keyboardActions = KeyboardActions(onNext = {
+                    focusManager.moveFocus(FocusDirection.Down)
+                }),
+            )
+
+
+            // Confirm password
+            TextField(
+                value = confirmPass,
+                onValueChange = { confirmPass = it },
+                label = {
+                    Text(
+                        text = stringResource(R.string.confirm_pass),
+                        style = MaterialTheme.typography.labelSmall,
+                    )
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(8.dp),
+                visualTransformation = PasswordVisualTransformation(),
+                isError = pass != confirmPass && confirmPass.isNotEmpty(),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                    focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
+                ),
+                shape = MaterialTheme.shapes.small,
+                textStyle = MaterialTheme.typography.bodyMedium,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(onDone = {
+                    focusManager.clearFocus()   // Closes keyboard
+                }),
+            )
+
+
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-                onNavigate = {
-                    scope.launch {
-                        if (name.isBlank() || email.isBlank() || pass.isBlank() || confirmPass.isBlank()) {
-                            Toast.makeText(context, R.string.complete_all, Toast.LENGTH_SHORT)
-                                .show()
-                            return@launch
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Checkbox(
+                    checked = checkedTerms,
+                    onCheckedChange = { checkedTerms = it },
+                    colors = CheckboxDefaults.colors(
+                        checkedColor = MaterialTheme.colorScheme.primary,
+                        checkmarkColor = MaterialTheme.colorScheme.onPrimary
+                    ),
+                )
+                Text(
+                    text = stringResource(R.string.termsAndConditions),
+                    modifier = Modifier
+                        .clickable {
+                            navController.navigate(NavigationRoutes.TERMS_CONDITIONS_SCREEN)
+                        }
+                        .fillMaxWidth()
+                        .padding(top = 16.dp),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onBackground
 
-                        } else if (pass != confirmPass) {
-                            Toast.makeText(context, R.string.pass_not_matching, Toast.LENGTH_SHORT)
-                                .show()
-                            return@launch
+                )
+            }
 
-                        } else if (!isValidEmail(email)) {
-                            Toast.makeText(context, R.string.emailError, Toast.LENGTH_SHORT).show()
-                            return@launch
+            Spacer(Modifier.height(24.dp))
 
-                        } else if (!checkedTerms) {
-                            Toast.makeText(context, R.string.not_accepted_terms, Toast.LENGTH_SHORT)
-                                .show()
-                            return@launch
-                        } else {
+            //Buttons:Back and Register
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                ButtonMain(
+                    buttonText = stringResource(R.string.back),
+                    onNavigate = { navController.navigate(NavigationRoutes.LOGIN_SCREEN) },
+                    modifier = Modifier.fillMaxWidth()
+                )
 
-                            userViewModel.register(name, email, pass)
-                            navController.navigate(NavigationRoutes.HOME_SCREEN) {
-                                popUpTo(NavigationRoutes.REGISTER_SCREEN) { inclusive = true }
+                Spacer(modifier = Modifier.size(8.dp))
+
+                ButtonSecondary(
+                    buttonText = stringResource(R.string.register),
+                    modifier = Modifier.fillMaxWidth(),
+                    onNavigate = {
+                        scope.launch {
+                            if (name.isBlank() || email.isBlank() || pass.isBlank() || confirmPass.isBlank()) {
+                                Toast.makeText(context, R.string.complete_all, Toast.LENGTH_SHORT)
+                                    .show()
+                                return@launch
+
+                            } else if (pass != confirmPass) {
+                                Toast.makeText(
+                                    context,
+                                    R.string.pass_not_matching,
+                                    Toast.LENGTH_SHORT
+                                )
+                                    .show()
+                                return@launch
+
+                            } else if (!isValidEmail(email)) {
+                                Toast.makeText(context, R.string.emailError, Toast.LENGTH_SHORT)
+                                    .show()
+                                return@launch
+
+                            } else if (!checkedTerms) {
+                                Toast.makeText(
+                                    context,
+                                    R.string.not_accepted_terms,
+                                    Toast.LENGTH_SHORT
+                                )
+                                    .show()
+                                return@launch
+                            } else {
+
+                                userViewModel.register(name, email, pass)
+                                navController.navigate(NavigationRoutes.HOME_SCREEN) {
+                                    popUpTo(NavigationRoutes.REGISTER_SCREEN) { inclusive = true }
+                                }
+                                Toast.makeText(
+                                    context,
+                                    "${context.getString(R.string.welcome)} $name",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
-                            Toast.makeText(
-                                context,
-                                "${context.getString(R.string.welcome)} $name",
-                                Toast.LENGTH_SHORT
-                            ).show()
                         }
                     }
-                }
-            )
+                )
 
 
 
-            Spacer(Modifier.height(36.dp))
+                Spacer(Modifier.height(36.dp))
 
-            ButtonGoogle( //TODO
-                onNavigate = { },
-                modifier = Modifier.fillMaxWidth()
-            )
+                ButtonGoogle( //TODO
+                    onNavigate = { },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
         }
     }
-
 }
 

@@ -2,10 +2,12 @@ package com.letsgetcactus.cocinaconcatalina.ui
 
 import MenuDrawerComponent
 import android.annotation.SuppressLint
+import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
@@ -24,6 +26,7 @@ import androidx.navigation.navArgument
 import com.letsgetcactus.cocinaconcatalina.data.searchFilters.Source
 import com.letsgetcactus.cocinaconcatalina.data.searchFilters.onSearchSubmit
 import com.letsgetcactus.cocinaconcatalina.ui.components.bars.BottomBarComposable
+import com.letsgetcactus.cocinaconcatalina.ui.components.bars.TopBarComposable
 import com.letsgetcactus.cocinaconcatalina.ui.screens.AddRecipeScreen
 import com.letsgetcactus.cocinaconcatalina.ui.screens.FavouritesScreen
 import com.letsgetcactus.cocinaconcatalina.ui.screens.HomeScreen
@@ -34,7 +37,6 @@ import com.letsgetcactus.cocinaconcatalina.ui.screens.ModifyRecipeScreen
 import com.letsgetcactus.cocinaconcatalina.ui.screens.RegisterScreen
 import com.letsgetcactus.cocinaconcatalina.ui.screens.SplashScreen
 import com.letsgetcactus.cocinaconcatalina.ui.screens.TermsAndConditionsScreen
-import com.letsgetcactus.cocinaconcatalina.ui.components.bars.TopBarComposable
 import com.letsgetcactus.cocinaconcatalina.viewmodel.RecipeViewModel
 import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
@@ -56,9 +58,17 @@ fun AppNavigation(
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
 
+    //For menu drawer
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val configuration = LocalConfiguration.current
+    val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+    val maxDrawerWidth = if (isPortrait) {
+        (configuration.screenWidthDp * 0.7f).dp
+    } else {
+        400.dp
+    }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -67,12 +77,15 @@ fun AppNavigation(
 
             if(currentRoute != NavigationRoutes.LOGIN_SCREEN &&
                 currentRoute != NavigationRoutes.REGISTER_SCREEN &&
-                currentRoute != NavigationRoutes.TERMS_CONDITIONS_SCREEN) {
+                currentRoute != NavigationRoutes.TERMS_CONDITIONS_SCREEN &&
+                currentRoute != NavigationRoutes.SPLASH_SCREEN) {
 
                 MenuDrawerComponent(
                     navController = navController,
                     userViewModel = userViewModel,
-                    modifier = Modifier.width(LocalConfiguration.current.screenWidthDp.dp * 0.7f),
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .widthIn(max=maxDrawerWidth),
                     drawerState = drawerState
                 )
             }
