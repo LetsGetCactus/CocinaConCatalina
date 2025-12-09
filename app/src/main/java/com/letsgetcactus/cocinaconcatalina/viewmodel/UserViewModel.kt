@@ -5,6 +5,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
 import com.letsgetcactus.cocinaconcatalina.R
 import com.letsgetcactus.cocinaconcatalina.data.local.LoginState
 import com.letsgetcactus.cocinaconcatalina.data.mapper.OriginMapper
@@ -15,7 +16,7 @@ import com.letsgetcactus.cocinaconcatalina.data.searchFilters.RecipeSearchFilter
 import com.letsgetcactus.cocinaconcatalina.model.Recipe
 import com.letsgetcactus.cocinaconcatalina.model.User
 import com.letsgetcactus.cocinaconcatalina.model.enum.OriginEnum
-import kotlinx.coroutines.delay
+import com.letsgetcactus.cocinaconcatalina.ui.NavigationRoutes
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -208,28 +209,23 @@ class UserViewModel(
      */
     private fun restoreSessionFromDataStore() {
         viewModelScope.launch {
-
             userSessionRepo.userIdFlow.collectLatest { id ->
                 _userId.value = id
-                _isLoggedIn.value = id != null
+                if (id.isNullOrEmpty()) {
+                    clearAllUserData()
+                    _isLoggedIn.value = false
+                    return@collectLatest
+                }
 
-                if (id != null) {
-                    val activeSessionInFirebaseAuth = userRepo.getCurrentFirebaseUser()
-
-                    if (activeSessionInFirebaseAuth == null) {
-                        //wait to retry
-                        delay(400)
-                        activeSessionInFirebaseAuth
-
-                        if (activeSessionInFirebaseAuth == null)
-                            userSessionRepo.clearUserSession()
-                        clearAllUserData()
-
-                        _isLoggedIn.value = false
-                    } else {
-                        setUser(activeSessionInFirebaseAuth.uid)
-                    }
-                } else setUser(id)
+                val firebaseUser = userRepo.getCurrentFirebaseUser()
+                if (firebaseUser?.uid == id) {
+                    setUser(id)
+                    _isLoggedIn.value = true
+                } else {
+                    userSessionRepo.clearUserSession()
+                    clearAllUserData()
+                    _isLoggedIn.value = false
+                }
             }
         }
 
@@ -248,21 +244,26 @@ class UserViewModel(
      *  - currentUser (ViewModel)
      *  and gets the user off on UserRepository logout()
      */
-    fun logOut() {
-        viewModelScope.launch {
-            UserRepository.logOut()
-            userSessionRepo.clearUserSession()
+    suspend fun logOut(context: Context, navController: NavController) {
 
-            _userId.value = null
-            _isLoggedIn.value = false
+        UserRepository.logOut(context)
+
+        userSessionRepo.clearUserSession()
+        clearAllUserData()
+        _isLoggedIn.value = false
+
+
+        navController.navigate(NavigationRoutes.LOGIN_SCREEN) {
+            popUpTo(0)
         }
+
     }
 
     /**
      * To call for deleting user's data in the whole app
      * @return True if user was correctly deleted, False if not
      */
-    fun deleteUser(onSuccess: (Boolean) -> Unit = {}) {
+    fun deleteUser(onSuccess: (Boolean) -> Unit = {}, context: Context) {
         val userId = _currentUser.value?.id ?: run {
             onSuccess(false)
             return
@@ -272,7 +273,7 @@ class UserViewModel(
             try {
                 val deleted = userRepo.deleteUserCompletely(userId)
                 if (deleted) {
-                    userRepo.logOut()
+                    userRepo.logOut(context)
                     userSessionRepo.clearUserSession()
 
                     clearAllUserData()
@@ -283,24 +284,13 @@ class UserViewModel(
                     onSuccess(false)
                 }
             } catch (e: Exception) {
-                Log.e("UserViewModel","Error deleting user $userId")
+                Log.e("UserViewModel", "Error deleting user $userId")
                 onSuccess(false)
             }
         }
 
     }
 
-    //Updates for lang and theme
-//    /**
-//     * Saves a new language for the user
-//     * @param lang user's new selected language for the app
-//     */
-//    fun updateUserLanguage(lang: String) {
-//        viewModelScope.launch {
-//            userSessionRepo.saveLangData(lang)
-//            _language.value = lang
-//        }
-//    }
 
     /**
      * Saves a new theme for the user

@@ -2,6 +2,7 @@ package com.letsgetcactus.cocinaconcatalina.data.repository
 
 import android.content.Context
 import android.util.Log
+import androidx.credentials.ClearCredentialStateRequest
 import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
@@ -104,8 +105,17 @@ object UserRepository {
     /**
      * Logout method for the User to sign out from it's session
      */
-    fun logOut() {
+    suspend fun logOut(context: Context) {
         firebaseAuth.signOut()
+        try {
+            val credentialManager = CredentialManager.create(context)
+            val clearRequest = ClearCredentialStateRequest()
+            credentialManager.clearCredentialState(clearRequest)
+
+
+        } catch (e: Exception) {
+            Log.e("UserRepository", "Error clearing Google credentials", e)
+        }
 
     }
 
