@@ -8,6 +8,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
@@ -77,14 +78,16 @@ fun AppNavigation(
 
             if(currentRoute != NavigationRoutes.LOGIN_SCREEN &&
                 currentRoute != NavigationRoutes.REGISTER_SCREEN &&
-                currentRoute != NavigationRoutes.TERMS_CONDITIONS_SCREEN &&
-                currentRoute != NavigationRoutes.SPLASH_SCREEN) {
+                currentRoute != NavigationRoutes.TERMS_CONDITIONS_SCREEN
+                ) {
+
 
                 MenuDrawerComponent(
                     navController = navController,
                     userViewModel = userViewModel,
                     modifier = Modifier
                         .fillMaxHeight()
+                        .wrapContentWidth()
                         .widthIn(max=maxDrawerWidth),
                     drawerState = drawerState
                 )
