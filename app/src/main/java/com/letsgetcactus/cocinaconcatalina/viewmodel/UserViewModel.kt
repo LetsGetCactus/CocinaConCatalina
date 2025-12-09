@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.letsgetcactus.cocinaconcatalina.R
+import com.letsgetcactus.cocinaconcatalina.data.local.LoginState
 import com.letsgetcactus.cocinaconcatalina.data.mapper.OriginMapper
 import com.letsgetcactus.cocinaconcatalina.data.repository.UserRepository
 import com.letsgetcactus.cocinaconcatalina.data.repository.UserSessionRepository
@@ -39,9 +40,6 @@ class UserViewModel(
     private val _userId = MutableStateFlow<String?>(null)
     val userId: StateFlow<String?> = _userId
 
-    private val _language = MutableStateFlow<String>("es")
-    val language: StateFlow<String> = _language
-
     private val _theme = MutableStateFlow<String>("system")
     val theme: StateFlow<String> = _theme
 
@@ -60,9 +58,6 @@ class UserViewModel(
     private val _favouriteRecipes = MutableStateFlow<List<Recipe>>(emptyList())
     val favouriteRecipe = _favouriteRecipes.asStateFlow()
 
-    // Favs filtered by chip
-    private val _filteredFavourites = MutableStateFlow<List<Recipe>>(emptyList())
-    val filteredFavourites = _filteredFavourites.asStateFlow()
 
     // Both user recipes (favs + mod)
     private val _userRecipes = MutableStateFlow<List<Recipe>>(emptyList())
@@ -82,6 +77,10 @@ class UserViewModel(
     //when the user select a recipe to be shown on itemrecipescreen
     private val _selectedRecipe = MutableStateFlow<Recipe?>(null)
     val selectedRecipe: StateFlow<Recipe?> = _selectedRecipe.asStateFlow()
+
+    //For Google
+    private val _googleLoginState = MutableStateFlow<LoginState>(LoginState.Idle)
+    val googleLoginState: StateFlow<LoginState> = _googleLoginState
 
     init {
         restoreSessionFromDataStore()
@@ -138,6 +137,25 @@ class UserViewModel(
 
             true
         } else false
+    }
+
+    /**
+     * To log in or register with a Google account
+     */
+    fun logInWithGoogle(context: Context) {
+        viewModelScope.launch {
+            _googleLoginState.value = LoginState.Loading
+
+            val user = UserRepository.loginWithGoogle(context)
+
+            if (user != null) {
+                userSessionRepo.saveUserIdData(user.id)
+                _googleLoginState.value = LoginState.Success(user)
+            } else {
+                _googleLoginState.value =
+                    LoginState.Error(context.getString(R.string.login_error_google))
+            }
+        }
     }
 
 
@@ -228,11 +246,7 @@ class UserViewModel(
                 Log.i("UserViewModel", "user obtained correctly")
             }
         }
-        viewModelScope.launch {
-            userSessionRepo.userLangFlow.collectLatest { lang ->
-                if (lang != null) _language.value = lang
-            }
-        }
+
 
         viewModelScope.launch {
             userSessionRepo.userThemeFlow.collectLatest { theme ->
@@ -369,14 +383,11 @@ class UserViewModel(
      * @param origin for the recipes to have for being shown
      */
     fun filterByChipOnFavourites(origin: OriginEnum?) {
-        _filteredFavourites.value = if (origin == null) {
-            _favouriteRecipes.value
-        } else {
-            _favouriteRecipes.value.filter { recipe ->
-                val recipeOriginEnum = OriginMapper.mapOriginToEnum(recipe.origin.country)
-                recipeOriginEnum == origin
-            }
+        _favouriteRecipes.value.filter { recipe ->
+            val recipeOriginEnum = OriginMapper.mapOriginToEnum(recipe.origin.country)
+            recipeOriginEnum == origin
         }
+
     }
 
     //Methods for Modified
@@ -458,35 +469,6 @@ class UserViewModel(
         Log.i("UserViewModel", "Loaded ${allUserRecipes.size} recipes from users subcollection")
     }
 
-
-//Filtering & Search. uses RecipeFiltersEngine
-    /**
-     * Established the filters to use on the FilterRecipes() method
-     */
-    fun setFilters(
-        origin: OriginEnum?,
-        dishType: DishTypeEnum?,
-        difficulty: DificultyEnum?,
-        prepTime: Int?,
-        maxIngredients: Int?,
-        rating: Int?,
-        allergens: List<AllergenEnum>
-    ) {
-        _activeFilter.value = RecipeSearchFilters(
-            origin = origin,
-            dishType = dishType,
-            difficulty = difficulty,
-            prepTime = prepTime,
-            maxIngredients = maxIngredients,
-            rating = rating,
-            allergens = allergens,
-            query = ""
-        )
-
-        _searchQuery.value = ""
-        filterRecipes()
-        Log.i("UserViewModel", "Set filters in search")
-    }
 
     /**
      * Sets the filters from setFilters() and looks for Recipes with them

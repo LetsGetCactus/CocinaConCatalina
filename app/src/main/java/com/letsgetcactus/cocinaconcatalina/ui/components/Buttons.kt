@@ -3,7 +3,6 @@ package com.letsgetcactus.cocinaconcatalina.ui.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,12 +17,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.letsgetcactus.cocinaconcatalina.R
-import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
+import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
 
 /**
  * Button in Red
@@ -78,13 +77,20 @@ fun ButtonSecondary(
 }
 
 /**
- * Button for Google login o registration
+ * Button for Google login o registration using Google Identity Services for Android (GIS-Android)
+ * with Credential Manager and Google Token Credential
+ * @param onNavigate callback for when the signing is successful
+ * @param userViewModel to persist the user's session on DataStoreManagment
  */
 @Composable
 fun ButtonGoogle(
     onNavigate: () -> Unit,
-    modifier: Modifier
+    modifier: Modifier,
+    userViewModel: UserViewModel
 ) {
+
+val context= LocalContext.current
+
     Box(
         modifier = modifier.fillMaxWidth()
     ) {
@@ -93,9 +99,7 @@ fun ButtonGoogle(
             modifier = Modifier
                 .fillMaxWidth()
                 .shadow(8.dp),
-            onClick = {//TODO: save with Google
-                onNavigate()
-            },
+            onClick = { userViewModel.logInWithGoogle(context) },
             shape = MaterialTheme.shapes.small,
             colors = ButtonDefaults.buttonColors(
                 MaterialTheme.colorScheme.surface,
@@ -177,41 +181,5 @@ fun ButtonPair(
             onNavigate = { onNavigateRight()},
             modifier = Modifier.weight(1f)
         )
-    }
-}
-
-
-
-@Preview
-@Composable
-fun PreviewButtons() {
-    CocinaConCatalinaTheme(darkTheme = false) {
-        Column {
-            ButtonMain(
-                buttonText = "Accept",
-                onNavigate = { },
-                modifier = Modifier.fillMaxWidth()
-            )
-            ButtonSecondary(
-                buttonText = "Cancel",
-                onNavigate = {},
-                modifier = Modifier.fillMaxWidth(),
-            )
-            ButtonGoogle(
-                onNavigate = {},
-                modifier = Modifier.fillMaxWidth()
-            )
-            ButtonRound(
-                buttonText = "Recipes",
-                onNavigate = {}
-            )
-            ButtonPair(
-                textRight = "add",
-                textLeft = "delete last",
-                onNavigateRight = {},
-                onNavigateLeft = {}
-            )
-
-        }
     }
 }

@@ -343,9 +343,10 @@ fun RegisterScreen(
 
                 Spacer(Modifier.height(36.dp))
 
-                ButtonGoogle( //TODO
-                    onNavigate = { },
-                    modifier = Modifier.fillMaxWidth()
+                ButtonGoogle(
+                    onNavigate = { NavigationRoutes.HOME_SCREEN },
+                    modifier = Modifier.fillMaxWidth(),
+                    userViewModel = userViewModel
                 )
             }
         }

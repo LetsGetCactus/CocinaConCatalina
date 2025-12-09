@@ -18,11 +18,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,6 +46,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.letsgetcactus.cocinaconcatalina.R
+import com.letsgetcactus.cocinaconcatalina.data.local.LoginState
 import com.letsgetcactus.cocinaconcatalina.ui.NavigationRoutes
 import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonGoogle
 import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonMain
@@ -68,6 +72,20 @@ fun LoginScreen(
     var pass by remember { mutableStateOf("") }
     var emailError by remember { mutableStateOf(false) }
 
+    //Google login state
+    val state by userViewModel.googleLoginState.collectAsState()
+    when (state) {
+        is LoginState.Loading -> CircularProgressIndicator()
+        is LoginState.Success -> {
+            LaunchedEffect(Unit) {
+                navController.navigate(NavigationRoutes.HOME_SCREEN) {
+                    popUpTo(NavigationRoutes.LOGIN_SCREEN) { inclusive = true }
+                }
+            }
+        }
+        is LoginState.Error -> Text((state as LoginState.Error).msg)
+        LoginState.Idle -> {}
+    }
 
     //UI components
     Box(
@@ -215,7 +233,8 @@ fun LoginScreen(
 
                 ButtonGoogle(
                     onNavigate = { navController.navigate(NavigationRoutes.HOME_SCREEN) },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    userViewModel = userViewModel
                 )
 
 

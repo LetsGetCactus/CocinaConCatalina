@@ -121,6 +121,8 @@
     <string name="cook_mode_on">Cook mode on</string>
     <string name="cook_mode_off">Cook mode off</string>
     <string name="cook_mode">Cook mode</string>
+    <string name="default_web_client_id" translatable="false">  166093713399-ghsfctt6da1psiub6agtcguh31s0h3uc.apps.googleusercontent.com</string>
+    <string name="login_error_google">An error occurred while login with Google</string>
 
 
 </resources>
