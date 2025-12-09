@@ -99,7 +99,7 @@ fun ListRecipeHostScreen(
     Box(
         modifier = Modifier
             .fillMaxSize(),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.TopCenter
     ) {
         Column(
             modifier = modifier.widthIn(max = 480.dp),
