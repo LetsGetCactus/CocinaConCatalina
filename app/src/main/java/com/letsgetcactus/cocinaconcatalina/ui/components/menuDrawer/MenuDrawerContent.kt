@@ -52,7 +52,7 @@ fun MenuDrawerComponent(
 ) {
     //To close de drawer when navigatin to other screen
     val scope = rememberCoroutineScope()
-    val context= LocalContext.current
+    val context = LocalContext.current
 
     //Dialogs to pop up when user clicks on delete user
     var deletePopUpDialog by remember { mutableStateOf(false) }
@@ -139,97 +139,99 @@ fun MenuDrawerComponent(
                 icon = R.drawable.exit,
                 label = stringResource(R.string.close_session),
                 onClick = {
-                    userViewModel.logOut()
-                    navController.navigate(NavigationRoutes.LOGIN_SCREEN) {
-                        popUpTo(0)
+                    scope.launch {
+                        userViewModel.logOut(context, navController)
+                        drawerState.close()
                     }
-                    scope.launch { drawerState.close() }
-                },
-
-                )
-
-            DrawerItem(
-                icon = R.drawable.korean_user,
-                label = stringResource(R.string.delete_user_data),
-                onClick = {deletePopUpDialog = true }
-
-            )
-
-
-            HorizontalDivider(
-                modifier = Modifier.padding(top = 16.dp, bottom = 8.dp),
-                color = MaterialTheme.colorScheme.onSecondary
-            )
-            DrawerItem(
-                icon = R.drawable.contact,
-                label = stringResource(R.string.contact),
-                onClick = {
-                    val intent = Intent(Intent.ACTION_SENDTO).apply {
-                        data = "mailto:".toUri()
-                        putExtra(
-                            Intent.EXTRA_EMAIL,
-                            arrayOf(context.getString(R.string.email_info_letsgetcactus))
-                        )
-                        putExtra(
-                            Intent.EXTRA_SUBJECT,
-                            context.getString(R.string.email_subject))
-                        putExtra(
-                            Intent.EXTRA_TEXT,
-                            context.getString(R.string.email_message))
-                    }
-
-                    context.startActivity(intent)
                 }
 
         )
 
-            if(deletePopUpDialog){
-                AlertDialog(
-                    onDismissRequest = { deletePopUpDialog = false },
+        DrawerItem(
+            icon = R.drawable.korean_user,
+            label = stringResource(R.string.delete_user_data),
+            onClick = { deletePopUpDialog = true }
 
-                    title = {
-                        Text(
-                            text = stringResource(R.string.delete_account_title),
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                    },
+        )
 
-                    text = {
-                        Text(
-                            text = stringResource(R.string.delete_account_message),
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    },
 
-                    confirmButton = {
-                        TextButton(
-                            onClick = {
-                                deletePopUpDialog = false
+        HorizontalDivider(
+            modifier = Modifier.padding(top = 16.dp, bottom = 8.dp),
+            color = MaterialTheme.colorScheme.onSecondary
+        )
+        DrawerItem(
+            icon = R.drawable.contact,
+            label = stringResource(R.string.contact),
+            onClick = {
+                val intent = Intent(Intent.ACTION_SENDTO).apply {
+                    data = "mailto:".toUri()
+                    putExtra(
+                        Intent.EXTRA_EMAIL,
+                        arrayOf(context.getString(R.string.email_info_letsgetcactus))
+                    )
+                    putExtra(
+                        Intent.EXTRA_SUBJECT,
+                        context.getString(R.string.email_subject)
+                    )
+                    putExtra(
+                        Intent.EXTRA_TEXT,
+                        context.getString(R.string.email_message)
+                    )
+                }
 
-                                // Deletes user data
-                                userViewModel.deleteUser(
-                                    onSuccess = {
-                                        navController.navigate(NavigationRoutes.LOGIN_SCREEN) {
-                                            popUpTo(0)
-                                        }
-                                        scope.launch { drawerState.close() }
-                                    }
-                                )
-                            }
-                        ) {
-                            Text(stringResource(R.string.continueWith))
-                        }
-                    },
-
-                    dismissButton = {
-                        TextButton(
-                            onClick = { deletePopUpDialog = false }
-                        ) {
-                            Text(stringResource(R.string.cancel))
-                        }
-                    }
-                )
+                context.startActivity(intent)
             }
+
+        )
+
+        if (deletePopUpDialog) {
+            AlertDialog(
+                onDismissRequest = { deletePopUpDialog = false },
+
+                title = {
+                    Text(
+                        text = stringResource(R.string.delete_account_title),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                },
+
+                text = {
+                    Text(
+                        text = stringResource(R.string.delete_account_message),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                },
+
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            deletePopUpDialog = false
+
+                            // Deletes user data
+                            userViewModel.deleteUser(
+                                onSuccess = {
+                                    navController.navigate(NavigationRoutes.LOGIN_SCREEN) {
+                                        popUpTo(0)
+                                    }
+                                    scope.launch { drawerState.close() }
+                                },
+                                context
+                            )
+                        }
+                    ) {
+                        Text(stringResource(R.string.continueWith))
+                    }
+                },
+
+                dismissButton = {
+                    TextButton(
+                        onClick = { deletePopUpDialog = false }
+                    ) {
+                        Text(stringResource(R.string.cancel))
+                    }
+                }
+            )
         }
+    }
 }
 }

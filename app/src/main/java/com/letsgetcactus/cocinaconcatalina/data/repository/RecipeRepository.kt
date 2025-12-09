@@ -34,9 +34,7 @@ object RecipeRepository {
      */
     suspend fun addRecipeToDB(recipe: Recipe, img: Uri?): Boolean {
         val urlFromStorage = FirebaseConnection.imgToFirestore(img)
-        Log.i("recipeRepository", "Got url from storage: $urlFromStorage")
         if (urlFromStorage != null) recipe.img = urlFromStorage
-        Log.i("recipeRepository", "Sending prepared recipe to firebase $recipe")
 
         FirebaseConnection.uploadRecipeToDb(recipe)
         return true

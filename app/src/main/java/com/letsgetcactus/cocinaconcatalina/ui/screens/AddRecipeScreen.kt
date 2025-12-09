@@ -498,7 +498,7 @@ fun AddRecipeScreen(
                         isLoading=true
                         try{
                             recipeViewModel.addRecipe(newRecipe,img)
-                            onNavigate(NavigationRoutes.HOME_SCREEN) //NAvegas a la receta??
+                            onNavigate(NavigationRoutes.HOME_SCREEN)
                             Toast.makeText(context, context.getString(R.string.recipe_saved), Toast.LENGTH_SHORT).show()
                         }catch(e: Exception) {
                             Toast.makeText(context, "${context.getString(R.string.recipe_saved_error)}: $e", Toast.LENGTH_SHORT).show()

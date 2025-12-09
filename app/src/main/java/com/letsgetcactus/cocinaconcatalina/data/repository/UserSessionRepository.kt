@@ -13,7 +13,6 @@ class UserSessionRepository (
 ){
     //DataStore user data flows
     val userIdFlow: Flow<String?> = dataStore.userIdFlow
-    val userLangFlow: Flow<String?> = dataStore.userLangFlow
     val userThemeFlow: Flow<String?> = dataStore.userThemeFlow
 
     /**
@@ -23,12 +22,6 @@ class UserSessionRepository (
         dataStore.saveUserId(id)
     }
 
-//    /**
-//     * Saves the data form the language of the app on the user's session and stores it into DataStoreManagement
-//     */
-//    suspend fun saveLangData(language: String){
-//        dataStore.saveUserLang(language)
-//    }
 
     /**
      * Saves the user's preferred theme into DataStoreManagement

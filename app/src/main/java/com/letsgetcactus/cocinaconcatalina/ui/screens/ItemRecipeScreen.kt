@@ -1,7 +1,6 @@
 package com.letsgetcactus.cocinaconcatalina.ui.screens
 
 import android.app.Activity
-import android.util.Log
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.compose.LocalActivity
@@ -52,7 +51,6 @@ import com.letsgetcactus.cocinaconcatalina.ui.components.RecipeRatingSelector
 import com.letsgetcactus.cocinaconcatalina.viewmodel.RecipeViewModel
 import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
-import java.util.Locale
 
 /**
  * Recipe's detailed Screen
@@ -88,7 +86,7 @@ fun ItemRecipeScreen(
         //To change favs button whether a recipe is in favs or not
         val favRecepies by userViewModel.favouriteRecipe.collectAsState()
         val isRecipeFav = favRecepies.any { it.id == currentRecipe.id }
-        Log.i("ItemRecipeScreen", "Existen ${favRecepies.size} recetas favoritas")
+
 
         //Flag
         val originEnum = OriginMapper.mapOriginToEnum(currentRecipe.origin.country)
@@ -97,11 +95,6 @@ fun ItemRecipeScreen(
 
 val context= LocalContext.current
         val scope = rememberCoroutineScope()
-
-        Log.i(
-            "ItemRecipeScreen",
-            "Entrando en la pantalla para mostrar ${currentRecipe.title}, in ${Locale.getDefault().language}"
-        )
 
         Box(
             modifier= Modifier
@@ -187,10 +180,7 @@ val context= LocalContext.current
                                     recipeViewModel.selectRecipe(recipeSelected)
 
                                     onNavigate(NavigationRoutes.MODIFIED_SCREEN)
-                                    Log.i(
-                                        "ItemRecipeScreen",
-                                        "To Navigate into Modify for $recipeSelected"
-                                    )
+
                                 }
                             ) {
                                 Image(
@@ -352,11 +342,7 @@ val context= LocalContext.current
 
                                     val userId = userViewModel.currentUser.value?.id
                                     val isModified = currentRecipe.title.trim().contains("(Mod)")
-                                    Log.i("ItemRecipeScreen",
-                                        "UserId=${userViewModel.currentUser.value?.id}, " +
-                                                "Modified list=${userViewModel.currentUser.value?.modifiedRecipes}, " +
-                                                "Checking ID=${currentRecipe.id}"
-                                    )
+
                                     if (isModified && userId!= null) {
 
                                         userViewModel.rateRecipe(

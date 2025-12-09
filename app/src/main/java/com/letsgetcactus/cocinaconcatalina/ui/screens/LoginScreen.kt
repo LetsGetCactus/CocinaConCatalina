@@ -1,6 +1,7 @@
 package com.letsgetcactus.cocinaconcatalina.ui.screens
 
-import android.util.Log
+import android.graphics.Paint
+import android.text.Layout
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -35,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
@@ -75,7 +77,7 @@ fun LoginScreen(
     //Google login state
     val state by userViewModel.googleLoginState.collectAsState()
     when (state) {
-        is LoginState.Loading -> CircularProgressIndicator()
+        is LoginState.Loading -> CenteredLoading()
         is LoginState.Success -> {
             LaunchedEffect(Unit) {
                 navController.navigate(NavigationRoutes.HOME_SCREEN) {
@@ -260,7 +262,7 @@ fun LoginScreen(
                     style = MaterialTheme.typography.labelSmall,
                     modifier = Modifier.clickable {
                         scope.launch {
-                            Log.i("loginScreen", " Requested reset pass ")
+
                             if (email.isEmpty()) {
                                 Toast.makeText(
                                     context,
@@ -307,5 +309,19 @@ fun LoginScreen(
             )
 
         }
+    }
+}
+
+@Composable
+fun CenteredLoading(){
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.LightGray.copy(alpha = 0.3f)),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator(
+            color = MaterialTheme.colorScheme.primary
+        )
     }
 }

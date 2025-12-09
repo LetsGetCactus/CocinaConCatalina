@@ -74,7 +74,6 @@ object FirebaseConnection {
             val listRecipes = dto.map { it.toRecipe() } // RecipeMapper
 
 
-            Log.i("FirebaseConnection", "Got ${listRecipes.size} recipes ")
             listRecipes
 
         } catch (e: Exception) {
@@ -98,13 +97,9 @@ object FirebaseConnection {
 
                 val imgUrl = storage.downloadUrl.await()
 
-                Log.i(
-                    "FirebaseConnection",
-                    "Uploading recipe image to obtain its url (String) on Storage"
-                )
                 return imgUrl.toString()
             } else {
-                Log.i("FirebaseConnection", "Image is null. Coul not upload")
+
                 return null
             }
         } catch (e: Exception) {
@@ -122,11 +117,9 @@ object FirebaseConnection {
         return try {
             val uid = FirebaseAuth.getInstance().currentUser?.uid
             if (uid == null) {
-                Log.e("FirebaseConnection", "User not logged in")
                 return false
             }
 
-            Log.i("FirebaseConnection", "Uploading recipe directly as $uid")
 
             FirebaseFirestore.getInstance()
                 .collection("asianOriginalRecipes")
@@ -134,7 +127,7 @@ object FirebaseConnection {
                 .set(recipe.toMap())
                 .await()
 
-            Log.i("FirebaseConnection", "Recipe uploaded without cloud functions")
+
             true
 
         } catch (e: Exception) {
@@ -154,14 +147,14 @@ object FirebaseConnection {
      */
     suspend fun getUserById(userId: String): User? {
         return try {
-            Log.i("FirebaseConnection", "Intentando obtener usuario con ID: $userId")
+
             val result = Firebase.firestore.collection("users")
                 .document(userId)
                 .get()
                 .await()
-            Log.i("FirebaseConnection", "Documento obtenido: ${result.exists()}")
+
             val user = result.toObject(User::class.java)
-            Log.i("FirebaseConnection", "Usuario parseado: $user")
+
             user
         } catch (e: Exception) {
             Log.e("FirebaseConnection", "Could not fetch user: $userId", e)
@@ -180,7 +173,7 @@ object FirebaseConnection {
                 .set(user)
                 .await()
 
-            Log.i("FirebaseConnection", "User saved in DB")
+
         } catch (e: Exception) {
             Log.e("FirebaseConnection", " Could not save user ${user.id} into DB", e)
         }
@@ -273,8 +266,6 @@ object FirebaseConnection {
     suspend fun addModifiedRecipe(userId: String, recipe: Recipe) {
         try {
 
-            Log.i("FirebaseConnection", "receta a subir $recipe")
-
             Firebase.firestore.collection("users")
                 .document(userId)
                 .collection("modifiedRecipes")
@@ -282,7 +273,7 @@ object FirebaseConnection {
                 .set(recipe.toMap())
                 .await()
 
-            Log.i("FirebaseConnection", "Recipe:${recipe.toMap()} correctly saved for user")
+
         } catch (e: Exception) {
             Log.e("FirebaseConnection", "Error saving modified recipe: ${recipe.title}", e)
         }
@@ -305,7 +296,7 @@ object FirebaseConnection {
                 .delete()
                 .await()
 
-            Log.i("FirebaseConnection", "Recipe ${recipeId}deleted from user's modified")
+
         } catch (e: Exception) {
             Log.e("FirebaseConnection", "Could no delete recipe $recipeId from user's modified", e)
 
@@ -327,10 +318,6 @@ object FirebaseConnection {
                 .get()
                 .await()
 
-            Log.i(
-                "FirebaseConnect8ion",
-                "Fetched ${result.size()} favourites recipes (String ID)"
-            )
             result.toObjects(RecipeDto::class.java).map { it.toRecipe() }
 
 
@@ -353,7 +340,7 @@ object FirebaseConnection {
                 .document(recipeId)
 
             result.set(mapOf("id" to recipeId)).await()
-            Log.i("FirebaseConnection", "Added a recipe to users favs")
+
         } catch (e: Exception) {
             Log.i("FirebaseConnection", "Coul not add a recipe to users favs", e)
         }
@@ -372,7 +359,7 @@ object FirebaseConnection {
                 .document(recipeId)
                 .delete()
                 .await()
-            Log.i("FirebaseConnection", "Removed recipe $recipeId from user's favs")
+
         } catch (e: Exception) {
             Log.e("FirebaseConnection", "Error removing favourite $recipeId on user $userId", e)
         }
@@ -406,13 +393,6 @@ object FirebaseConnection {
                 val totalRating = snapshot.getLong("totalRating")?.toInt() ?: 0
                 val currentCount = snapshot.getLong("ratingCount")?.toInt() ?: 0
 
-                Log.i(
-                    "FirebaseConnection",
-                    "Puntuación anterior:\n" +
-                            "totalRating = $totalRating\n" +
-                            "currentCount = $currentCount\n" +
-                            "totalAvg = ${if (currentCount > 0) totalRating.toDouble() / currentCount else 0.0}"
-                )
 
                 val newRatingSum = totalRating + rating
                 val newCount = currentCount + 1
@@ -420,13 +400,7 @@ object FirebaseConnection {
                     .setScale(2, RoundingMode.HALF_UP)
                     .toDouble()
 
-                Log.i(
-                    "FirebaseConnection",
-                    "Puntuación nueva:\n" +
-                            "newRatingSum = $newRatingSum\n" +
-                            "newCount = $newCount\n" +
-                            "newAvg = $newAvg"
-                )
+
 
                 transaction.update(
                     recipeToRate, mapOf(

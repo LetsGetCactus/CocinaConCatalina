@@ -2,6 +2,7 @@ package com.letsgetcactus.cocinaconcatalina.data.repository
 
 import android.content.Context
 import android.util.Log
+import androidx.credentials.ClearCredentialStateRequest
 import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
@@ -104,8 +105,17 @@ object UserRepository {
     /**
      * Logout method for the User to sign out from it's session
      */
-    fun logOut() {
+    suspend fun logOut(context: Context) {
         firebaseAuth.signOut()
+        try {
+            val credentialManager = CredentialManager.create(context)
+            val clearRequest = ClearCredentialStateRequest()
+            credentialManager.clearCredentialState(clearRequest)
+
+
+        } catch (e: Exception) {
+            Log.e("UserRepository", "Error clearing Google credentials", e)
+        }
 
     }
 
@@ -116,7 +126,7 @@ object UserRepository {
      */
     suspend fun handleForgetPassword(email: String): Boolean{
         val result= FirebaseConnection.getUserForgottenPassword(email)
-        Log.i("UserRepository"," Requested reset pass to URepo , status= $result")
+
         return result
     }
 
@@ -166,10 +176,10 @@ object UserRepository {
     fun getCurrentFirebaseUser(): FirebaseUser? {
         val user = firebaseAuth.currentUser
         if (user != null) {
-            Log.i("UserRepository", "Obtained user from Firebase: $user")
+
 
             return user
-        } else Log.i("UserRepository", "Could not load FirebaseUser")
+        }
         return null
     }
 
@@ -179,8 +189,7 @@ object UserRepository {
      */
     suspend fun deleteUserCompletely(userId: String): Boolean{
         return try {
-            val deleted= FirebaseConnection.deleteUserAccount(userId)
-            Log.i("UserRepository","Deleted all user's data $deleted for user $userId")
+            FirebaseConnection.deleteUserAccount(userId)
 
             true
         }catch (e: Exception){
@@ -197,7 +206,7 @@ object UserRepository {
      */
     suspend fun addRecipeToFavourites(userId: String, recipeId: String) {
         FirebaseConnection.addRecipeToUsersFavorites(userId, recipeId)
-        Log.i("UserRepository", "Added $recipeId to favs on user $userId")
+
     }
 
 
@@ -207,7 +216,7 @@ object UserRepository {
      */
     suspend fun removeRecipeFromFavourites(userId: String, recipeId: String) {
         FirebaseConnection.removeUsersFavouriteRecipe(userId, recipeId)
-        Log.i("UserRepository", "Removed ${recipeId}from favs on user $userId ")
+
     }
 
 
@@ -218,7 +227,7 @@ object UserRepository {
      */
     suspend fun getAllFavouriteRecipeIds(userId: String): List<Recipe> {
         val favs = FirebaseConnection.getUserFavouriteRecipes(userId).map { it.id }
-        Log.i("UserRepository", "Getting ${favs.size} recipes from user $userId")
+
 
         val favsToObjectRecipe = favs.mapNotNull { recipeId ->
             FirebaseConnection.getRecipeById(userId, recipeId)
@@ -242,7 +251,7 @@ object UserRepository {
         recipe.title = modTitle
 
         FirebaseConnection.addModifiedRecipe(userId, recipe)
-        Log.i("UserRepository", "Saved ${recipe.title} on user: $userId")
+
     }
 
 
@@ -253,7 +262,7 @@ object UserRepository {
      */
     suspend fun getAllModifiedRecipes(userId: String): List<Recipe> {
         val mods = FirebaseConnection.getUserModifiedRecipes(userId)
-        Log.i("UserRepository", "Loaded ${mods.size} modified recipes for $userId")
+
         return mods
     }
 

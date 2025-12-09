@@ -1,7 +1,6 @@
 package com.letsgetcactus.cocinaconcatalina.viewmodel
 
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.letsgetcactus.cocinaconcatalina.data.repository.RecipeRepository
@@ -61,10 +60,6 @@ class RecipeViewModel(
 
             if (result.isNotEmpty()) filterRecipes()
 
-            Log.i(
-                "RecipeViewModel",
-                "Obtained ${result.size}} recipes"
-            )
         }
     }
 
@@ -76,7 +71,7 @@ class RecipeViewModel(
         val recipe = _asianOgRecipes.value.find { it.id == recipe.id }
         recipe?.let {
             _selectedRecipe.value = it
-            Log.i("RecipeViewModel", "Selected recipe: ${it.title}")
+
         }
     }
 
@@ -113,16 +108,13 @@ class RecipeViewModel(
      */
     private fun filterRecipes() {
 
-        Log.i("RecipeViewModel", "Filtering with: ${_activeFilter.value}")
         val filteredResultRecipes = RecipeFiltersEngine.applyFilters(
             recipes = _asianOgRecipes.value,
             filter = _activeFilter.value
         ).sortedBy { it.title.lowercase() }
 
         _filteredRecipes.value = filteredResultRecipes
-        Log.i(
-            "RecipeViewModel", "Filtered result count: ${filteredResultRecipes.size}"
-        )
+
     }
 
     /**
@@ -157,7 +149,7 @@ class RecipeViewModel(
      */
     suspend fun addRecipe(recipe: Recipe, img: Uri?) {
         recipeRepository.addRecipeToDB(recipe, img)
-        Log.i("REcipeViewModel", "Sent recipe $recipe to Repo")
+
     }
 
     /**

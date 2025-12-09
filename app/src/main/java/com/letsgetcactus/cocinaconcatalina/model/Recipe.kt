@@ -10,9 +10,9 @@ import com.letsgetcactus.cocinaconcatalina.model.enum.DificultyEnum
 data class Recipe(
     val id: String,
     var title: String,
-    val avgRating: Double = 0.0,
-    val totalRating: Int = 0,
-    val ratingCount: Int = 0,
+    val avgRating: Double ,
+    val totalRating: Int ,
+    val ratingCount: Int ,
     val steps: List<String>,
     val ingredientList: List<Ingredient>,
     val allergenList: List<Allergen>,
