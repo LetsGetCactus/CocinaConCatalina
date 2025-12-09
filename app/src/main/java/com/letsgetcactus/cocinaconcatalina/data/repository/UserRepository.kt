@@ -1,10 +1,17 @@
 package com.letsgetcactus.cocinaconcatalina.data.repository
 
+import android.content.Context
 import android.util.Log
+import androidx.credentials.CredentialManager
+import androidx.credentials.GetCredentialRequest
+import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
+import com.letsgetcactus.cocinaconcatalina.R
 import com.letsgetcactus.cocinaconcatalina.data.FirebaseConnection
 import com.letsgetcactus.cocinaconcatalina.model.Recipe
 import com.letsgetcactus.cocinaconcatalina.model.User
@@ -38,6 +45,58 @@ object UserRepository {
 
         } catch (e: Exception) {
             Log.e("UserRepository", "Login error", e)
+            null
+        }
+    }
+
+    /**
+     * To log/register with Google Credentials
+     */
+    suspend fun loginWithGoogle(context: Context): User?{
+        return try {
+            val credentialManager = CredentialManager.create(context)
+
+            val googleIdOption= GetSignInWithGoogleOption.Builder(
+                context.getString(R.string.default_web_client_id)
+            ).build()
+
+
+            val request= GetCredentialRequest.Builder().addCredentialOption(googleIdOption).build()
+
+            val respone= credentialManager.getCredential(
+                request = request,
+                context= context
+            )
+            val googleCredential = GoogleIdTokenCredential.createFrom(respone.credential.data)
+            val idToken = googleCredential.idToken
+
+            val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
+            val authResult = firebaseAuth.signInWithCredential(firebaseCredential).await()
+
+            val firebaseUser= authResult.user ?: return null
+            val userId= firebaseUser.uid
+
+            val user= getUserById(userId)
+
+            if(user != null){
+                user
+            }else{
+                val newUser= User(
+                    id= userId,
+                    name= firebaseUser.displayName ?: "unknown",
+                    email = firebaseUser.email ?: "unknown",
+                    registeredInDate = Instant.now().toString(),
+                    isActive = true,
+                    role = "USER",
+                    favouritesRecipes = emptyList(),
+                    modifiedRecipes = emptyList()
+                )
+                FirebaseConnection.saveUser(newUser)
+                newUser
+            }
+
+        }catch (e: Exception){
+            Log.e("UserRepository","Google login error",e)
             null
         }
     }

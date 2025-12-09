@@ -47,7 +47,6 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
@@ -67,12 +66,9 @@ dependencies {
 
 
     // Jetpack Compose
-    implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom.v20250901))
+    implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.navigation.compose)
-    implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.tooling.preview.v193)
-    implementation(libs.androidx.compose.material3.v131)
     implementation(libs.androidx.compose.material.icons.extended)
     debugImplementation(libs.androidx.compose.ui.tooling.v193)
     implementation("androidx.compose.material:material-icons-extended")
@@ -104,14 +100,16 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore")
     implementation(libs.firebase.functions)
     implementation(libs.firebase.analytics)
-    implementation("com.google.firebase:firebase-storage")
+
+
+    //Google
+    implementation("androidx.credentials:credentials:1.3.0")
+    implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
+    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.0")
 
 
     //Coroutines
     implementation(libs.kotlinx.coroutines.play.services)
-
-    //Google ML Kit - Translation API
-    implementation(libs.translate)
 
 }
 
