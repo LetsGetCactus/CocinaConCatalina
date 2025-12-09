@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
@@ -49,6 +50,9 @@ import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonSecondary
 import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
 
+/**
+ * Screen to log into the app
+ */
 @Composable
 fun LoginScreen(
     navController: NavController,
@@ -66,204 +70,223 @@ fun LoginScreen(
 
 
     //UI components
-    Column(
+    Box(
         modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .padding(48.dp, 40.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-
-
+            .fillMaxSize(),
+        contentAlignment = Alignment.Center
     ) {
-        Image(
-            painter = painterResource(R.drawable.icon),
-            contentDescription = stringResource(R.string.ccc_icon),
-            contentScale = ContentScale.Fit,
+        Column(
             modifier = Modifier
-                .size(160.dp)
-                .padding(16.dp),
+                .background(MaterialTheme.colorScheme.background)
+                .widthIn(max=480.dp)
+                .padding(48.dp, 40.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
 
-            )
-
-        Text(
-            text = stringResource(R.string.welcome),
-            modifier = Modifier
-                .fillMaxWidth(),
-            color = MaterialTheme.colorScheme.tertiary,
-            style = MaterialTheme.typography.displayLarge
-        )
-
-        Spacer(
-            modifier = Modifier.size(24.dp)
-        )
-        // Email
-        TextField(
-            value = email,
-            onValueChange = {
-                email = it
-                emailError = !isValidEmail(it) && it.isNotEmpty()
-            },
-            label = {
-                Text(
-                    text = stringResource(R.string.email),
-                    style = MaterialTheme.typography.labelSmall,
-                )
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 8.dp)
-                .shadow(8.dp),
-            isError = emailError,
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.surface,
-                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                focusedTextColor = MaterialTheme.colorScheme.onSurface,
-                unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
-            ),
-            shape = MaterialTheme.shapes.small,
-            textStyle = MaterialTheme.typography.bodyMedium,
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-            keyboardActions = KeyboardActions(onNext = {
-                focusManager.moveFocus(FocusDirection.Down)
-            }),
-        )
-
-
-        // Password
-        TextField(
-            value = pass,
-            onValueChange = { pass = it },
-            label = {
-                Text(
-                    text = stringResource(R.string.pass),
-                    style = MaterialTheme.typography.labelSmall,
-                )
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .shadow(8.dp)
-                .padding(bottom = 8.dp),
-            visualTransformation = PasswordVisualTransformation(),
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.surface,
-                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                focusedTextColor = MaterialTheme.colorScheme.onSurface,
-                unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
-            ),
-            shape = MaterialTheme.shapes.small,
-            textStyle = MaterialTheme.typography.bodyMedium,
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-            keyboardActions = KeyboardActions(onDone = {
-                focusManager.clearFocus()
-            }),
-        )
-
-        Spacer(
-            modifier = Modifier.size(16.dp)
-        )
-
-        ButtonMain(
-            buttonText = stringResource(R.string.login),
-            onNavigate = {
-                scope.launch {
-                    if (email.isBlank() || pass.isBlank()) {
-                        Toast.makeText(context, R.string.complete_all, Toast.LENGTH_SHORT).show()
-                    } else if (emailError) {
-                        Toast.makeText(context, R.string.emailError, Toast.LENGTH_SHORT).show()
-                    } else {
-                        val success = userViewModel.login(email, pass)
-                        if (success) {
-                            Toast.makeText(context,"${context.getString(R.string.welcome)} $userViewModel.currentUser.value.name",Toast.LENGTH_SHORT ).show()
-                            navController.navigate(NavigationRoutes.HOME_SCREEN) {
-                                popUpTo(NavigationRoutes.LOGIN_SCREEN) { inclusive = true }
-                            }
-                        } else {
-                            Toast.makeText(context, R.string.email_pass_incorrect, Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                }
-            },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.size(8.dp))
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
 
         ) {
+            Image(
+                painter = painterResource(R.drawable.icon),
+                contentDescription = stringResource(R.string.ccc_icon),
+                contentScale = ContentScale.Fit,
+                modifier = Modifier
+                    .size(160.dp)
+                    .padding(16.dp),
 
-            ButtonGoogle(
-                onNavigate = { navController.navigate(NavigationRoutes.HOME_SCREEN) },
+                )
+
+            Text(
+                text = stringResource(R.string.welcome),
+                modifier = Modifier
+                    .fillMaxWidth(),
+                color = MaterialTheme.colorScheme.tertiary,
+                style = MaterialTheme.typography.displayLarge
+            )
+
+            Spacer(
+                modifier = Modifier.size(24.dp)
+            )
+            // Email
+            TextField(
+                value = email,
+                onValueChange = {
+                    email = it
+                    emailError = !isValidEmail(it) && it.isNotEmpty()
+                },
+                label = {
+                    Text(
+                        text = stringResource(R.string.email),
+                        style = MaterialTheme.typography.labelSmall,
+                    )
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp)
+                    .shadow(8.dp),
+                isError = emailError,
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                ),
+                shape = MaterialTheme.shapes.small,
+                textStyle = MaterialTheme.typography.bodyMedium,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                keyboardActions = KeyboardActions(onNext = {
+                    focusManager.moveFocus(FocusDirection.Down)
+                }),
+            )
+
+
+            // Password
+            TextField(
+                value = pass,
+                onValueChange = { pass = it },
+                label = {
+                    Text(
+                        text = stringResource(R.string.pass),
+                        style = MaterialTheme.typography.labelSmall,
+                    )
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(8.dp)
+                    .padding(bottom = 8.dp),
+                visualTransformation = PasswordVisualTransformation(),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                ),
+                shape = MaterialTheme.shapes.small,
+                textStyle = MaterialTheme.typography.bodyMedium,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(onDone = {
+                    focusManager.clearFocus()
+                }),
+            )
+
+            Spacer(
+                modifier = Modifier.size(16.dp)
+            )
+
+            ButtonMain(
+                buttonText = stringResource(R.string.login),
+                onNavigate = {
+                    scope.launch {
+                        if (email.isBlank() || pass.isBlank()) {
+                            Toast.makeText(context, R.string.complete_all, Toast.LENGTH_SHORT)
+                                .show()
+                        } else if (emailError) {
+                            Toast.makeText(context, R.string.emailError, Toast.LENGTH_SHORT).show()
+                        } else {
+                            val success = userViewModel.login(email, pass)
+                            if (success) {
+                                Toast.makeText(
+                                    context,
+                                    "${context.getString(R.string.welcome)} $userViewModel.currentUser.value.name",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                navController.navigate(NavigationRoutes.HOME_SCREEN) {
+                                    popUpTo(NavigationRoutes.LOGIN_SCREEN) { inclusive = true }
+                                }
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    R.string.email_pass_incorrect,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    }
+                },
                 modifier = Modifier.fillMaxWidth()
             )
 
+            Spacer(modifier = Modifier.size(8.dp))
 
-            Image(
-                painter = painterResource(R.drawable.google),
-                contentDescription = stringResource(R.string.googleImg),
+            Box(
                 modifier = Modifier
-                    .align(Alignment.CenterStart)
-                    .padding(start = 8.dp)
-                    .size(24.dp),
-                contentScale = ContentScale.Fit
-            )
-        }
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.End
-        ) {
-            Spacer(Modifier.size(8.dp))
-            Text(
-                text = stringResource(R.string.forgot_pass),
-                textAlign = TextAlign.End,
-                color = MaterialTheme.colorScheme.tertiary,
-                style = MaterialTheme.typography.labelSmall,
-                modifier = Modifier.clickable {
-                    scope.launch {
-                        Log.i("loginScreen"," Requested reset pass ")
-                        if(email.isEmpty()){
-                            Toast.makeText(context, context.getString(R.string.emailError),Toast.LENGTH_SHORT).show()
-                            return@launch
-                        }
-                        userViewModel.forgotPassword(email, context)
-                    }
-                }
+                    .fillMaxWidth()
+
+            ) {
+
+                ButtonGoogle(
+                    onNavigate = { navController.navigate(NavigationRoutes.HOME_SCREEN) },
+                    modifier = Modifier.fillMaxWidth()
                 )
 
-        }
-        Spacer(Modifier.height(40.dp))
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Start
-        ) {
+                Image(
+                    painter = painterResource(R.drawable.google),
+                    contentDescription = stringResource(R.string.googleImg),
+                    modifier = Modifier
+                        .align(Alignment.CenterStart)
+                        .padding(start = 8.dp)
+                        .size(24.dp),
+                    contentScale = ContentScale.Fit
+                )
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
+            ) {
+                Spacer(Modifier.size(8.dp))
+                Text(
+                    text = stringResource(R.string.forgot_pass),
+                    textAlign = TextAlign.End,
+                    color = MaterialTheme.colorScheme.tertiary,
+                    style = MaterialTheme.typography.labelSmall,
+                    modifier = Modifier.clickable {
+                        scope.launch {
+                            Log.i("loginScreen", " Requested reset pass ")
+                            if (email.isEmpty()) {
+                                Toast.makeText(
+                                    context,
+                                    context.getString(R.string.emailError),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                return@launch
+                            }
+                            userViewModel.forgotPassword(email, context)
+                        }
+                    }
+                )
+
+            }
+            Spacer(Modifier.height(40.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Start
+            ) {
+                Text(
+                    text = stringResource(R.string.new_here),
+                    color = MaterialTheme.colorScheme.tertiary,
+                    style = MaterialTheme.typography.labelSmall,
+                    textAlign = TextAlign.Start
+                )
+            }
+            ButtonSecondary(
+                buttonText = stringResource(R.string.register),
+                onNavigate = { navController.navigate(NavigationRoutes.REGISTER_SCREEN) },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.size(40.dp))
+
             Text(
-                text = stringResource(R.string.new_here),
+                text = stringResource(R.string.terms),
                 color = MaterialTheme.colorScheme.tertiary,
                 style = MaterialTheme.typography.labelSmall,
-                textAlign = TextAlign.Start
+                modifier = Modifier.clickable(
+                    true,
+                    onClick = { navController.navigate(NavigationRoutes.TERMS_CONDITIONS_SCREEN) }
+                )
             )
+
         }
-        ButtonSecondary(
-            buttonText = stringResource(R.string.register),
-            onNavigate = { navController.navigate(NavigationRoutes.REGISTER_SCREEN) },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.size(40.dp))
-
-        Text(
-            text = stringResource(R.string.terms),
-            color = MaterialTheme.colorScheme.tertiary,
-            style = MaterialTheme.typography.labelSmall,
-            modifier = Modifier.clickable(
-                true,
-                onClick = { navController.navigate(NavigationRoutes.TERMS_CONDITIONS_SCREEN) }
-            )
-        )
-
     }
 }

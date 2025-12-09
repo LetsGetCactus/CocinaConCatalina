@@ -8,7 +8,10 @@ import android.os.Build
 import android.provider.Settings
 import android.util.Log
 
-
+/**
+ * This object programs a notification/alarm by AlarmManager
+ * that will use the BroadcastReceiver (TimerReceiver) after the time of the Timer finishes
+ */
 object TimerScheduler {
 
 
@@ -32,8 +35,10 @@ object TimerScheduler {
             }
         }
 
+        //Exact time for the Scheduler to notify
         val triggerTime = System.currentTimeMillis() + minutes * 60 * 1000L
 
+        //Intent that will receive the timerReciver when the time hits
         val intent = Intent(context, TimerReceiver::class.java)
         val pendingIntent = PendingIntent.getBroadcast(
             context,
@@ -43,6 +48,7 @@ object TimerScheduler {
         )
 
         try {
+            //This should launch the alarm even if the phone is suspended
             alarmManager.setExactAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,
                 triggerTime,

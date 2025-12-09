@@ -10,10 +10,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
@@ -36,7 +38,9 @@ import com.letsgetcactus.cocinaconcatalina.ui.components.RecipeRating
 import com.letsgetcactus.cocinaconcatalina.viewmodel.RecipeViewModel
 import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
 
-
+/**
+ * List of Recipe's always shown sorted by title
+ */
 @Composable
 fun ListRecipeHostScreen(
     modifier: Modifier = Modifier,
@@ -51,15 +55,17 @@ fun ListRecipeHostScreen(
     val searchQuery by recipeViewModel.searchQuery.collectAsState()
     val userSearchQuery by userViewModel.searchQuery.collectAsState()
 
-    val asianOgRecipesFiltered = if (searchQuery.isNotBlank()) recipeViewModel.filteredRecipes.collectAsState().value else recipeViewModel.asianOgRecipes.collectAsState().value
-    val modifiedRecipesFiltered = if (userSearchQuery.isNotBlank()) userViewModel.filteredUserRecipes.collectAsState().value else userViewModel.modifiedRecipes.collectAsState().value
+    val asianOgRecipesFiltered =
+        if (searchQuery.isNotBlank()) recipeViewModel.filteredRecipes.collectAsState().value else recipeViewModel.asianOgRecipes.collectAsState().value
+    val modifiedRecipesFiltered =
+        if (userSearchQuery.isNotBlank()) userViewModel.filteredUserRecipes.collectAsState().value else userViewModel.modifiedRecipes.collectAsState().value
     val allFiltered = asianOgRecipesFiltered + modifiedRecipesFiltered
 
     //When to be shown (by source demand)
     val recipesToShow: List<Recipe> =
         when (recipeSource) {
             Source.ALL -> {
-                allFiltered.sortedBy { it.title.lowercase()}
+                allFiltered.sortedBy { it.title.lowercase() }
             }
 
             Source.ASIAN_OG -> {
@@ -99,22 +105,27 @@ fun ListRecipeHostScreen(
     )
 
 
-
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally
+    Box(
+        modifier = Modifier
+            .fillMaxSize(),
+        contentAlignment = Alignment.Center
     ) {
-        LegendComposable()
-        ListRecipeContent(
-            onNavigate = { selected ->
-                Log.i("ListRecipeHostScreen", "Clicked recipe: ${selected.title}")
-                recipeViewModel.selectRecipe(selected)
-                userViewModel.selectRecipe(selected)
-                onNavigate()
+        Column(
+            modifier = modifier.widthIn(max = 480.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            LegendComposable()
+            ListRecipeContent(
+                onNavigate = { selected ->
+                    Log.i("ListRecipeHostScreen", "Clicked recipe: ${selected.title}")
+                    recipeViewModel.selectRecipe(selected)
+                    userViewModel.selectRecipe(selected)
+                    onNavigate()
 
-            },
-            recipes = recipesToShow
-        )
+                },
+                recipes = recipesToShow
+            )
+        }
     }
 }
 
@@ -196,7 +207,6 @@ fun LegendComposable() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-
             .padding(16.dp),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
@@ -204,7 +214,7 @@ fun LegendComposable() {
         DificultyEnum.entries.forEach { difficulty ->
             ImageAndTextComponent(
                 textToShow = difficulty.enumId,
-                colorText = if(difficulty.color == Color.Black && isSystemInDarkTheme())  Color.White else difficulty.color,
+                colorText = if (difficulty.color == Color.Black && isSystemInDarkTheme()) Color.White else difficulty.color,
                 textStyle = MaterialTheme.typography.labelSmall,
                 imgToShow = difficulty.icon,
                 imgDescription = difficulty.enumId,

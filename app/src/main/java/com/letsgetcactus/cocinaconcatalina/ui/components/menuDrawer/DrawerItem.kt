@@ -16,6 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 
+/**
+ * Each clickable Item on the MenuDrawer shown on the TopBar
+ */
 @Composable
 fun DrawerItem(
     icon: Int,
@@ -45,6 +48,9 @@ fun DrawerItem(
     }
 }
 
+/**
+ * Clickable item for the menu drawer that contains a switch to change the theme (light/dark)
+ */
 @Composable
 fun DrawerSwitchItem(
     icon: Int,

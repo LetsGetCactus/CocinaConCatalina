@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.MaterialTheme
@@ -53,6 +54,13 @@ import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
 import java.util.Locale
 
+/**
+ * Recipe's detailed Screen
+ * Here the user can:
+ * - Read and follow a recipe +  use cook mode to prevent the screen from suspend
+ * - Add Recipe to Favourites
+ * - Go to ModifiedRecipeScreen
+ */
 @Composable
 fun ItemRecipeScreen(
     modifier: Modifier = Modifier,
@@ -64,7 +72,7 @@ fun ItemRecipeScreen(
     ) {
     //Cook Mode - Screen does not suspend while activated
     var cookMode by remember { mutableStateOf(false) }
-    var activity= LocalActivity.current as Activity
+    val activity= LocalActivity.current as Activity
     LaunchedEffect(cookMode) {
         if(cookMode) activity.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         else activity.window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -95,10 +103,15 @@ val context= LocalContext.current
             "Entrando en la pantalla para mostrar ${currentRecipe.title}, in ${Locale.getDefault().language}"
         )
 
+        Box(
+            modifier= Modifier
+                .fillMaxWidth(),
+            contentAlignment = Alignment.Center
+        ) {
         Column(
             modifier = modifier
-                .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
+                .widthIn(max =560.dp)
                 .padding(start = 24.dp, end = 24.dp, bottom = 40.dp, top = 16.dp),
 
             ) {
@@ -155,7 +168,8 @@ val context= LocalContext.current
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .heightIn(min = 250.dp)
+                                .heightIn(min = 250.dp, max=500.dp)
+                                .widthIn(min=400.dp, max=700.dp)
                         )
 
                         // Buttons
@@ -364,7 +378,7 @@ val context= LocalContext.current
                             )
                         }
                     }
-                }
+                }}
             }
         }
     }

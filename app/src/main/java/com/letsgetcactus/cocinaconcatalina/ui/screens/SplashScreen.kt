@@ -24,7 +24,10 @@ import com.letsgetcactus.cocinaconcatalina.ui.theme.White
 import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
 import kotlinx.coroutines.delay
 
-
+/**
+ * Firs Screen to be shown while the app starts
+ * It includes a jumping icon gif
+ */
 @Composable
 fun SplashScreen(
     navController: NavController,

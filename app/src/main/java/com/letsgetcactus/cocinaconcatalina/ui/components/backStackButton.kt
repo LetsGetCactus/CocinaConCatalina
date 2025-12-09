@@ -9,13 +9,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.letsgetcactus.cocinaconcatalina.R
-import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
 
+/**
+ * Button to navigate back to the Screen opened just before the actual Screen
+ */
 @Composable
 fun BackStackButton(
     navController: NavController
@@ -37,12 +37,3 @@ fun BackStackButton(
     }
 }
 
-@Preview
-@Composable
-fun PreviewBackButton(){
-    CocinaConCatalinaTheme(darkTheme = false) {
-        BackStackButton(
-            navController = rememberNavController()
-        )
-    }
-}

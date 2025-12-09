@@ -9,13 +9,24 @@ import androidx.core.app.NotificationCompat
 import com.letsgetcactus.cocinaconcatalina.MainActivity
 import com.letsgetcactus.cocinaconcatalina.R
 
+/**
+ * Object for creating notifications when the Timer hits the time set
+ */
 object NotificationUtil {
 
+    /**
+     * Builds a notification
+     * @param context necessary to create the PendingInten
+     * @param message that will show the notification
+     * @return Notification to be shown
+     */
     fun buildTimerNotification(context: Context, message: String): Notification {
         // Intent to open the app when clicking on th notification
         val openAppIntent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
+
+        //Obligatory wrapper to launch activities form notifications
         val pendingOpen = PendingIntent.getActivity(
             context,
             0,
@@ -23,6 +34,7 @@ object NotificationUtil {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
+        //Sets the sound of the timer alarm
         val alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
             ?: RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
 

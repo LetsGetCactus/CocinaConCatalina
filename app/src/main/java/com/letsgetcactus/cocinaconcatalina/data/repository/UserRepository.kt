@@ -12,11 +12,12 @@ import kotlinx.coroutines.tasks.await
 import java.time.Instant
 
 /**
- * This object will manage:
+ * This object will  interact between the UserViewModel and Firebase,
+ * also will manage:
  * - login/logout - Login with Firebase Auth
  * - load/save user's profile
  * - register users
- * - manage user's favourite (ID) and modified recipes
+ * - manage user's favourite(ID) and modified recipes
  */
 object UserRepository {
 
@@ -114,7 +115,7 @@ object UserRepository {
     }
 
     /**
-     * Calls Firebaseconnection to delete all user data
+     * Calls FirebaseConnection to delete all user data
      * @return True if it deleted all data, false if  not
      */
     suspend fun deleteUserCompletely(userId: String): Boolean{

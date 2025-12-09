@@ -8,12 +8,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 /**
- * Stores locally the necessary data to persist the user's preferences and session for:
+ * Stores (locally) the necessary data to persist the USER's preferences/session for:
  * - userId
  * - language
  * - theme
  */
-
 private val Context.dataStore by preferencesDataStore(name = "user_prefs")
 
 class DataStoreManagment(private val context: Context){
@@ -41,12 +40,7 @@ class DataStoreManagment(private val context: Context){
             prefs[USER_ID] = userId
         }
     }
-    suspend fun saveUserLang(language:String){
-        context.dataStore.edit {
-            prefs ->
-            prefs[USER_LANG]= language
-        }
-    }
+
     suspend fun saveUserTheme(theme: String){
         context.dataStore.edit {
             prefs ->

@@ -34,6 +34,14 @@ import com.letsgetcactus.cocinaconcatalina.ui.theme.menuDColor
 import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
 
+/**
+ * Menu drawer: Hidden menu on the left side of the screen
+ * Accessible by a 'hamburger' icon on the Top Bar
+ * Shows different easy-to-go routes for different things:
+ * - Navigate (Home, Favs, Modified recipes, Add a new original asian recipe)
+ * - User preferences (change theme, close session, delete account and all user data)
+ * - Contact ( mailto:)
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MenuDrawerComponent(
@@ -52,6 +60,7 @@ fun MenuDrawerComponent(
 
     CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSecondary)
     {
+
         Column(
             modifier = modifier
                 .fillMaxSize()

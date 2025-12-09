@@ -10,6 +10,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.collectAsState
 import androidx.core.content.ContextCompat
@@ -29,7 +30,7 @@ import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
 import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModelFactory
 
 
-/*
+/**
  * Copyright (C) 2025 Catarina Otero Sieiro
  *
  * This program is free software: you can redistribute it and/or modify
@@ -44,12 +45,19 @@ import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModelFactory
  * https://www.gnu.org/licenses/gpl-3.0.txt
  *
  *
+ * Main activity of the app that hosts all the screens.
+ *
+ * - Configures App Check to validate the app's integrity
+ * - Initializes Firebase
+ * - Manages notification permissions
+ * - Retrieves the user's session stored in DataStoreManagement
+ * - Controls the app navigation
  */
 
 class MainActivity : ComponentActivity() {
 
 
-    //Permission for POST_NOTIFIC
+    //Permission for POST_NOTIFICATION
     private val requestNotificationPermission =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
 
@@ -57,6 +65,7 @@ class MainActivity : ComponentActivity() {
     //NotificationManagaer for  the whole Activity
     private lateinit var notificationManager: NotificationManager
 
+    @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

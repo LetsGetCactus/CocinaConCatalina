@@ -1,4 +1,3 @@
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -76,6 +75,7 @@ dependencies {
     implementation(libs.androidx.compose.material3.v131)
     implementation(libs.androidx.compose.material.icons.extended)
     debugImplementation(libs.androidx.compose.ui.tooling.v193)
+    implementation("androidx.compose.material:material-icons-extended")
 
     // Coil para Compose
     implementation(libs.coil.compose)

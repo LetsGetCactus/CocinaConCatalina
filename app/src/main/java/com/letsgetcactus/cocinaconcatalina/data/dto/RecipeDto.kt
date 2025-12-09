@@ -1,8 +1,11 @@
 package com.letsgetcactus.cocinaconcatalina.data.dto
-
-
 import com.letsgetcactus.cocinaconcatalina.model.Origin
 
+/**
+ * Data class to match types on Firebase Recipes
+ * Dto's let us download the same type of Recipe as we have on the DB and then map it (by mappers)
+ *  to obtain our Recipe model for the app
+ */
 data class RecipeDto(
     val id: String = "",
     val title:String="",

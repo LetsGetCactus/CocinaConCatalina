@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -50,6 +51,18 @@ import com.letsgetcactus.cocinaconcatalina.viewmodel.RecipeViewModel
 import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
 
+
+/**
+ * Here the user can moodify from the original Recipe:
+ * - Ingredients
+ * - Steps
+ * - Allergens
+ *
+ * It will save a new Modified Recipe in it's own subcollection on the DB
+ * Only visible to the user itself
+ * Only one modified Recipe per original one, so if you modify a modifed recipe or the same
+ * original one, it will overWrite the old modified Recipe
+ */
 @Composable
 fun ModifyRecipeScreen(
     navController: NavHostController,
@@ -78,11 +91,15 @@ fun ModifyRecipeScreen(
         }
 
 
-        Box(modifier = Modifier.padding(vertical = 48.dp)) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(),
+            contentAlignment = Alignment.Center
+        ) {
             LazyColumn(
                 modifier = Modifier
-                    .fillMaxSize()
                     .background(MaterialTheme.colorScheme.background)
+                    .widthIn(max=560.dp)
                     .padding(32.dp),
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
@@ -108,7 +125,8 @@ fun ModifyRecipeScreen(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .heightIn(min = 200.dp)
+                            .heightIn(min = 250.dp, max=500.dp)
+                            .widthIn(min=400.dp, max=700.dp)
                     ) {
                         Image(
                             painter = img,
@@ -237,7 +255,6 @@ fun ModifyItemIngredients(
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier.fillMaxWidth()
                 ) {
 
@@ -250,7 +267,7 @@ fun ModifyItemIngredients(
                                 ingredientList.toMutableList().also { it[index] = updated }
                             onIngredientListChange(newList)
                         },
-                        modifier = Modifier.width(60.dp),
+                        modifier = Modifier.weight(0.7f),
                         singleLine = true,
                         textStyle = MaterialTheme.typography.labelSmall
                     )
@@ -268,7 +285,7 @@ fun ModifyItemIngredients(
                             onIngredientListChange(newList)
                         },
                         placeholder = ingredient.unit.toString(),
-                        modifier = Modifier.width(110.dp)
+                        modifier = Modifier.weight(1.2f)
                     )
 
                     Spacer(Modifier.width(4.dp))
@@ -282,7 +299,7 @@ fun ModifyItemIngredients(
                                 ingredientList.toMutableList().also { it[index] = updated }
                             onIngredientListChange(newList)
                         },
-                        modifier = Modifier.width(150.dp),
+                        modifier = Modifier.weight(1.8f),
                         singleLine = true,
                         textStyle = MaterialTheme.typography.labelSmall
                     )
@@ -300,7 +317,7 @@ fun ModifyItemIngredients(
                             .align(Alignment.CenterEnd)
                             .background(MaterialTheme.colorScheme.primary)
                             .width(50.dp),
-                        shape = MaterialTheme.shapes.large
+                        shape = MaterialTheme.shapes.small
                         ) {
                         Text(
                             text = stringResource(R.string.deleteX),
@@ -355,7 +372,7 @@ fun ModifySteps(
                         onStepsChange(newList)
                     },
                     modifier = Modifier.background(MaterialTheme.colorScheme.primary),
-                    shape = MaterialTheme.shapes.large
+                    shape = MaterialTheme.shapes.small
                 ) {
                     Text(
                         text = stringResource(R.string.deleteX),
@@ -372,7 +389,7 @@ fun ModifySteps(
             modifier = Modifier
                 .padding(top = 8.dp)
                 .background(MaterialTheme.colorScheme.primary),
-            shape = MaterialTheme.shapes.large
+            shape = MaterialTheme.shapes.small
         ) {
             Text(
                 text = stringResource(R.string.new_step),

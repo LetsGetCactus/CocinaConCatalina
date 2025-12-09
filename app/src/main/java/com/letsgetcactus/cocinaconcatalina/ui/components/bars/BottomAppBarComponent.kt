@@ -33,7 +33,16 @@ import com.letsgetcactus.cocinaconcatalina.R
 import com.letsgetcactus.cocinaconcatalina.data.util.TimerScheduler
 import com.letsgetcactus.cocinaconcatalina.ui.NavigationRoutes
 
-
+/**
+ * Composable for the bar at the bottom of the Screen
+ * It contains:
+ * - Spotify
+ * - Timer
+ * - Favs
+ * - Home
+ *
+ * @param onNavigate function to navigate in between Screens
+ */
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun BottomBarComposable(
@@ -42,6 +51,7 @@ fun BottomBarComposable(
 
     val context = LocalContext.current
 
+    //For the AlerDialog for Timer to be shown or not
     var timerDialog by remember { mutableStateOf(false) }
     var minutes by remember { mutableStateOf("") }
 
@@ -97,9 +107,7 @@ fun BottomBarComposable(
                 onDismissRequest = { timerDialog = false },
                 title = { Text(stringResource(R.string.set_timer)) },
                 text = {
-                    Column {
-                        Text(stringResource(R.string.set_minutes))
-                        TextField(
+                    Column { TextField(
                             value = minutes,
                             onValueChange = { minutes = it },
                             placeholder = { Text("15") },
@@ -133,6 +141,11 @@ fun BottomBarComposable(
     }
 }
 
+
+/**
+ * Individual element of the Bottom bar
+ * Icon + Text, both clickable
+ */
 @Composable
 private fun BottomBarItem(
     icon: Int,

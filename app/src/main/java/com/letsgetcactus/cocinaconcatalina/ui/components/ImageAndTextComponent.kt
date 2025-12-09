@@ -19,6 +19,9 @@ import androidx.compose.ui.unit.dp
 import com.letsgetcactus.cocinaconcatalina.R
 import com.letsgetcactus.cocinaconcatalina.ui.theme.CocinaConCatalinaTheme
 
+/**
+ * Pair of Image + text
+ */
 @Composable
 fun ImageAndTextComponent(
     textToShow: Int,

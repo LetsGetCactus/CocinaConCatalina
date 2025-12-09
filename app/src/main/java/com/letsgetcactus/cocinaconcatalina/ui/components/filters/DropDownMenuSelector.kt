@@ -17,6 +17,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.letsgetcactus.cocinaconcatalina.model.enum.DificultyEnum
 import com.letsgetcactus.cocinaconcatalina.model.enum.TranslatableEnum
 
+
+/**
+ * Expandable selector to choose one from the enum options it offers
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun <T> DropDownMenuSelector(
