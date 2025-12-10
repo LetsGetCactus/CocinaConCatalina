@@ -56,7 +56,6 @@
     <string name="close_session">Close user session</string>
     <string name="delete_user_data">Delete user</string>
     <string name="contact">Contact</string>
-    <string name="faq"><![CDATA[F&A]]></string>
     <string name="mode">Dark mode</string>
     <string name="advanced_filters">more filters</string>
     <string name="clear">clear</string>
@@ -118,11 +117,12 @@
     <string name="ok">Ok</string>
     <string name="time_over">Time\'s up! Let\'s keep cooking 🍜</string>
     <string name="minutes">Minutes</string>
-    <string name="cook_mode_on">Cook mode on</string>
+    <string name="cook_mode_on">Cook mode on. Screen won\'t turn off</string>
     <string name="cook_mode_off">Cook mode off</string>
     <string name="cook_mode">Cook mode</string>
-    <string name="default_web_client_id" translatable="false">  166093713399-ghsfctt6da1psiub6agtcguh31s0h3uc.apps.googleusercontent.com</string>
+    <string name="default_web_client_id" translatable="false">166093713399-t3i1teqponin2d8907lrb7kv1sokd5qe.apps.googleusercontent.com</string>
     <string name="login_error_google">An error occurred while login with Google</string>
-
+    <string name="fav">Added to favourites</string>
+    <string name="timer_set">Timer\'s set to:</string>
 
 </resources>

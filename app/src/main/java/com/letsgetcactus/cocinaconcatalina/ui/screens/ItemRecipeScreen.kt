@@ -70,9 +70,9 @@ fun ItemRecipeScreen(
     ) {
     //Cook Mode - Screen does not suspend while activated
     var cookMode by remember { mutableStateOf(false) }
-    val activity= LocalActivity.current as Activity
+    val activity = LocalActivity.current as Activity
     LaunchedEffect(cookMode) {
-        if(cookMode) activity.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        if (cookMode) activity.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         else activity.window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
@@ -93,278 +93,287 @@ fun ItemRecipeScreen(
         val flagForRecipe = originEnum.flag
 
 
-val context= LocalContext.current
+        val context = LocalContext.current
         val scope = rememberCoroutineScope()
 
         Box(
-            modifier= Modifier
+            modifier = Modifier
                 .fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
-        Column(
-            modifier = modifier
-                .background(MaterialTheme.colorScheme.background)
-                .widthIn(max =560.dp)
-                .padding(start = 24.dp, end = 24.dp, bottom = 40.dp, top = 16.dp),
+            Column(
+                modifier = modifier
+                    .background(MaterialTheme.colorScheme.background)
+                    .widthIn(max = 560.dp)
+                    .padding(start = 24.dp, end = 24.dp, bottom = 40.dp, top = 16.dp),
 
-            ) {
-            Row(
-                modifier=Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = stringResource(R.string.cook_mode),
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.labelSmall
-                )
-                Spacer(Modifier.size(8.dp))
-                Switch(
-                    checked = cookMode,
-                    onCheckedChange = {
-                        cookMode = it
-                        Toast.makeText(
-                            context, context.getString(
-                                if (cookMode) R.string.cook_mode_on else R.string.cook_mode_off
-                            ), Toast.LENGTH_SHORT
-                        ).show()
-                    },
+                ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = stringResource(R.string.cook_mode),
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.labelSmall
+                    )
+                    Spacer(Modifier.size(8.dp))
+                    Switch(
+                        checked = cookMode,
+                        onCheckedChange = {
+                            cookMode = it
+                            Toast.makeText(
+                                context, context.getString(
+                                    if (cookMode) R.string.cook_mode_on else R.string.cook_mode_off
+                                ), Toast.LENGTH_SHORT
+                            ).show()
+                        },
 
-                )
-            }
-            Spacer(modifier = Modifier.size(56.dp))
-
-            LazyColumn(
-                modifier = Modifier.fillMaxSize()
-            ) {
-                item {
-                    Row {
-                        BackStackButton(
-                            navController = navController
                         )
-                        Text(
-                            text = currentRecipe.title,
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
                 }
+                Spacer(modifier = Modifier.size(56.dp))
 
-                item {
-                    Box(
-                        modifier = Modifier.fillMaxWidth() // Modifier, no modifier
-                    ) {
-                        Image(
-                            painter = rememberAsyncImagePainter(currentRecipe.img),
-                            contentDescription = currentRecipe.title,
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .heightIn(min = 250.dp, max=500.dp)
-                                .widthIn(min=400.dp, max=700.dp)
-                        )
-
-                        // Buttons
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(16.dp),
-                            verticalAlignment = Alignment.Bottom,
-                            modifier = Modifier
-                                .align(Alignment.BottomEnd)
-                                .offset(x = 8.dp, y = 16.dp)
-                        ) {
-                            // Edit
-                            Box(
-                                Modifier.clickable(true) {
-                                    userViewModel.selectRecipe(recipeSelected)
-                                    recipeViewModel.selectRecipe(recipeSelected)
-
-                                    onNavigate(NavigationRoutes.MODIFIED_SCREEN)
-
-                                }
-                            ) {
-                                Image(
-                                    painter = painterResource(R.drawable.circle),
-                                    contentDescription = null,
-                                    contentScale = ContentScale.Fit,
-                                    modifier = Modifier.size(48.dp)
-                                )
-                                Image(
-                                    painter = painterResource(R.drawable.edit),
-                                    contentDescription = stringResource(R.string.edit),
-                                    modifier = Modifier
-                                        .align(Alignment.Center)
-                                        .offset(x = 6.dp, y = 12.dp)
-                                        .size(40.dp)
-                                )
-                            }
-
-                            // Favs
-                            Box(
-                                Modifier.clickable { userViewModel.changeFavourite(currentRecipe) }
-                            ) {
-                                Image(
-                                    painter = painterResource(R.drawable.circle),
-                                    contentDescription = stringResource(R.string.favs),
-                                    contentScale = ContentScale.Fit,
-                                    modifier = Modifier.size(48.dp)
-                                )
-                                Image(
-                                    painter = painterResource(
-                                        if (isRecipeFav) R.drawable.lotus
-                                        else R.drawable.set_fav
-                                    ),
-                                    contentDescription = stringResource(R.string.favs),
-                                    modifier = Modifier
-                                        .align(Alignment.Center)
-                                        .offset(y = 12.dp)
-                                        .size(40.dp)
-                                )
-                            }
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    item {
+                        Row {
+                            BackStackButton(
+                                navController = navController
+                            )
+                            Text(
+                                text = currentRecipe.title,
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.fillMaxWidth()
+                            )
                         }
-                        //Origin - flag
+                    }
+
+                    item {
                         Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .offset(x = 12.dp)
+                            modifier = Modifier.fillMaxWidth() // Modifier, no modifier
                         ) {
                             Image(
-                                painter = painterResource(flagForRecipe),
-                                contentDescription = currentRecipe.origin.country,
+                                painter = rememberAsyncImagePainter(currentRecipe.img),
+                                contentDescription = currentRecipe.title,
+                                contentScale = ContentScale.Crop,
                                 modifier = Modifier
-                                    .align(Alignment.TopEnd)
-                                    .size(40.dp)
-                                    .offset(x = -24.dp, y = -4.dp)
-
+                                    .fillMaxWidth()
+                                    .heightIn(min = 250.dp, max = 500.dp)
+                                    .widthIn(min = 400.dp, max = 700.dp)
                             )
+
+                            // Buttons
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                verticalAlignment = Alignment.Bottom,
+                                modifier = Modifier
+                                    .align(Alignment.BottomEnd)
+                                    .offset(x = 8.dp, y = 16.dp)
+                            ) {
+                                // Edit
+                                Box(
+                                    Modifier.clickable(true) {
+                                        userViewModel.selectRecipe(recipeSelected)
+                                        recipeViewModel.selectRecipe(recipeSelected)
+
+                                        onNavigate(NavigationRoutes.MODIFIED_SCREEN)
+
+                                    }
+                                ) {
+                                    Image(
+                                        painter = painterResource(R.drawable.circle),
+                                        contentDescription = null,
+                                        contentScale = ContentScale.Fit,
+                                        modifier = Modifier.size(48.dp)
+                                    )
+                                    Image(
+                                        painter = painterResource(R.drawable.edit),
+                                        contentDescription = stringResource(R.string.edit),
+                                        modifier = Modifier
+                                            .align(Alignment.Center)
+                                            .offset(x = 6.dp, y = 12.dp)
+                                            .size(40.dp)
+                                    )
+                                }
+
+                                // Favs
+                                Box(
+                                    Modifier.clickable {
+                                        userViewModel.changeFavourite(currentRecipe)
+                                        Toast.makeText(
+                                            context,
+                                            context.getString(R.string.fav),
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                ) {
+                                    Image(
+                                        painter = painterResource(R.drawable.circle),
+                                        contentDescription = stringResource(R.string.favs),
+                                        contentScale = ContentScale.Fit,
+                                        modifier = Modifier.size(48.dp)
+                                    )
+                                    Image(
+                                        painter = painterResource(
+                                            if (isRecipeFav) R.drawable.lotus
+                                            else R.drawable.set_fav
+                                        ),
+                                        contentDescription = stringResource(R.string.favs),
+                                        modifier = Modifier
+                                            .align(Alignment.Center)
+                                            .offset(y = 12.dp)
+                                            .size(40.dp)
+                                    )
+                                }
+                            }
+                            //Origin - flag
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .offset(x = 12.dp)
+                            ) {
+                                Image(
+                                    painter = painterResource(flagForRecipe),
+                                    contentDescription = currentRecipe.origin.country,
+                                    modifier = Modifier
+                                        .align(Alignment.TopEnd)
+                                        .size(40.dp)
+                                        .offset(x = -24.dp, y = -4.dp)
+
+                                )
+                            }
+
                         }
 
-                    }
+                        //Preptime & portions
+                        Row(
+                            horizontalArrangement = Arrangement.Start,
+                        ) {
 
-                    //Preptime & portions
-                    Row(
-                        horizontalArrangement = Arrangement.Start,
-                    ) {
-
-                        IconAndText(
-                            modifier = Modifier,
-                            imageResource = R.drawable.user_red_fat,
-                            imageContent = R.string.portions,
-                            textIn = currentRecipe.portions.toString()
-                        )
-                        Spacer(Modifier.size(8.dp))
-                        IconAndText(
-                            modifier = Modifier,
-                            imageResource = R.drawable.timer_red_fat,
-                            imageContent = R.string.prep_time,
-                            textIn = currentRecipe.prepTime.toString()
-                        )
-                        Spacer(Modifier.size(24.dp))
-                        if(currentRecipe.title.endsWith("(Mod)")) {
                             IconAndText(
-                                modifier = Modifier.clickable(
-                                    onClick = {
-                                        val user = userViewModel.currentUser.value?.id
-                                        scope.launch {
-                                            userViewModel.deleteModified(
-                                                currentRecipe.id,
-                                                user
-                                            )
-                                        }
-                                        navController.popBackStack()
-                                    }),
-                                imageResource = R.drawable.trash,
-                                imageContent = R.string.delete_recipe,
-                                textIn = stringResource(R.string.delete_recipe)
+                                modifier = Modifier,
+                                imageResource = R.drawable.user_red_fat,
+                                imageContent = R.string.portions,
+                                textIn = currentRecipe.portions.toString()
                             )
+                            Spacer(Modifier.size(8.dp))
+                            IconAndText(
+                                modifier = Modifier,
+                                imageResource = R.drawable.timer_red_fat,
+                                imageContent = R.string.prep_time,
+                                textIn = currentRecipe.prepTime.toString()
+                            )
+                            Spacer(Modifier.size(24.dp))
+                            if (currentRecipe.title.endsWith("(Mod)")) {
+                                IconAndText(
+                                    modifier = Modifier.clickable(
+                                        onClick = {
+                                            val user = userViewModel.currentUser.value?.id
+                                            scope.launch {
+                                                userViewModel.deleteModified(
+                                                    currentRecipe.id,
+                                                    user
+                                                )
+                                            }
+                                            navController.popBackStack()
+                                        }),
+                                    imageResource = R.drawable.trash,
+                                    imageContent = R.string.delete_recipe,
+                                    textIn = stringResource(R.string.delete_recipe)
+                                )
 
+                            }
+                        }
+                        Spacer(modifier = Modifier.size(32.dp))
+                    }
+
+                    item {
+                        Row {
+                            Text(
+                                text = stringResource(R.string.ingredients),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.weight(1f)
+                            )
+                            LazyRow {
+                                item { AlergensList(currentRecipe.allergenList) }
+                            }
                         }
                     }
-                    Spacer(modifier = Modifier.size(32.dp))
-                }
 
-                item {
-                    Row {
+                    item {
+                        ItemIngredients(currentRecipe.ingredientList)
+                        Spacer(Modifier.size(16.dp))
+                    }
+
+                    //Steps
+                    item {
                         Text(
-                            text = stringResource(R.string.ingredients),
+                            text = stringResource(R.string.steps),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.weight(1f)
                         )
-                        LazyRow {
-                            item { AlergensList(currentRecipe.allergenList) }
-                        }
+                        ItemSteps(currentRecipe.steps)
                     }
-                }
 
-                item {
-                    ItemIngredients(currentRecipe.ingredientList)
-                    Spacer(Modifier.size(16.dp))
-                }
-
-                //Steps
-                item {
-                    Text(
-                        text = stringResource(R.string.steps),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.weight(1f)
-                    )
-                    ItemSteps(currentRecipe.steps)
-                }
-
-                //rating
-                item {
-                    Spacer(modifier = Modifier.size(24.dp))
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-
-                        Text(
-                            stringResource(R.string.rating_ramen),
-                            color = MaterialTheme.colorScheme.primary,
-                            style = MaterialTheme.typography.bodySmall
-                        )
-                        Row(
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically
+                    //rating
+                    item {
+                        Spacer(modifier = Modifier.size(24.dp))
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
                         ) {
+
                             Text(
-                                text = "(${currentRecipe.avgRating})",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.primary
+                                stringResource(R.string.rating_ramen),
+                                color = MaterialTheme.colorScheme.primary,
+                                style = MaterialTheme.typography.bodySmall
                             )
-                            RecipeRatingSelector(
-                                initialRating = currentRecipe.avgRating.toInt(),
-                                onRatingSelected = { rate ->
+                            Row(
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "(${currentRecipe.avgRating})",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                                RecipeRatingSelector(
+                                    initialRating = currentRecipe.avgRating.toInt(),
+                                    onRatingSelected = { rate ->
 
-                                    val userId = userViewModel.currentUser.value?.id
-                                    val isModified = currentRecipe.title.trim().contains("(Mod)")
+                                        val userId = userViewModel.currentUser.value?.id
+                                        val isModified =
+                                            currentRecipe.title.trim().contains("(Mod)")
 
-                                    if (isModified && userId!= null) {
+                                        if (isModified && userId != null) {
 
-                                        userViewModel.rateRecipe(
-                                            currentRecipe.id,
-                                            rate,
-                                            userId
-                                        )
+                                            userViewModel.rateRecipe(
+                                                currentRecipe.id,
+                                                rate,
+                                                userId
+                                            )
 
-                                    } else {
-                                        recipeViewModel.rateRecipe(currentRecipe.id, rate)
+                                        } else {
+                                            recipeViewModel.rateRecipe(currentRecipe.id, rate)
+                                        }
                                     }
-                                }
 
-                            )
-                            Text(
-                                text = "(${currentRecipe.ratingCount})",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.primary
-                            )
+                                )
+                                Text(
+                                    text = "(${currentRecipe.ratingCount})",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                            }
                         }
                     }
-                }}
+                }
             }
         }
     }

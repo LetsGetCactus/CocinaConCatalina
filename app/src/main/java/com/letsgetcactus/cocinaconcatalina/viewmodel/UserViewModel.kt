@@ -150,8 +150,9 @@ class UserViewModel(
                 userSessionRepo.saveUserIdData(user.id)
                 _googleLoginState.value = LoginState.Success(user)
             } else {
-                _googleLoginState.value =
-                    LoginState.Error(context.getString(R.string.login_error_google))
+                _googleLoginState.value =LoginState.Error(context.getString(R.string.login_error_google))
+                Toast.makeText(context,context.getString(R.string.login_error_google),Toast.LENGTH_SHORT).show()
+
             }
         }
     }

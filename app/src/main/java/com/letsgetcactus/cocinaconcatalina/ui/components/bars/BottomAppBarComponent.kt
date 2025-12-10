@@ -2,6 +2,7 @@ package com.letsgetcactus.cocinaconcatalina.ui.components.bars
 
 import android.content.Intent
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -72,10 +73,20 @@ fun BottomBarComposable(
                 label = stringResource(R.string.spotify),
                 onClick = {
                     val intent = Intent(Intent.ACTION_VIEW, "spotify:".toUri())
-
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    context.startActivity(intent)
 
+                    val packageManager = context.packageManager
+
+                    if (intent.resolveActivity(packageManager) != null) {
+                        context.startActivity(intent)
+                    } else {
+                        val playStoreIntent = Intent(
+                            Intent.ACTION_VIEW,
+                            "market://details?id=com.spotify.music".toUri()
+                        )
+                        playStoreIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        context.startActivity(playStoreIntent)
+                    }
                 }
             )
 
@@ -83,7 +94,9 @@ fun BottomBarComposable(
             BottomBarItem(
                 icon = R.drawable.timer,
                 label = stringResource(R.string.timer),
-                onClick = { timerDialog = true }
+                onClick = {
+                    timerDialog = true
+                }
             )
 
 
@@ -107,10 +120,11 @@ fun BottomBarComposable(
                 onDismissRequest = { timerDialog = false },
                 title = { Text(stringResource(R.string.set_timer)) },
                 text = {
-                    Column { TextField(
+                    Column {
+                        TextField(
                             value = minutes,
                             onValueChange = { minutes = it },
-                            placeholder = { Text("15") },
+                            placeholder = { Text(stringResource(R.string.set_minutes)) },
                             singleLine = true
                         )
                     }
@@ -126,6 +140,7 @@ fun BottomBarComposable(
                                 )
                             }
                             timerDialog = false
+                            Toast.makeText(context,"${context.getString(R.string.timer_set)} $m ${context.getString(R.string.minutes)}", Toast.LENGTH_SHORT).show()
                         }
                     ) {
                         Text(stringResource(R.string.ok))
