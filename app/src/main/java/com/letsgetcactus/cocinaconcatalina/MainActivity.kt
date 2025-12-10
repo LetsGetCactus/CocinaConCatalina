@@ -19,6 +19,7 @@ import androidx.navigation.compose.rememberNavController
 import com.google.firebase.FirebaseApp
 import com.google.firebase.appcheck.FirebaseAppCheck
 import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory
+import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
 import com.letsgetcactus.cocinaconcatalina.data.local.DataStoreManagment
 import com.letsgetcactus.cocinaconcatalina.data.repository.UserSessionRepository
 import com.letsgetcactus.cocinaconcatalina.ui.AppNavigation
@@ -74,10 +75,7 @@ class MainActivity : ComponentActivity() {
         FirebaseApp.initializeApp(this)
         //App Check Provider for Firebase
         val firebaseAppCheck = FirebaseAppCheck.getInstance()
-        firebaseAppCheck.installAppCheckProviderFactory(
-          //PARA PROD:  PlayIntegrityAppCheckProviderFactory.getInstance()
-            DebugAppCheckProviderFactory.getInstance()
-        )
+        firebaseAppCheck.installAppCheckProviderFactory(PlayIntegrityAppCheckProviderFactory.getInstance())
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)

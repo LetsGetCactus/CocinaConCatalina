@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "166093713399-t3i1teqponin2d8907lrb7kv1sokd5qe.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.letsgetcactus.cocinaconcatalina",
+            "certificate_hash": "d9857b9d907e8c352b1bbc46bb716fb0d1495bf9"
+          }
+        },
+        {
           "client_id": "166093713399-ghsfctt6da1psiub6agtcguh31s0h3uc.apps.googleusercontent.com",
           "client_type": 3
         }
