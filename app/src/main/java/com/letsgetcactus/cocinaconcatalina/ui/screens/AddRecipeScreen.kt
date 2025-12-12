@@ -2,6 +2,7 @@ package com.letsgetcactus.cocinaconcatalina.ui.screens
 
 import DropDownMenuSelector
 import android.net.Uri
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -75,7 +76,8 @@ fun AddRecipeScreen(
     //Check for ADMIN ONLY
     val context= LocalContext.current
     val currentUser by userViewModel.currentUser.collectAsState()
-    if (currentUser?.role != "ADMIN") {
+    Log.i("AddRecipe","$currentUser")
+    if (!currentUser?.role.equals("ADMIN")) {
         onNavigate(NavigationRoutes.HOME_SCREEN)
         Toast.makeText(context,stringResource(R.string.admin_only),Toast.LENGTH_SHORT).show()
         return
