@@ -14,11 +14,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "166093713399-q5lf3saoh35q42ptlnub8god9oanete7.apps.googleusercontent.com",
+          "client_id": "166093713399-t3i1teqponin2d8907lrb7kv1sokd5qe.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.letsgetcactus.cocinaconcatalina",
-            "certificate_hash": "3f3cf38f80d8b114a1002dc77f38a446ae4f8b61"
+            "certificate_hash": "d9857b9d907e8c352b1bbc46bb716fb0d1495bf9"
           }
         },
         {

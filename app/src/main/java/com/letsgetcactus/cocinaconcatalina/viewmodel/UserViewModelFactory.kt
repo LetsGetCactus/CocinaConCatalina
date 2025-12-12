@@ -10,14 +10,16 @@ import com.letsgetcactus.cocinaconcatalina.data.repository.UserSessionRepository
  * To create instances of the UserViewModel and its needed parameters
  */
 class UserViewModelFactory(
-    private val userSessionRepo: UserSessionRepository
+    private val userSessionRepo: UserSessionRepository,
+    private val recipeViewModel: RecipeViewModel
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(UserViewModel::class.java)) {
             return UserViewModel(
                 UserRepository,
-                userSessionRepo
+                userSessionRepo,
+                recipeViewModel
             ) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")

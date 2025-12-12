@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -24,6 +25,7 @@ import com.letsgetcactus.cocinaconcatalina.R
 import com.letsgetcactus.cocinaconcatalina.data.searchFilters.Source
 import com.letsgetcactus.cocinaconcatalina.ui.NavigationRoutes
 import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonRound
+import com.letsgetcactus.cocinaconcatalina.ui.components.CenteredLoading
 import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
 
 /**
@@ -37,6 +39,14 @@ fun HomeScreen(
     userViewModel: UserViewModel
 
 ) {
+
+    val state by userViewModel.state.collectAsState()
+    if (!state.isReady) {
+        CenteredLoading()
+        return
+    }
+
+
     val orientation = LocalConfiguration.current
     val isDarkTheme = userViewModel.theme.collectAsState().value
 

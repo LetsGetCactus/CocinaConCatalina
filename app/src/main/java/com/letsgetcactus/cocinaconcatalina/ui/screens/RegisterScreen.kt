@@ -26,6 +26,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -86,6 +88,17 @@ fun RegisterScreen(
     //States for possible errors on mail or password
     var emailError by remember { mutableStateOf(false) }
 
+    val currentUser by userViewModel.currentUser.collectAsState()
+
+    // Navigate automatically when user is created
+    LaunchedEffect(currentUser) {
+        currentUser?.let { user ->
+            navController.navigate(NavigationRoutes.HOME_SCREEN) {
+                popUpTo(NavigationRoutes.REGISTER_SCREEN) { inclusive = true }
+            }
+            Toast.makeText(context, "${context.getString(R.string.welcome)} $name", Toast.LENGTH_SHORT).show()
+        }
+    }
     Box(
         modifier = Modifier
             .fillMaxSize(),
@@ -326,9 +339,11 @@ fun RegisterScreen(
                             } else {
 
                                 userViewModel.register(name, email, pass)
-                                navController.navigate(NavigationRoutes.HOME_SCREEN) {
-                                    popUpTo(NavigationRoutes.REGISTER_SCREEN) { inclusive = true }
-                                }
+                                userViewModel.currentUser.collect { user ->
+                                    if (user != null) {
+                                        navController.navigate(NavigationRoutes.HOME_SCREEN) {
+                                            popUpTo(NavigationRoutes.REGISTER_SCREEN) { inclusive = true }
+                                        }
                                 Toast.makeText(
                                     context,
                                     "${context.getString(R.string.welcome)} $name",
@@ -337,14 +352,13 @@ fun RegisterScreen(
                             }
                         }
                     }
-                )
-
+                        }})
 
 
                 Spacer(Modifier.height(36.dp))
 
                 ButtonGoogle(
-                    onNavigate = { NavigationRoutes.HOME_SCREEN },
+                    onNavigate = {}, //Handled in ButtonGoogle
                     modifier = Modifier.fillMaxWidth(),
                     userViewModel = userViewModel
                 )

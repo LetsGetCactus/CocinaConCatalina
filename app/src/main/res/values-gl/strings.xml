@@ -55,7 +55,6 @@
     <string name="close_session">Pechar sesión de usuario</string>
     <string name="delete_user_data">Eliminar usuario</string>
     <string name="contact">Contacto</string>
-    <string name="faq">Preguntas frecuentes</string>
     <string name="mode">Modo oscuro</string>
     <string name="advanced_filters">máis filtros</string>
     <string name="clear">limpar</string>
@@ -198,8 +197,14 @@ Este contrato réxese pola lexislación española. Calquera controversia someter
     <string name="set_timer">Establecer temporizador</string>
     <string name="time_over">Acabouse a espera!  Hora de cociñar \uD83C\uDF5C</string>
     <string name="minutes">Minutos</string>
-    <string name="cook_mode_on">Modo cociñado encendido</string>
-    <string name="cook_mode_off">Modo codiñado apagado</string>
+    <string name="cook_mode_on">Modo cociñado encendido. Non se apagará a pantalla</string>
+    <string name="cook_mode_off">Modo cociñado apagado</string>
     <string name="cook_mode">Modo cociñado</string>
+    <string name="login_error_google">Ocurriu un erro ao intentar identificarse con Google</string>
+    <string name="fav">Engadido a favoritos</string>
+    <string name="timer_set">Estableceuse un temporizador de:</string>
+    <string name="timer_not_set">Non se puido establecer o temporizador</string>
+    <string name="check_deleted_ingredient_on_recipe">Non te esquezas de revisar o ingrediente que borraches nos alérxemos e pasos da receita⚠️</string>
+    <string name="error_delete_user">Non se puido borrar o usuario</string>
 
 </resources>

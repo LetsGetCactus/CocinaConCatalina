@@ -1,7 +1,5 @@
 package com.letsgetcactus.cocinaconcatalina.ui.screens
 
-import android.graphics.Paint
-import android.text.Layout
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -19,7 +17,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -36,7 +33,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
@@ -53,6 +49,7 @@ import com.letsgetcactus.cocinaconcatalina.ui.NavigationRoutes
 import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonGoogle
 import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonMain
 import com.letsgetcactus.cocinaconcatalina.ui.components.ButtonSecondary
+import com.letsgetcactus.cocinaconcatalina.ui.components.CenteredLoading
 import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
 
@@ -74,31 +71,32 @@ fun LoginScreen(
     var pass by remember { mutableStateOf("") }
     var emailError by remember { mutableStateOf(false) }
 
-    //Google login state
-    val state by userViewModel.googleLoginState.collectAsState()
-    when (state) {
-        is LoginState.Loading -> CenteredLoading()
-        is LoginState.Success -> {
-            LaunchedEffect(Unit) {
-                navController.navigate(NavigationRoutes.HOME_SCREEN) {
-                    popUpTo(NavigationRoutes.LOGIN_SCREEN) { inclusive = true }
-                }
+    val googleState by userViewModel.googleLoginState.collectAsState()
+    if (googleState is LoginState.Loading) CenteredLoading()
+    else if (googleState is LoginState.Error) Text((googleState as LoginState.Error).msg)
+
+    val state by userViewModel.state.collectAsState()
+
+    LaunchedEffect(state) {
+        if (state.isReady && state.user != null) {
+            navController.navigate(NavigationRoutes.HOME_SCREEN) {
+                popUpTo(NavigationRoutes.LOGIN_SCREEN) { inclusive = true }
             }
         }
-        is LoginState.Error -> Text((state as LoginState.Error).msg)
-        LoginState.Idle -> {}
     }
+
 
     //UI components
     Box(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
     ) {
         Column(
             modifier = Modifier
-                .background(MaterialTheme.colorScheme.background)
-                .widthIn(max=480.dp)
+
+                .widthIn(max = 480.dp)
                 .padding(48.dp, 40.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
@@ -195,31 +193,13 @@ fun LoginScreen(
             ButtonMain(
                 buttonText = stringResource(R.string.login),
                 onNavigate = {
-                    scope.launch {
-                        if (email.isBlank() || pass.isBlank()) {
-                            Toast.makeText(context, R.string.complete_all, Toast.LENGTH_SHORT)
-                                .show()
-                        } else if (emailError) {
-                            Toast.makeText(context, R.string.emailError, Toast.LENGTH_SHORT).show()
-                        } else {
-                            val success = userViewModel.login(email, pass)
-                            if (success) {
-                                Toast.makeText(
-                                    context,
-                                    "${context.getString(R.string.welcome)} $userViewModel.currentUser.value.name",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                                navController.navigate(NavigationRoutes.HOME_SCREEN) {
-                                    popUpTo(NavigationRoutes.LOGIN_SCREEN) { inclusive = true }
-                                }
-                            } else {
-                                Toast.makeText(
-                                    context,
-                                    R.string.email_pass_incorrect,
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                        }
+                    // no launch needed because login is non-suspend
+                    if (email.isBlank() || pass.isBlank()) {
+                        Toast.makeText(context, R.string.complete_all, Toast.LENGTH_SHORT).show()
+                    } else if (emailError) {
+                        Toast.makeText(context, R.string.emailError, Toast.LENGTH_SHORT).show()
+                    } else {
+                        userViewModel.login(email.trim(), pass)
                     }
                 },
                 modifier = Modifier.fillMaxWidth()
@@ -234,7 +214,7 @@ fun LoginScreen(
             ) {
 
                 ButtonGoogle(
-                    onNavigate = { navController.navigate(NavigationRoutes.HOME_SCREEN) },
+                    onNavigate = {},
                     modifier = Modifier.fillMaxWidth(),
                     userViewModel = userViewModel
                 )
@@ -312,16 +292,3 @@ fun LoginScreen(
     }
 }
 
-@Composable
-fun CenteredLoading(){
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.LightGray.copy(alpha = 0.3f)),
-        contentAlignment = Alignment.Center
-    ) {
-        CircularProgressIndicator(
-            color = MaterialTheme.colorScheme.primary
-        )
-    }
-}

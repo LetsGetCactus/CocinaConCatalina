@@ -245,6 +245,8 @@ fun ModifyItemIngredients(
     ingredientList: List<Ingredient>,
     onIngredientListChange: (List<Ingredient>) -> Unit
 ) {
+    val context= LocalContext.current
+
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
 
         ingredientList.forEachIndexed { index, ingredient ->
@@ -311,6 +313,7 @@ fun ModifyItemIngredients(
                             val newList =
                                 ingredientList.toMutableList().also { it.removeAt(index) }
                             onIngredientListChange(newList)
+                            Toast.makeText(context, context.getString(R.string.check_deleted_ingredient_on_recipe),Toast.LENGTH_LONG).show()
                         },
                         modifier = Modifier
                             .align(Alignment.CenterEnd)

@@ -4,8 +4,10 @@ import android.content.Context
 import android.util.Log
 import androidx.credentials.ClearCredentialStateRequest
 import androidx.credentials.CredentialManager
+import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
-import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
+import androidx.credentials.exceptions.GetCredentialException
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -18,6 +20,7 @@ import com.letsgetcactus.cocinaconcatalina.model.Recipe
 import com.letsgetcactus.cocinaconcatalina.model.User
 import kotlinx.coroutines.tasks.await
 import java.time.Instant
+
 
 /**
  * This object will  interact between the UserViewModel and Firebase,
@@ -53,38 +56,55 @@ object UserRepository {
     /**
      * To log/register with Google Credentials
      */
-    suspend fun loginWithGoogle(context: Context): User?{
+    suspend fun loginWithGoogle(context: Context): User? {
         return try {
             val credentialManager = CredentialManager.create(context)
 
-            val googleIdOption= GetSignInWithGoogleOption.Builder(
-                context.getString(R.string.default_web_client_id)
-            ).build()
+            val googleIdOption = GetGoogleIdOption.Builder()
+                .setServerClientId(context.getString(R.string.default_web_client_id))
+                .setFilterByAuthorizedAccounts(false)
+                .setAutoSelectEnabled(false)
+                .build()
 
 
-            val request= GetCredentialRequest.Builder().addCredentialOption(googleIdOption).build()
+            val request = GetCredentialRequest.Builder()
+                .addCredentialOption(googleIdOption)
+                .build()
 
-            val respone= credentialManager.getCredential(
-                request = request,
-                context= context
+
+            val response = credentialManager.getCredential(
+                context = context,
+                request = request
             )
-            val googleCredential = GoogleIdTokenCredential.createFrom(respone.credential.data)
+
+            val credential = response.credential
+
+
+            val googleCredential =
+                if (credential is CustomCredential &&
+                    credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
+                ) {
+                    GoogleIdTokenCredential.createFrom(credential.data)
+                } else {
+                    Log.e("UserRepository", "Unexpected credential type: ${credential.type}")
+                    return null
+                }
+
             val idToken = googleCredential.idToken
-
             val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
+
             val authResult = firebaseAuth.signInWithCredential(firebaseCredential).await()
+            val firebaseUser = authResult.user ?: return null
+            val userId = firebaseUser.uid
 
-            val firebaseUser= authResult.user ?: return null
-            val userId= firebaseUser.uid
+            val user = getUserById(userId)
 
-            val user= getUserById(userId)
-
-            if(user != null){
+            if (user != null) {
                 user
-            }else{
-                val newUser= User(
-                    id= userId,
-                    name= firebaseUser.displayName ?: "unknown",
+            } else {
+                val newUser = User(
+                    id = userId,
+                    name = firebaseUser.displayName ?: "unknown",
                     email = firebaseUser.email ?: "unknown",
                     registeredInDate = Instant.now().toString(),
                     isActive = true,
@@ -96,11 +116,15 @@ object UserRepository {
                 newUser
             }
 
-        }catch (e: Exception){
-            Log.e("UserRepository","Google login error",e)
+        } catch (e: GetCredentialException) {
+            Log.e("UserRepository", "Credential Manager error", e)
+            null
+        } catch (e: Exception) {
+            Log.e("UserRepository", "Google login error", e)
             null
         }
     }
+
 
     /**
      * Logout method for the User to sign out from it's session

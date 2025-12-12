@@ -1,5 +1,5 @@
 [versions]
-agp = "8.13.1"
+agp = "8.13.2"
 androidxActivityCompose = "1.11.0"
 androidxComposeUiUi = "1.9.4"
 androidxUi = "1.9.4"

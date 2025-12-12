@@ -2,6 +2,7 @@ package com.letsgetcactus.cocinaconcatalina.ui.components.bars
 
 import android.content.Intent
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -71,19 +72,35 @@ fun BottomBarComposable(
                 icon = R.drawable.spotify,
                 label = stringResource(R.string.spotify),
                 onClick = {
-                    val intent = Intent(Intent.ACTION_VIEW, "spotify:".toUri())
+                    val spotifyIntent = Intent(Intent.ACTION_VIEW, "spotify:".toUri()).apply {
+                        setPackage("com.spotify.music")   //Needed to open spotify on Xiaomi and other phones, Deep links lead to Xiaomi's app store, rather to installed Spotify app
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    }
 
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    context.startActivity(intent)
+                    val packageManager = context.packageManager
 
+                    if (spotifyIntent.resolveActivity(packageManager) != null) {
+                        context.startActivity(spotifyIntent)
+                    } else {
+                        val playStoreIntent = Intent(
+                            Intent.ACTION_VIEW,
+                            "market://details?id=com.spotify.music".toUri()
+                        ).apply {
+                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        }
+                        context.startActivity(playStoreIntent)
+                    }
                 }
             )
+
 
             // Timer
             BottomBarItem(
                 icon = R.drawable.timer,
                 label = stringResource(R.string.timer),
-                onClick = { timerDialog = true }
+                onClick = {
+                    timerDialog = true
+                }
             )
 
 
@@ -107,10 +124,11 @@ fun BottomBarComposable(
                 onDismissRequest = { timerDialog = false },
                 title = { Text(stringResource(R.string.set_timer)) },
                 text = {
-                    Column { TextField(
+                    Column {
+                        TextField(
                             value = minutes,
                             onValueChange = { minutes = it },
-                            placeholder = { Text("15") },
+                            placeholder = { Text(stringResource(R.string.set_minutes)) },
                             singleLine = true
                         )
                     }
@@ -119,6 +137,9 @@ fun BottomBarComposable(
                     TextButton(
                         onClick = {
                             val m = minutes.toIntOrNull() ?: 0
+                            if(m == 0){
+                                Toast.makeText(context, context.getString(R.string.timer_not_set) ,Toast.LENGTH_SHORT).show()
+                            }
                             if (m > 0) {
                                 TimerScheduler.scheduleTimer(
                                     context.applicationContext,
@@ -126,6 +147,7 @@ fun BottomBarComposable(
                                 )
                             }
                             timerDialog = false
+                            Toast.makeText(context,"${context.getString(R.string.timer_set)} $m ${context.getString(R.string.minutes)}", Toast.LENGTH_SHORT).show()
                         }
                     ) {
                         Text(stringResource(R.string.ok))

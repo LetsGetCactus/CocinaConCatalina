@@ -56,7 +56,6 @@
     <string name="close_session">Cerrar sesión de usuario</string>
     <string name="delete_user_data">Eliminar usuario</string>
     <string name="contact">Contacto</string>
-    <string name="faq">Preguntas frecuentes</string>
     <string name="mode">Modo oscuro</string>
     <string name="advanced_filters">más filtros</string>
     <string name="clear">limpiar</string>
@@ -93,7 +92,7 @@
     <string name="recipe_saved_error">No se ha podido guardar la receta</string>
     <string name="not_accepted_terms">Tienes que aceptar los términos y condiciones</string>
     <string name="recipes_five_ingr">Menos de cinco ingredientes</string>
-    <string name="recipes_high_rating">Mejor puntutación</string>
+    <string name="recipes_high_rating">Mejor puntuación</string>
     <string name="new_step">Añadir paso</string>
     <string name="seen_on_tv">Vistos en la tv</string>
     <string name="email_info_letsgetcactus">info.letsgetcactus@gmail.com</string>
@@ -197,10 +196,16 @@ Este contrato se rige por la legislación española. Cualquier controversia se s
     <string name="ok">Ok</string>
     <string name="timer">Temporizador</string>
     <string name="set_timer">Establecer temporizador</string>
-    <string name="time_over">Se acabó la espera! \\n Hora de cocinar \uD83C\uDF5C</string>
+    <string name="time_over">Se acabó la espera!  Hora de cocinar \uD83C\uDF5C</string>
     <string name="minutes">Minutos</string>
-    <string name="cook_mode_on">Modo codinado encendido</string>
+    <string name="cook_mode_on">Modo codinado encendido. No se apagará la pantalla</string>
     <string name="cook_mode_off">Modo cocinado apagado</string>
     <string name="cook_mode">Modo cocinado</string>
+    <string name="login_error_google">Error al intentar acceder con Google</string>
+    <string name="fav">Añadido a favoritos</string>
+    <string name="timer_set">Se estableció un temporizador de :</string>
+    <string name="timer_not_set">No se ha podido establecer el temporizador</string>
+    <string name="check_deleted_ingredient_on_recipe">No te olvides de revisar el ingrediente eliminado en los alérgenos y pasos de la receta⚠️</string>
+    <string name="error_delete_user">No se ha podido eliminar los datos de usuario</string>
 
 </resources>
