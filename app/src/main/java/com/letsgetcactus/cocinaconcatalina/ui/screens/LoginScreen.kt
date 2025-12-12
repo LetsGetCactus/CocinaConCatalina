@@ -92,12 +92,13 @@ fun LoginScreen(
     //UI components
     Box(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
     ) {
         Column(
             modifier = Modifier
-                .background(MaterialTheme.colorScheme.background)
+
                 .widthIn(max=480.dp)
                 .padding(48.dp, 40.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -204,11 +205,7 @@ fun LoginScreen(
                         } else {
                             val success = userViewModel.login(email, pass)
                             if (success) {
-                                Toast.makeText(
-                                    context,
-                                    "${context.getString(R.string.welcome)} $userViewModel.currentUser.value.name",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                Toast.makeText(context,context.getString(R.string.welcome),Toast.LENGTH_SHORT).show()
                                 navController.navigate(NavigationRoutes.HOME_SCREEN) {
                                     popUpTo(NavigationRoutes.LOGIN_SCREEN) { inclusive = true }
                                 }

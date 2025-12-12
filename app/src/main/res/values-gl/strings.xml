@@ -203,5 +203,7 @@ Este contrato réxese pola lexislación española. Calquera controversia someter
     <string name="login_error_google">Ocurriu un erro ao intentar identificarse con Google</string>
     <string name="fav">Engadido a favoritos</string>
     <string name="timer_set">Estableceuse un temporizador de:</string>
+    <string name="timer_not_set">Non se puido establecer o temporizador</string>
+    <string name="check_deleted_ingredient_on_recipe">Non te esquezas de revisar o ingrediente que borraches nos alérxemos e pasos da receita⚠️</string>
 
 </resources>

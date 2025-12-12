@@ -204,5 +204,7 @@ Este contrato se rige por la legislación española. Cualquier controversia se s
     <string name="login_error_google">Error al intentar acceder con Google</string>
     <string name="fav">Añadido a favoritos</string>
     <string name="timer_set">Se estableció un temporizador de :</string>
+    <string name="timer_not_set">No se ha podido establecer el temporizador</string>
+    <string name="check_deleted_ingredient_on_recipe">No te olvides de revisar el ingrediente eliminado en los alérgenos y pasos de la receta⚠️</string>
 
 </resources>

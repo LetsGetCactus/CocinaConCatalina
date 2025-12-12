@@ -133,6 +133,9 @@ fun BottomBarComposable(
                     TextButton(
                         onClick = {
                             val m = minutes.toIntOrNull() ?: 0
+                            if(m == 0){
+                                Toast.makeText(context, context.getString(R.string.timer_not_set) ,Toast.LENGTH_SHORT).show()
+                            }
                             if (m > 0) {
                                 TimerScheduler.scheduleTimer(
                                     context.applicationContext,
