@@ -7,10 +7,6 @@ import com.letsgetcactus.cocinaconcatalina.data.repository.RecipeRepository
 import com.letsgetcactus.cocinaconcatalina.data.searchFilters.RecipeFiltersEngine
 import com.letsgetcactus.cocinaconcatalina.data.searchFilters.RecipeSearchFilters
 import com.letsgetcactus.cocinaconcatalina.model.Recipe
-import com.letsgetcactus.cocinaconcatalina.model.enum.AllergenEnum
-import com.letsgetcactus.cocinaconcatalina.model.enum.DificultyEnum
-import com.letsgetcactus.cocinaconcatalina.model.enum.DishTypeEnum
-import com.letsgetcactus.cocinaconcatalina.model.enum.OriginEnum
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -75,31 +71,6 @@ class RecipeViewModel(
         }
     }
 
-    /**
-     * Gets the filter data from FilterScreen and saves them into private vals to be used on FilterRecipes()
-     */
-    fun setFilters(
-        origin: OriginEnum?,
-        dishType: DishTypeEnum?,
-        difficulty: DificultyEnum?,
-        prepTime: Int?,
-        maxIngredients: Int?,
-        rating: Int?,
-        allergens: List<AllergenEnum>
-    ) {
-        _activeFilter.value = RecipeSearchFilters(
-            origin = origin,
-            dishType = dishType,
-            difficulty = difficulty,
-            prepTime = prepTime,
-            maxIngredients = maxIngredients,
-            rating = rating,
-            allergens = allergens,
-            query = ""
-        )
-        _searchQuery.value = ""
-        filterRecipes()
-    }
 
 
     /**

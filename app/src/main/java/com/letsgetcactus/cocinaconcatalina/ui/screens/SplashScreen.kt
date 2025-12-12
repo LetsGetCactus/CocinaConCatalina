@@ -8,6 +8,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -24,26 +27,29 @@ import com.letsgetcactus.cocinaconcatalina.viewmodel.UserViewModel
 import kotlinx.coroutines.delay
 
 /**
- * Firs Screen to be shown while the app starts
- * It includes a jumping icon gif
+ * First Screen to be shown while the app starts
+ * It includes a jumping icon gif that will stay till the user's data and recipes are correctly loaded
  */
 @Composable
 fun SplashScreen(
     navController: NavController,
     userViewModel: UserViewModel
+
 ) {
-    val isLoggedIn by userViewModel.isLoggedIn.collectAsState()
+    val context= LocalContext.current
 
+    //State for the user and recipes
+    val state by userViewModel.state.collectAsState()
 
-    LaunchedEffect(isLoggedIn,) {
+    LaunchedEffect(state) {
         delay(3000)
 
-        if (isLoggedIn) {
-            navController.navigate(NavigationRoutes.HOME_SCREEN) {
+        if (state.error != null || !state.isReady) {
+            navController.navigate(NavigationRoutes.LOGIN_SCREEN) {
                 popUpTo(NavigationRoutes.SPLASH_SCREEN) { inclusive = true }
             }
-        } else {
-            navController.navigate(NavigationRoutes.LOGIN_SCREEN) {
+        } else if (state.isReady){
+            navController.navigate(NavigationRoutes.HOME_SCREEN) {
                 popUpTo(NavigationRoutes.SPLASH_SCREEN) { inclusive = true }
             }
         }
@@ -60,7 +66,7 @@ fun SplashScreen(
                 .data(R.raw.icon_gif)
                 .build(),
             contentDescription = stringResource(R.string.ccc_icon),
-            imageLoader = ImageLoader.Builder(LocalContext.current)
+            imageLoader = ImageLoader.Builder(context)
                 .components {
                     add(GifDecoder.Factory())
                 }

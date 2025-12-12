@@ -92,7 +92,7 @@
     <string name="recipe_saved_error">No se ha podido guardar la receta</string>
     <string name="not_accepted_terms">Tienes que aceptar los términos y condiciones</string>
     <string name="recipes_five_ingr">Menos de cinco ingredientes</string>
-    <string name="recipes_high_rating">Mejor puntutación</string>
+    <string name="recipes_high_rating">Mejor puntuación</string>
     <string name="new_step">Añadir paso</string>
     <string name="seen_on_tv">Vistos en la tv</string>
     <string name="email_info_letsgetcactus">info.letsgetcactus@gmail.com</string>
@@ -206,5 +206,6 @@ Este contrato se rige por la legislación española. Cualquier controversia se s
     <string name="timer_set">Se estableció un temporizador de :</string>
     <string name="timer_not_set">No se ha podido establecer el temporizador</string>
     <string name="check_deleted_ingredient_on_recipe">No te olvides de revisar el ingrediente eliminado en los alérgenos y pasos de la receta⚠️</string>
+    <string name="error_delete_user">No se ha podido eliminar los datos de usuario</string>
 
 </resources>

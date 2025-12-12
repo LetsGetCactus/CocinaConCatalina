@@ -140,7 +140,7 @@ fun MenuDrawerComponent(
                 label = stringResource(R.string.close_session),
                 onClick = {
                     scope.launch {
-                        userViewModel.logOut(context, navController)
+                        userViewModel.logout(context)
                         drawerState.close()
                     }
                 }

@@ -18,7 +18,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.FirebaseApp
 import com.google.firebase.appcheck.FirebaseAppCheck
-import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory
 import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
 import com.letsgetcactus.cocinaconcatalina.data.local.DataStoreManagment
 import com.letsgetcactus.cocinaconcatalina.data.repository.UserSessionRepository
@@ -92,9 +91,11 @@ class MainActivity : ComponentActivity() {
         val dataStore= DataStoreManagment(applicationContext)
         val userSessionRepo = UserSessionRepository(dataStore)
 
+
         setContent {
-            val userViewModel : UserViewModel= viewModel( factory = UserViewModelFactory(userSessionRepo))
             val recipeViewModel: RecipeViewModel=viewModel(factory = RecipeViewModelFactory())
+            val userViewModel : UserViewModel= viewModel( factory = UserViewModelFactory(userSessionRepo, recipeViewModel ))
+
 
             CocinaConCatalinaTheme(
                 darkTheme =

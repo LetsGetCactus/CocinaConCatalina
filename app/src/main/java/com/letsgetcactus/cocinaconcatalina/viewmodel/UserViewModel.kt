@@ -5,7 +5,6 @@ import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavController
 import com.letsgetcactus.cocinaconcatalina.R
 import com.letsgetcactus.cocinaconcatalina.data.local.LoginState
 import com.letsgetcactus.cocinaconcatalina.data.mapper.OriginMapper
@@ -16,12 +15,12 @@ import com.letsgetcactus.cocinaconcatalina.data.searchFilters.RecipeSearchFilter
 import com.letsgetcactus.cocinaconcatalina.model.Recipe
 import com.letsgetcactus.cocinaconcatalina.model.User
 import com.letsgetcactus.cocinaconcatalina.model.enum.OriginEnum
-import com.letsgetcactus.cocinaconcatalina.ui.NavigationRoutes
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * Controls login(), logout() and register()
@@ -30,8 +29,10 @@ import kotlinx.coroutines.launch
  */
 class UserViewModel(
     private val userRepo: UserRepository,
-    private val userSessionRepo: UserSessionRepository
+    private val userSessionRepo: UserSessionRepository,
+    private val recipeViewModel: RecipeViewModel
 ) : ViewModel() {
+
 
 
     //Preferences from DataStore
@@ -80,25 +81,28 @@ class UserViewModel(
     private val _googleLoginState = MutableStateFlow<LoginState>(LoginState.Idle)
     val googleLoginState: StateFlow<LoginState> = _googleLoginState
 
-    init {
-        restoreSessionFromDataStore()
+    //For loading user's whole data
+    private val _state = MutableStateFlow(UserState())
+    val state: StateFlow<UserState> = _state
 
+    init {
+        restoreSession()
     }
 
     /**
-     * For the user to persist. Loads the User and his favs and mod recipes
-     * @param userId Id from the user to persist
+     * Restores session if there's user's data in DataStoreManager
      */
-    suspend fun setUser(userId: String?) {
-        if (userId != null) {
-            val user = UserRepository.getUserById(userId)
-
-            _currentUser.value = user
-            loadFavourites()
-            loadModified()
-
-        } else {
-            clearAllUserData()
+    private fun restoreSession() {
+        viewModelScope.launch {
+            // Collects DataStore userId (UserSessionRepository exposes flows)
+            userSessionRepo.userIdFlow.collect { id ->
+                if (id.isNullOrEmpty()) {
+                    // No session saved -> logged out
+                    _state.value = UserState(isLoading = false)
+                } else {
+                    loadUserAndRecipesOrdered(id)
+                }
+            }
         }
     }
 
@@ -122,19 +126,29 @@ class UserViewModel(
      * @param email from the User
      * @param password from the User
      */
-    suspend fun login(email: String, password: String): Boolean {
+     fun login(email: String, password: String) {
+        viewModelScope.launch {
+            _state.value = _state.value.copy(isLoading = true, error = null)
 
-        val user = UserRepository.login(email, password)
+            try {
+                val user = withContext(Dispatchers.IO) {
+                    userRepo.login(email.trim(), password)
+                }
 
-        return if (user != null) {
-            userSessionRepo.saveUserIdData(user.id)
-            _currentUser.value = user
-            _isLoggedIn.value = true
-            loadFavourites()
-            loadModified()
-
-            true
-        } else false
+                if (user == null) {
+                    _state.value = UserState(
+                        isLoading = false,
+                        error = "Usuario o contraseña incorrectos"
+                    )
+                    return@launch
+                }
+                userSessionRepo.saveUserIdData(user.id)
+                loadUserAndRecipesOrdered(user.id)
+            } catch (e: Exception) {
+                Log.e("UserViewModel", "login error", e)
+                _state.value = UserState(isLoading = false, error = "Error al iniciar sesión")
+            }
+        }
     }
 
     /**
@@ -142,17 +156,26 @@ class UserViewModel(
      */
     fun logInWithGoogle(context: Context) {
         viewModelScope.launch {
-            _googleLoginState.value = LoginState.Loading
+            _state.value = _state.value.copy(isLoading = true, error = null)
 
-            val user = UserRepository.loginWithGoogle(context)
+            try {
+                val user = withContext(Dispatchers.IO) {
+                    userRepo.loginWithGoogle(context)
+                }
 
-            if (user != null) {
+                if (user == null) {
+                    _state.value = UserState(
+                        isLoading = false,
+                        error = "Error iniciando sesión con Google"
+                    )
+                    return@launch
+                }
+
                 userSessionRepo.saveUserIdData(user.id)
-                _googleLoginState.value = LoginState.Success(user)
-            } else {
-                _googleLoginState.value =LoginState.Error(context.getString(R.string.login_error_google))
-                Toast.makeText(context,context.getString(R.string.login_error_google),Toast.LENGTH_SHORT).show()
-
+                loadUserAndRecipesOrdered(user.id)
+            } catch (e: Exception) {
+                Log.e("UserViewModel", "Google login error", e)
+                _state.value = UserState(isLoading = false, error = "Error login Google")
             }
         }
     }
@@ -163,26 +186,27 @@ class UserViewModel(
      * @param email to send the restore password
      * @param context for the Toast
      */
-    suspend fun forgotPassword(email: String, context: Context) {
+     fun forgotPassword(email: String, context: Context) {
         if (email.isBlank()) {
             Toast.makeText(context, context.getString(R.string.emailError), Toast.LENGTH_SHORT)
                 .show()
             return
         }
-        val result = userRepo.handleForgetPassword(email)
+        viewModelScope.launch {
+            val result = userRepo.handleForgetPassword(email)
 
 
-        if (result) Toast.makeText(
-            context,
-            context.getString(R.string.chek_inbox),
-            Toast.LENGTH_SHORT
-        ).show()
-        else Toast.makeText(
-            context,
-            context.getString(R.string.error_sending_to_inbox),
-            Toast.LENGTH_SHORT
-        ).show()
-
+            if (result) Toast.makeText(
+                context,
+                context.getString(R.string.chek_inbox),
+                Toast.LENGTH_SHORT
+            ).show()
+            else Toast.makeText(
+                context,
+                context.getString(R.string.error_sending_to_inbox),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
 
     }
 
@@ -193,50 +217,77 @@ class UserViewModel(
      * @param password: user's password
      * @return boolean whether the user has being successfully registered or not
      */
-    suspend fun register(name: String, email: String, password: String): Boolean {
-        val newUser = UserRepository.register(name, email, password)
+     fun register(name: String, email: String, password: String) {
+        viewModelScope.launch {
+            val newUser = UserRepository.register(name, email, password)
 
-        return if (newUser != null) {
-            userSessionRepo.saveUserIdData(newUser.id)
-            _currentUser.value = newUser
-            _isLoggedIn.value = true
 
-            true
-        } else false
+            if (newUser != null) {
+                userSessionRepo.saveUserIdData(newUser.id)
+                _currentUser.value = newUser
+                _isLoggedIn.value = true
+
+
+            }
+        }
     }
 
     /**
-     * Reads and restores user's session from the data saved in DataStore
+     * Loads data in this order:
+     * - user
+     * - favourite recipes
+     * - modified recipes
+     * - asian original recipes
+     * - sets UserState to ready
      */
-    private fun restoreSessionFromDataStore() {
+    private fun loadUserAndRecipesOrdered(userId: String) {
         viewModelScope.launch {
-            userSessionRepo.userIdFlow.collectLatest { id ->
-                _userId.value = id
-                if (id.isNullOrEmpty()) {
-                    clearAllUserData()
-                    _isLoggedIn.value = false
-                    return@collectLatest
-                }
+            // mark loading
+            _state.value = UserState(isLoading = true)
 
-                val firebaseUser = userRepo.getCurrentFirebaseUser()
-                if (firebaseUser?.uid == id) {
-                    setUser(id)
-                    _isLoggedIn.value = true
-                } else {
+            try {
+                // 1) Load user
+                val user = withContext(Dispatchers.IO) { userRepo.getUserById(userId) }
+                if (user == null) {
+                    // invalid saved session: clear
                     userSessionRepo.clearUserSession()
-                    clearAllUserData()
-                    _isLoggedIn.value = false
+                    _state.value = UserState(isLoading = false, error = "Usuario no encontrado")
+                    return@launch
                 }
-            }
-        }
+                _currentUser.value =user
 
+                // 2) Load favourites
+                val favs = withContext(Dispatchers.IO) { userRepo.getAllFavouriteRecipeIds(userId) }
+                _favouriteRecipes.value =favs.sortedBy { it.title }
 
-        viewModelScope.launch {
-            userSessionRepo.userThemeFlow.collectLatest { theme ->
-                if (theme != null) _theme.value = theme
+                // 3) Load modified
+                val mods = withContext(Dispatchers.IO) { userRepo.getAllModifiedRecipes(userId) }
+                _modifiedRecipes.value= mods.sortedBy { it.title }
+
+                // 4) Load original recipes (single collection)
+                // We flag originalRecipesLoaded when done (view models that rely on original recipes can read recipeRepo or their own viewmodel)
+                withContext(Dispatchers.IO) {
+                recipeViewModel.loadAsianOgRecipes() // we don't store them here necessarily, but we ensure they are loaded
+                allTogetherUserRecipes()
+                }
+
+                // 5) Update state: user + favourites + modified + originals loaded flag
+                _state.value = UserState(
+                    isLoading = false,
+                    user = user,
+                    favouriteRecipes = _favouriteRecipes.value,
+                    modifiedRecipes = _modifiedRecipes.value,
+                    originalRecipesLoaded = true,
+                    error = null
+                )
+
+            } catch (e: Exception) {
+                Log.e("UserViewModel", "Error loading user and recipes", e)
+                _state.value = UserState(isLoading = false, error = "Error cargando datos")
             }
         }
     }
+
 
 
     /**
@@ -245,19 +296,19 @@ class UserViewModel(
      *  - currentUser (ViewModel)
      *  and gets the user off on UserRepository logout()
      */
-    suspend fun logOut(context: Context, navController: NavController) {
-
-        UserRepository.logOut(context)
-
-        userSessionRepo.clearUserSession()
-        clearAllUserData()
-        _isLoggedIn.value = false
-
-
-        navController.navigate(NavigationRoutes.LOGIN_SCREEN) {
-            popUpTo(0)
+    fun logout(context: Context) {
+        viewModelScope.launch {
+            try {
+                userRepo.logOut(context)
+            } catch (e: Exception) {
+                Log.e("UserViewModel", "logout error", e)
+            } finally {
+                userSessionRepo.clearUserSession()
+                clearAllUserData()
+                _isLoggedIn.value=false
+                _state.value = UserState(isLoading = false)
+            }
         }
-
     }
 
     /**
@@ -306,19 +357,6 @@ class UserViewModel(
 
     //Methods for FAVs:
     /**
-     * Loads user favourites subcollection
-     * Gets the Recipe's object in the user's fav subcollection
-     * Updates the StateFlow
-     */
-    suspend fun loadFavourites() {
-        val user = _currentUser.value ?: return
-
-        val favs = UserRepository.getAllFavouriteRecipeIds(user.id)
-        _favouriteRecipes.value = favs.sortedBy { it.title }
-    }
-
-
-    /**
      * Updates a Recipe to user's favourites list
      * - If it exists: it is removed
      * - If it does not exist: it is saved
@@ -341,7 +379,7 @@ class UserViewModel(
             }
 
             _favouriteRecipes.value = currentFavs //Updates StateFLow
-            allTogetherUserRecipes() //deberia ser loadFavorites?
+            allTogetherUserRecipes()
         }
 
 
@@ -371,37 +409,36 @@ class UserViewModel(
      * To upload a new modified recipe to user's subcollection
      * @param recipe for the new modified Recipe to save
      */
-    suspend fun saveModifiedRecipe(recipe: Recipe) {
-        val user = _currentUser.value?.id ?: return
-        userRepo.addModifiedRecipe(user, recipe)
+     fun saveModifiedRecipe(recipe: Recipe) {
+        viewModelScope.launch {
+            val user = _currentUser.value?.id ?: return@launch
+            userRepo.addModifiedRecipe(user, recipe)
 
-        //actualizamos ListRecipe sin duplicar
-        val currentList = _modifiedRecipes.value.toMutableList()
-        val index = currentList.indexOfFirst { it.id == recipe.id }
+            val currentList = _modifiedRecipes.value.toMutableList()
+            val index = currentList.indexOfFirst { it.id == recipe.id }
 
-        if (index >= 0) {
-            // Reemplazar receta existente
-            currentList[index] = recipe
-        } else {
-            // Añadir nueva receta
-            currentList.add(recipe)
+            if (index >= 0) {
+                currentList[index] = recipe
+            } else {
+                currentList.add(recipe)
+            }
+
+            _modifiedRecipes.value = currentList
+            allTogetherUserRecipes()
         }
-
-        _modifiedRecipes.value = currentList
-        loadModified()
-
     }
 
 
     /**
      * To get all modified recipes from user's subcollection
      */
-    private suspend fun loadModified() {
-        val user = _currentUser.value?.id ?: return
+    private fun loadModified() {
+        viewModelScope.launch {
+            val user = _currentUser.value?.id ?: return@launch
 
-        val modifiedRecipes = UserRepository.getAllModifiedRecipes(user)
-        _modifiedRecipes.value = modifiedRecipes.sortedBy { it.title }
-
+            val modifiedRecipes = UserRepository.getAllModifiedRecipes(user)
+            _modifiedRecipes.value = modifiedRecipes.sortedBy { it.title }
+        }
 
     }
 
@@ -419,18 +456,21 @@ class UserViewModel(
      * @param userId Id from the owner of the modified recipe
      * @return boolean
      */
-    suspend fun deleteModified(recipeId: String, userId: String?): Boolean {
-        return try {
-            if (!userId.isNullOrEmpty()) {
-                userRepo.deleteModifiedRecipe(recipeId, userId)
-                loadModified()
-                true
-            } else false
-        } catch (e: Exception) {
-            throw e
+     fun deleteModified(recipeId: String, userId: String?) {
+
+
+        viewModelScope.launch {
+            try {
+                if (!userId.isNullOrEmpty()) {
+                    userRepo.deleteModifiedRecipe(recipeId, userId)
+                    loadModified()
+
+                }
+            } catch (e: Exception) {
+                throw  e
+            }
+
         }
-
-
     }
 
 

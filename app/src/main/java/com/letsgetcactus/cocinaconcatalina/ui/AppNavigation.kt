@@ -14,6 +14,8 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -69,6 +71,18 @@ fun AppNavigation(
         (configuration.screenWidthDp * 0.7f).dp
     } else {
         400.dp
+    }
+
+    val state by userViewModel.state.collectAsState()
+
+    //Observes login globally on the whole app
+    LaunchedEffect(state.isLoggedIn) {
+        if (!state.isLoggedIn) {
+            navController.navigate(NavigationRoutes.LOGIN_SCREEN) {
+                popUpTo(NavigationRoutes.HOME_SCREEN) { inclusive = true }
+                launchSingleTop = true
+            }
+        }
     }
 
     ModalNavigationDrawer(
@@ -283,7 +297,6 @@ fun AppNavigation(
 
                         },
                         userViewModel = userViewModel
-
                     )
                 }
             }
