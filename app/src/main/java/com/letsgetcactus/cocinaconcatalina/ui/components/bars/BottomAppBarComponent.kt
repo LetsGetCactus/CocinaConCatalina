@@ -72,23 +72,27 @@ fun BottomBarComposable(
                 icon = R.drawable.spotify,
                 label = stringResource(R.string.spotify),
                 onClick = {
-                    val intent = Intent(Intent.ACTION_VIEW, "spotify:".toUri())
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    val spotifyIntent = Intent(Intent.ACTION_VIEW, "spotify:".toUri()).apply {
+                        setPackage("com.spotify.music")   //Needed to open spotify on Xiaomi and other phones, Deep links lead to Xiaomi's app store, rather to installed Spotify app
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    }
 
                     val packageManager = context.packageManager
 
-                    if (intent.resolveActivity(packageManager) != null) {
-                        context.startActivity(intent)
+                    if (spotifyIntent.resolveActivity(packageManager) != null) {
+                        context.startActivity(spotifyIntent)
                     } else {
                         val playStoreIntent = Intent(
                             Intent.ACTION_VIEW,
                             "market://details?id=com.spotify.music".toUri()
-                        )
-                        playStoreIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        ).apply {
+                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        }
                         context.startActivity(playStoreIntent)
                     }
                 }
             )
+
 
             // Timer
             BottomBarItem(
