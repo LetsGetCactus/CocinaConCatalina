@@ -85,7 +85,7 @@ fun AppNavigation(
         splashFinished = true
     }
 
-    //Observes login globally on the whole app
+    //Observes login state globally on the whole app
     LaunchedEffect(state.isLoggedIn, splashFinished) {
         if (!splashFinished) return@LaunchedEffect
         if (!state.isLoggedIn) {
