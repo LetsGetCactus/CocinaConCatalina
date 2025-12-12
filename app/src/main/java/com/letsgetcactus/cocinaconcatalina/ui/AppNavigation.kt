@@ -17,7 +17,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
@@ -74,15 +77,23 @@ fun AppNavigation(
     }
 
     val state by userViewModel.state.collectAsState()
+    var splashFinished by remember { mutableStateOf(false) }
+
+    // Splash delay
+    LaunchedEffect(Unit) {
+        kotlinx.coroutines.delay(2000) // 2 segundos de splash
+        splashFinished = true
+    }
 
     //Observes login globally on the whole app
-    LaunchedEffect(state.isLoggedIn) {
+    LaunchedEffect(state.isLoggedIn, splashFinished) {
+        if (!splashFinished) return@LaunchedEffect
         if (!state.isLoggedIn) {
             navController.navigate(NavigationRoutes.LOGIN_SCREEN) {
                 popUpTo(NavigationRoutes.HOME_SCREEN) { inclusive = true }
                 launchSingleTop = true
             }
-        }
+        }else drawerState.close()
     }
 
     ModalNavigationDrawer(
